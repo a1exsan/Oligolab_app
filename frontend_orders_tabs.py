@@ -119,10 +119,10 @@ class oligo_orders_database_layout():
                     dbc.Col([
                     dbc.Button("show queue", outline=True, color="secondary",
                                id='show-not-completed'),
-                    dbc.Button("selected to pipeline", outline=True, color="secondary",
-                               id='to-pipeline-btn'),
-                    dbc.Button("selected to sequences", outline=True, color="secondary",
-                               id='to-sequences-btn'),
+                    #dbc.Button("selected to pipeline", outline=True, color="secondary",
+                    #           id='to-pipeline-btn'),
+                    #dbc.Button("selected to sequences", outline=True, color="secondary",
+                    #           id='to-sequences-btn'),
                     dbc.Button("update tab", outline=True, color="secondary",
                                    id='update-outdate-btn')
                     ]),
@@ -131,21 +131,21 @@ class oligo_orders_database_layout():
                                    id='add-sel-order-to-asm2000-btn')
                     ])
                     ]),
-                dbc.Row([
-                    dbc.Col(
-                    dcc.Dropdown(['POLYGEN_1', 'POLYGEN_2', 'BIOSET96_1'], 'POLYGEN_1',
-                                 id='synthesiser-selector')
-                    ),
-                    dbc.Col(
-                        dcc.DatePickerSingle(
-                            id='start-date-select',
-                            min_date_allowed=date(2024, 1, 1),
-                            max_date_allowed=date(2100, 1, 1),
-                            initial_visible_month=date(2017, 8, 5),
-                            date=datetime.now().date()
-                        ),
-                    )
-                ]),
+                #dbc.Row([
+                    #dbc.Col(
+                    #dcc.Dropdown(['POLYGEN_1', 'POLYGEN_2', 'BIOSET96_1'], 'POLYGEN_1',
+                    #             id='synthesiser-selector')
+                    #),
+                    #dbc.Col(
+                    #    dcc.DatePickerSingle(
+                    #        id='start-date-select',
+                    #        min_date_allowed=date(2024, 1, 1),
+                    #        max_date_allowed=date(2100, 1, 1),
+                    #        initial_visible_month=date(2017, 8, 5),
+                    #        date=datetime.now().date()
+                    #    ),
+                #    )
+                #]),
                     dbc.Row([
                         dbc.Col(
                             dcc.Dropdown(['in queue', 'synthesis', 'purification',

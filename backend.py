@@ -1,5 +1,6 @@
 import os
 import requests
+import pandas as pd
 
 def get_IP_addr():
     ipdata = os.popen('ip -br a').read()
@@ -32,37 +33,58 @@ class orders_db(api_db_interface):
         ret = requests.get(url)
         return ret.json()
 
-    def get_orders_by_status_(self, status):
-        self.selected_status = status
-        url = f'{self.api_db_url}/get_keys_data/{self.db_name}/orders_tab/status/{status}'
-
+    def get_all_invoces(self):
+        url = f'{self.api_db_url}/get_all_invoces/{self.db_name}'
         ret = requests.get(url)
-        if ret.status_code == 200:
+        return ret.json()
+
+    def get_in_progress_invoces(self):
+        data = self.get_all_invoces()
+        out = []
+        for row in data:
+            if row['status'] == 'in progress':
+                out.append(row)
+        return out
+
+    def get_invoce_content(self, selRows):
+        out = pd.DataFrame(
+            {
+                '#': [1],
+                'Name': [''],
+                "5'-end": [''],
+                'Sequence': [''],
+                "3'-end": [''],
+                'Amount, oe': ['5-10'],
+                'Purification': ['Cart'],
+                'Lenght': [''],
+                'status': ['in queue'],
+                'input date': [''],
+                'output date': [''],
+                'client id': [''],
+                'order id': ['']
+            }
+        )
+        out = out.to_dict('records')
+        for row in selRows:
             out = []
-            for id, client_id, order_id, input_date, output_date, status, name, sequence, \
-                    end5, end3, amount, purification, lenght in ret.json():
-
-                url_ = f'{self.api_db_url}/get_keys_data/{self.db_name}/invoice_tab/id/{order_id}'
-                ret_ = requests.get(url_)
-
-                invoce = ret_.json()[0][1]
-                client = ret_.json()[0][2]
-
+            url = f"{self.api_db_url}/get_keys_data/{self.db_name}/orders_tab/order_id/{row['#']}"
+            #orders_list = self.uny_db.get_all_tab_data_by_keys('orders_tab', 'order_id', row['#'])
+            orders_list = requests.get(url)
+            for r in orders_list.json():
                 d = {}
-                d['#'] = id
-                d['status'] = status
-                d['input date'] = input_date
-                d['output date'] = output_date
-                d['client id'] = client
-                d['order id'] = invoce
-                d["5'-end"] = str(end5)
-                d["Sequence"] = str(sequence)
-                d["3'-end"] = str(end3)
-                d['Amount, oe'] = str(amount)
-                d['Purification'] = str(purification)
-                d['Lenght'] = str(lenght)
-                d['Name'] = str(name)
+                d['#'] = r[0]
+                d['status'] = r[5]
+                d['input date'] = r[3]
+                d['output date'] = r[4]
+                d['client id'] = row['client']
+                d['order id'] = row['invoce']
+                d["5'-end"] = str(r[8])
+                d["Sequence"] = str(r[7])
+                d["3'-end"] = str(r[9])
+                d['Amount, oe'] = str(r[10])
+                d['Purification'] = str(r[11])
+                d['Lenght'] = str(r[12])
+                d['Name'] = str(r[6])
                 out.append(d)
-            return out
-        else:
-            return []
+            break
+        return out
