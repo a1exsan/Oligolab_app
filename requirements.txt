@@ -1,0 +1,14 @@
+pandas
+flask
+oligoMass
+dash
+dash_bootstrap_components
+qrcode
+qreader
+pyTelegramBotAPI
+dash_ag_grid
+holidays
+openpyxl
+dash_auth
+dash_enterprise_auth
+Flask-Session
