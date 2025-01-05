@@ -3,6 +3,7 @@ import dash_bootstrap_components as dbc
 
 import frontend_input_invoce
 import frontend_orders_tabs
+import frontend_asm2000
 
 class oligo_syn_form_layout():
 
@@ -18,10 +19,12 @@ class oligo_syn_form_layout():
 
         self.frontend_input_invoce = frontend_input_invoce.oligo_orders_form_layout()
         self.frontend_orders_tabs = frontend_orders_tabs.oligo_orders_database_layout()
+        self.frontend_asm2000 = frontend_asm2000.asm2000_layout()
 
         layout_dict = {
             'Input invoces': self.frontend_input_invoce.layout,
             'Orders base': self.frontend_orders_tabs.layout,
+            'Oligomap builder': self.frontend_asm2000.layout,
         }
 
         layout_list = []

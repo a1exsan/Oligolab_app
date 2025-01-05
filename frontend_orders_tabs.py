@@ -128,7 +128,9 @@ class oligo_orders_database_layout():
                     ]),
                     dbc.Col([
                         dbc.Button("add selected to ASM2000", outline=True, color="primary",
-                                   id='add-sel-order-to-asm2000-btn')
+                                   id='add-sel-order-to-asm2000-btn'),
+                        dbc.Input(placeholder='Number of copies', id='num-orders-copies-input', type="text",
+                                  debounce=True)
                     ])
                     ]),
                 #dbc.Row([
