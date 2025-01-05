@@ -85,8 +85,8 @@ class asm2000_layout():
                                        id='asm2000-gen-map-btn'),
                             dbc.Button("save_map", outline=True, color="secondary",
                                        id='asm2000-save-map-btn'),
-                            dbc.Button("update analytics", outline=True, color="secondary",
-                                       id='asm2000-update-anal-btn'),
+                            #dbc.Button("update analytics", outline=True, color="secondary",
+                            #           id='asm2000-update-anal-btn'),
                             dbc.Button("print passport", outline=True, color="secondary",
                                        id='asm2000-print_pass-btn'),
                             dbc.Button("culc click", outline=True, color="secondary",
@@ -126,7 +126,7 @@ class asm2000_layout():
         #modifier TAB
         accord_tab = pd.DataFrame(
             {
-                'Modification': ['A', 'C', 'G', 'T', '+A', '+C', '+G', '+T', '6FAM', 'HEX', 'R6G', 'Alk'],
+                'Modification': ['A', 'C', 'G', 'T', '+A', '+C', '+G', '+T', '6FAM', 'Alk', 'R6G', 'HEX'],
                 'asm2000 position': ['A', 'C', 'G', 'T', '5', '6', '7', '8', '9', '[10]', '[11]', '[12]'],
                 'Conc, g/ml': [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1],
                 'ul on step, 5mg': [54., 54., 54., 54., 75., 75., 75., 75., 75., 75., 75., 75.],
@@ -184,7 +184,7 @@ class asm2000_layout():
                 'Map name': [''],
                 'Synth number': [''],
                 'Date': [''],
-                'finished%': [0]
+                'in progress': [0]
             }
         )
 
@@ -193,11 +193,11 @@ class asm2000_layout():
             {"field": "Map name"},
             {"field": "Synth number"},
             {"field": "Date"},
-            {"field": "finished%"},
+            {"field": "in progress"},
         ]
 
         self.map_db_tab = dag.AgGrid(
-            id="asm2000-map-db-tab",
+            id="asm2000-map-list-tab",
             columnDefs=columnDefs,
             rowData=map_db_tab.to_dict("records"),
             columnSize="sizeToFit",

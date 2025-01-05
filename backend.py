@@ -3,6 +3,8 @@ import requests
 import pandas as pd
 from datetime import datetime
 import json
+from oligoMass import molmassOligo as mmo
+from collections import Counter
 
 def get_IP_addr():
     ipdata = os.popen('ip -br a').read()
@@ -27,6 +29,7 @@ class orders_db(api_db_interface):
         super().__init__(db_IP, db_port)
 
         self.db_name = 'scheduler_oligolab_2.db'
+        self.maps_db_name = 'asm2000_map_1.db'
         self.selected_status = 'finished'
         self.strftime_format = "%Y-%m-%d"
 
@@ -189,3 +192,232 @@ class orders_db(api_db_interface):
             #print(id, name, sequence, r.status_code)
             #self.db.update_orders_tab(id, input_date, output_date, status, name,
             #                          sequence, end5, end3, amount, purification)
+
+
+    def seq_to_asm_seq(self, accordRowData, tabRowData):
+        tab = pd.DataFrame(tabRowData)
+        accord = pd.DataFrame(accordRowData)
+
+        seq_list = []
+        for seq in tab['Sequence']:
+            oligo = mmo.oligoNASequence(seq)
+            df = oligo.getSeqTabDF()
+            out_seq = ''
+            for mod, nt in zip(df['prefix'], df['nt']):
+                if '[' in mod and ']' in mod:
+                    m = mod.replace('[', '')
+                    m = m.replace(']', '')
+                    out_seq += accord[accord['Modification'] == m]['asm2000 position'].max()
+                    out_seq += accord[accord['Modification'] == nt]['asm2000 position'].max()
+                elif mod == '+' or mod == '*' or mod == 'r' or mod == '':
+                    m = f'{mod}{nt}'
+                    if nt in 'R M S H V N Y K W B D N'.split(' '):
+                        out_seq += nt
+                    else:
+                        out_seq += accord[accord['Modification'] == m]['asm2000 position'].max()
+                else:
+                    out_seq += nt
+
+            seq_list.append(out_seq)
+        tab['asm Sequence'] = seq_list
+        tab['#'] = [i for i in range(1, len(seq_list) + 1)]
+        return tab.to_dict('records')
+
+    def get_all_amidites_types(self, seq_list):
+        self.amidites_count = Counter()
+        for seq in seq_list:
+            #print(seq)
+            o = mmo.oligoNASequence(seq)
+            tab = o.getSeqTabDF()
+            for mod, nt in zip(tab['prefix'], tab['nt']):
+                if '[' in mod and ']' in mod and mod not in list(self.amidites_count.keys()):
+                    self.amidites_count[mod] = 1
+                    if nt not in list(self.amidites_count.keys()):
+                        self.amidites_count[nt] = 1
+                    else:
+                        self.amidites_count[nt] += 1
+                elif '[' in mod and ']' in mod and mod in list(self.amidites_count.keys()):
+                    self.amidites_count[mod] += 1
+                    if nt not in list(self.amidites_count.keys()):
+                        self.amidites_count[nt] = 1
+                    else:
+                        self.amidites_count[nt] += 1
+                elif mod == '+' or mod == '*' or mod == 'r' or mod == '':
+                    a = f'{mod}{nt}'
+                    if a not in list(self.amidites_count.keys()):
+                        self.amidites_count[a] = 1
+                    else:
+                        self.amidites_count[a] += 1
+
+    def update_accord_tab(self, accordRowData, tabRowData):
+        tab = pd.DataFrame(tabRowData)
+        accord = pd.DataFrame(accordRowData)
+
+        round_n = 3
+        constant_vol = 0.10
+
+        self.get_all_amidites_types(list(tab['Sequence']))
+        for mod, count in zip(self.amidites_count.keys(), self.amidites_count.values()):
+            #print(mod, count)
+            if '[' in mod and ']' in mod:
+                m = mod.replace('[', '')
+                m = m.replace(']', '')
+                r5 = accord[accord['Modification'] == m]['ul on step, 5mg'].max()
+                r10 = accord[accord['Modification'] == m]['ul on step, 10mg'].max()
+                conc = accord[accord['Modification'] == m]['Conc, g/ml'].max()
+
+                vol5 = r5 * count / 1000
+                vol10 = r10 * count / 1000
+
+                vol5 += vol5 * constant_vol
+                vol10 += vol10 * constant_vol
+
+                if vol5 <= 1.5:
+                    vol5 = 1.5
+                if vol10 <= 1.5:
+                    vol10 = 1.5
+
+                accord.loc[accord['Modification'] == m, 'Amount 5mg, ml'] = round(vol5, round_n)
+                accord.loc[accord['Modification'] == m, 'Amount 10mg, ml'] = round(vol10, round_n)
+                accord.loc[accord['Modification'] == m, 'Amount 5mg, g'] = round(conc * vol5, round_n)
+                accord.loc[accord['Modification'] == m, 'Amount 10mg, g'] = round(conc * vol10, round_n)
+            else:
+
+                r5 = accord[accord['Modification'] == mod]['ul on step, 5mg'].max()
+                r10 = accord[accord['Modification'] == mod]['ul on step, 10mg'].max()
+                conc = accord[accord['Modification'] == mod]['Conc, g/ml'].max()
+
+                vol5 = r5 * count / 1000
+                vol10 = r10 * count / 1000
+
+                vol5 += vol5 * constant_vol
+                vol10 += vol10 * constant_vol
+
+                if vol5 <= 1.5:
+                    vol5 = 1.5
+                if vol10 <= 1.5:
+                    vol10 = 1.5
+
+                accord.loc[accord['Modification'] == mod, 'Amount 5mg, ml'] = round(vol5, round_n)
+                accord.loc[accord['Modification'] == mod, 'Amount 10mg, ml'] = round(vol10, round_n)
+                accord.loc[accord['Modification'] == mod, 'Amount 5mg, g'] = round(conc * vol5, round_n)
+                accord.loc[accord['Modification'] == mod, 'Amount 10mg, g'] = round(conc * vol10, round_n)
+
+        return accord.to_dict('records')
+
+    def get_pos_list(self, start):
+        pos_list = []
+        for j in range(1, 13):
+            for i in 'A B C D E F G H'.split(' '):
+                pos_list.append(f'{i}{j}')
+        return pos_list[pos_list.index(start):]
+
+    def rename_pos(self, selrowData, rowData):
+        first = selrowData[0]
+        selDF = pd.DataFrame(selrowData)
+        DF = pd.DataFrame(rowData)
+
+        synth_number = first['Synt number']
+        name = first['Position']
+        pos_list = self.get_pos_list(name)
+
+        selDF['Position'] = pos_list[: selDF.shape[0]]
+
+        for _, pos in zip(selDF['#'], selDF['Position']):
+            DF.loc[DF['#'] == _, 'Position'] = pos
+            DF.loc[DF['#'] == _, 'Synt number'] = synth_number
+
+        return DF.to_dict('records')
+
+    def change_alk(self, rowData):
+        out = []
+        for row in rowData:
+            oligo = mmo.oligoNASequence(row['Sequence'])
+            tab = oligo.getSeqTabDF()
+            #print(oligo.sequence)
+            r = row.copy()
+            if ((str(tab['prefix'].loc[1]).find('FAM') == -1) and (str(tab['prefix'].loc[1]) != '') and
+                    (str(tab['prefix'].loc[1]).find('Alk') == -1)):
+                #sseq = [f'{i}{j}']
+                #seq = f"[Alk]{''.join(list(tab['nt']))}{str(tab['suffix'].loc[tab.shape[0]])}"
+                sseq = row['Sequence']
+                seq = sseq.replace(sseq[sseq.find('[') + 1: sseq.find(']')], 'Alk')
+                pref = str(tab['prefix'].loc[1])
+                pref = pref.replace('[', '')
+                pref = pref.replace(']', '')
+                purif_type = row['Purif type'] + f"_{pref}"
+                r['Sequence'] = seq
+                r['Purif type'] = purif_type
+            out.append(r)
+
+        return out
+
+    def generate_map_to_file(self, filename, rowData, accordData):
+        data = pd.DataFrame(rowData)
+        accord = pd.DataFrame(accordData)
+        self.filename = f'{filename}.xlsx'
+        self.writer = pd.ExcelWriter(self.filename, engine='openpyxl')
+        data.to_excel(self.writer, sheet_name='main', startrow = 0, index=False, header=True)
+        accord.to_excel(self.writer, sheet_name='main', startrow = data.shape[0] + 2, index=False, header=True)
+        self.writer._save()
+
+
+    def map_in_progress(self, mapdata):
+        map = json.loads(mapdata)
+        df = pd.DataFrame(map)
+        try:
+            return round(df[df['Status'] == 'finished'].shape[0] * 100/df.shape[0], 0)
+        except:
+            return 100
+
+    def get_oligomaps(self):
+        url = f'{self.api_db_url}/get_all_tab_data/{self.maps_db_name}/main_map'
+        ret = requests.get(url)
+        if ret.status_code == 200:
+            out = []
+            for r in ret.json():
+                d = {}
+                d['#'] = r[0]
+                d['Map name'] = r[2]
+                d['Synth number'] = r[3]
+                d['Date'] = r[1]
+                d['in progress'] = self.map_in_progress(r[4])
+                out.append(d)
+            return out
+        else:
+            return []
+
+    def load_oligomap(self, seldata):
+        if len(seldata) > 0:
+            url = f"{self.api_db_url}/get_keys_data/{self.maps_db_name}/main_map/id/{seldata[0]['#']}"
+            ret = requests.get(url)
+            if ret.status_code == 200:
+                self.oligo_map_id = seldata[0]['#']
+                meta = ret.json()
+                map_data = json.loads(meta[0][4])
+                accord_data = json.loads(meta[0][5])
+                #print(meta)
+                return map_data, accord_data, meta[0][2], meta[0][3]
+            else:
+                self.oligo_map_id = -1
+                return [], []
+
+    def insert_map_to_base(self, name, synth_number, synth_date, rowData, accordData):
+        if len(rowData) > 0:
+            url = f"{self.api_db_url}/insert_data/{self.maps_db_name}/main_map"
+            r = requests.post(url,
+                              json=json.dumps([synth_date, name, synth_number,
+                                               json.dumps(rowData),
+                                               json.dumps(accordData)]))
+            return r.status_code
+        else:
+            return 404
+
+    def delete_map_from_base(self, seldata):
+        if len(seldata) > 0:
+            self.oligo_map_id = -1
+            url = f"{self.api_db_url}/delete_data/{self.maps_db_name}/main_map/{seldata[0]['#']}"
+            ret = requests.delete(url)
+            return ret.status_code
+        else:
+            return 404

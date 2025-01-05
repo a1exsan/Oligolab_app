@@ -82,5 +82,77 @@ def update_orders_db_tab(orders_db_data, orders_sel_rowdata, invoces_rowdata, in
 
     raise PreventUpdate
 
+
+@callback(
+    Output(component_id='asm2000-map-tab', component_property='rowData', allow_duplicate=True),
+    Output(component_id='asm2000-accord-tab', component_property='rowData', allow_duplicate=True),
+    Output(component_id='asm2000-map-list-tab', component_property='rowData', allow_duplicate=True),
+    Output(component_id='asm2000-map-name', component_property='value', allow_duplicate=True),
+    Output(component_id='asm2000-map-synt_number', component_property='value', allow_duplicate=True),
+
+    Input(component_id='asm2000-map-tab', component_property='rowData'),
+    Input(component_id='asm2000-map-tab', component_property='selectedRows'),
+    Input(component_id='asm2000-accord-tab', component_property='rowData'),
+    Input(component_id='asm2000-map-list-tab', component_property='rowData'),
+    Input(component_id='asm2000-map-list-tab', component_property='selectedRows'),
+    Input(component_id='asm2000-update-tab-btn', component_property='n_clicks'),
+    Input(component_id='asm2000-rename-pos-btn', component_property='n_clicks'),
+    Input(component_id='asm2000-change-alk-btn', component_property='n_clicks'),
+    Input(component_id='asm2000-gen-map-btn', component_property='n_clicks'),
+    Input(component_id='asm2000-update-map', component_property='n_clicks'),
+    Input(component_id='asm2000-load-map', component_property='n_clicks'),
+    Input(component_id='asm2000-map-name', component_property='value'),
+    Input(component_id='asm2000-map-synt_number', component_property='value'),
+    Input(component_id='asm2000-start-date-select', component_property='date'),
+    Input(component_id='asm2000-save-map-btn', component_property='n_clicks'),
+    Input(component_id='asm2000-delete-map', component_property='n_clicks'),
+    prevent_initial_call=True
+)
+def update_asm2000_map(map_rowdata, sel_map_rowdata, accord_rowdata, map_list_rowdata, sel_map_list_rowdata,
+                       update_map_btn, rename_pos_btn, change_alk_btn,
+                       gen_map_to_csv_btn, update_maps_btn, load_map_btn,
+                       man_name_input, synth_number_input, start_date_select, save_map_btn, delete_map_btn):
+
+    triggered_id = ctx.triggered_id
+
+    if triggered_id == 'asm2000-update-tab-btn' and update_map_btn is not None:
+        map_out_tab = orders_data.seq_to_asm_seq(accord_rowdata, map_rowdata)
+        accord_out_tab = orders_data.update_accord_tab(accord_rowdata, map_out_tab)
+        return map_out_tab, accord_out_tab, map_list_rowdata, man_name_input, synth_number_input
+
+    if triggered_id == 'asm2000-rename-pos-btn' and rename_pos_btn is not None:
+        map_out_tab = orders_data.rename_pos(sel_map_rowdata, map_rowdata)
+        return map_out_tab, accord_rowdata, map_list_rowdata, man_name_input, synth_number_input
+
+    if triggered_id == 'asm2000-change-alk-btn' and change_alk_btn is not None:
+        map_out_tab = orders_data.change_alk(map_rowdata)
+        return map_out_tab, accord_rowdata, map_list_rowdata, man_name_input, synth_number_input
+
+    if triggered_id == 'asm2000-gen-map-btn' and gen_map_to_csv_btn is not None:
+        orders_data.generate_map_to_file('oligo_map.csv',map_rowdata, accord_rowdata)
+        return map_rowdata, accord_rowdata, map_list_rowdata, man_name_input, synth_number_input
+
+    if triggered_id == 'asm2000-update-map' and update_maps_btn is not None:
+        map_list = orders_data.get_oligomaps()
+        return map_rowdata, accord_rowdata, map_list, man_name_input, synth_number_input
+
+    if triggered_id == 'asm2000-load-map' and load_map_btn is not None:
+        map_out_tab, accord_out_tab, map_name, map_syn_num = orders_data.load_oligomap(sel_map_list_rowdata)
+        return map_out_tab, accord_out_tab, map_list_rowdata, map_name, map_syn_num
+
+    if triggered_id == 'asm2000-save-map-btn' and save_map_btn is not None:
+        status_code = orders_data.insert_map_to_base(man_name_input, synth_number_input, start_date_select,
+                                                     map_rowdata, accord_rowdata)
+        print(f'save map {man_name_input} status code: ', status_code)
+        return map_rowdata, accord_rowdata, map_list_rowdata, man_name_input, synth_number_input
+
+    if triggered_id == 'asm2000-delete-map' and delete_map_btn is not None:
+        status_code = orders_data.delete_map_from_base(sel_map_list_rowdata)
+        print(f'delete map {man_name_input} status code: ', status_code)
+        return map_rowdata, accord_rowdata, map_list_rowdata, man_name_input, synth_number_input
+
+    raise PreventUpdate
+
+
 if __name__ == '__main__':
     app.run_server(debug=True, port=8800, host='0.0.0.0')
