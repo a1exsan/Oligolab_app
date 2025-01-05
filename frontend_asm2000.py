@@ -18,6 +18,7 @@ class asm2000_layout():
                 'Name': [''],
                 'Sequence': [''],
                 'Purif type':[''],
+                'Support type':[''],
                 'Date': [''],
                 'Synt number': [''],
                 'Scale, OE': [''],
@@ -26,7 +27,25 @@ class asm2000_layout():
                 'Status': ['in queue'],
                 'Dens, oe/ml': [0.],
                 'Vol, ml': [0.3],
-                'Purity, %': [50.]
+                'Purity, %': [50.],
+
+                'Do LCMS': [True],
+                'Done LCMS': [False],
+                'Do synth': [True],
+                'Done synth': [False],
+                'Do cart': [True],
+                'Done cart': [False],
+                'Do hplc': [True],
+                'Done hplc': [False],
+                'Do paag': [True],
+                'Done paag': [False],
+                'Do click': [True],
+                'Done click': [False],
+                'Do sed': [True],
+                'Done sed': [False],
+                'Do subl': [True],
+                'Done subl': [False],
+                'DONE': [False],
             }
         )
 
@@ -42,6 +61,7 @@ class asm2000_layout():
             {"field": "Name"},
             {"field": "Sequence", 'editable': True},
             {"field": "Purif type", 'editable': True},
+            {"field": "Support type", 'editable': True},
             {"field": "Date"},
             {"field": "Synt number", 'editable': True},
             {"field": "Scale, OE", 'editable': True},
@@ -50,7 +70,25 @@ class asm2000_layout():
             {"field": "Status", 'editable': True},
             {"field": "Dens, oe/ml", 'editable': True},
             {"field": "Vol, ml", 'editable': True},
-            {"field": "Purity, %", 'editable': True}
+            {"field": "Purity, %", 'editable': True},
+
+            {"field": "Do LCMS", 'editable': True},
+            {"field": "Done LCMS", 'editable': True},
+            {"field": "Do synth", 'editable': True},
+            {"field": "Done synth", 'editable': True},
+            {"field": "Do cart", 'editable': True},
+            {"field": "Done cart", 'editable': True},
+            {"field": "Do hplc", 'editable': True},
+            {"field": "Done hplc", 'editable': True},
+            {"field": "Do paag", 'editable': True},
+            {"field": "Done paag", 'editable': True},
+            {"field": "Do sed", 'editable': True},
+            {"field": "Done sed", 'editable': True},
+            {"field": "Do click", 'editable': True},
+            {"field": "Done click", 'editable': True},
+            {"field": "Do subl", 'editable': True},
+            {"field": "Done subl", 'editable': True},
+            {"field": "DONE", 'editable': False}
         ]
 
         self.map_tab_ = dag.AgGrid(
@@ -107,17 +145,57 @@ class asm2000_layout():
                     )
                 ]),
                 dbc.Row([
-                    dbc.Container(
-                        dbc.Col([
-                            dcc.Dropdown(['in queue', 'synthesis', 'purification',
-                                              'formulation', 'finished', 'arhive'], 'in queue',
-                                             id='asm2000-status-order-selector'),
-                            dbc.Button("Set status", outline=True, color="secondary",
-                                           id='asm2000-set-status-btn'),
-                            dbc.Button("update order status", outline=True, color="secondary",
-                                       id='asm2000-update-order-status-btn'),
+                    dbc.Container(dbc.Row([
+                                      dbc.Col([
+                                          #dcc.Dropdown(['in queue', 'synthesis', 'purification',
+                                          #              'formulation', 'finished', 'arhive'], 'in queue',
+                                          #             id='asm2000-status-order-selector'),
+                                          #dbc.Button("Set status", outline=True, color="secondary",
+                                          #           id='asm2000-set-status-btn'),
+                                          dbc.Button("update order status", outline=False, color="primary",
+                                                     id='asm2000-update-order-status-btn', className="me-1", size='lg'),
+                                      ]),
+                                      dbc.Row([
+                                          dbc.Col([
+                                              dbc.Button("_Do lcms_", outline=True, color="success",
+                                                         id='set-do-lcms-btn', className="me-1", size='lg'),
+                                              dbc.Button("_Do synth_", outline=True, color="success",
+                                                         id='set-do-synth-btn', className="me-1", size='lg'),
+                                              dbc.Button("_Do cart_", outline=True, color="success",
+                                                         id='set-do-cart-btn', className="me-1", size='lg'),
+                                              dbc.Button("_Do hplc_", outline=True, color="success",
+                                                         id='set-do-hplc-btn', className="me-1", size='lg'),
+                                              dbc.Button("_Do paag_", outline=True, color="success",
+                                                         id='set-do-paag-btn', className="me-1", size='lg'),
+                                              dbc.Button("_Do sed_", outline=True, color="success",
+                                                         id='set-do-sed-btn', className="me-1", size='lg'),
+                                              dbc.Button("_Do click_", outline=True, color="success",
+                                                         id='set-do-click-btn', className="me-1", size='lg'),
+                                              dbc.Button("_Do subl_", outline=True, color="success",
+                                                         id='set-do-subl-btn', className="me-1", size='lg'),
+                                          ])
+                                      ]),
+                                        dbc.Row([
+                            dbc.Col([
+                                dbc.Button("Done lcms", outline=True, color="warning",
+                                           id='set-done-lcms-btn', className="me-1", size='lg'),
+                                dbc.Button("Done synth", outline=True, color="warning",
+                                           id='set-done-synth-btn', className="me-1", size='lg'),
+                                dbc.Button("Done cart", outline=True, color="warning",
+                                           id='set-done-cart-btn', className="me-1", size='lg'),
+                                dbc.Button("Done hplc", outline=True, color="warning",
+                                           id='set-done-hplc-btn', className="me-1", size='lg'),
+                                dbc.Button("Done paag", outline=True, color="warning",
+                                           id='set-done-paag-btn', className="me-1", size='lg'),
+                                dbc.Button("Done sed", outline=True, color="warning",
+                                           id='set-done-sed-btn', className="me-1", size='lg'),
+                                dbc.Button("Done click", outline=True, color="warning",
+                                           id='set-done-click-btn', className="me-1", size='lg'),
+                                dbc.Button("Done subl", outline=True, color="warning",
+                                           id='set-done-subl-btn', className="me-1", size='lg'),
+                            ])
                         ])
-                    )
+                                  ]))
                 ]),
                 self.map_tab_
             ]),

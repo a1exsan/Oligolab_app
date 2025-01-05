@@ -106,12 +106,16 @@ def update_orders_db_tab(orders_db_data, orders_sel_rowdata, invoces_rowdata, in
     Input(component_id='asm2000-start-date-select', component_property='date'),
     Input(component_id='asm2000-save-map-btn', component_property='n_clicks'),
     Input(component_id='asm2000-delete-map', component_property='n_clicks'),
+    Input(component_id='asm2000-search-maps-btn', component_property='n_clicks'),
+    Input(component_id='asm2000-search-field', component_property='value'),
+    Input(component_id='asm2000-print_pass-btn', component_property='n_clicks'),
     prevent_initial_call=True
 )
 def update_asm2000_map(map_rowdata, sel_map_rowdata, accord_rowdata, map_list_rowdata, sel_map_list_rowdata,
                        update_map_btn, rename_pos_btn, change_alk_btn,
                        gen_map_to_csv_btn, update_maps_btn, load_map_btn,
-                       man_name_input, synth_number_input, start_date_select, save_map_btn, delete_map_btn):
+                       man_name_input, synth_number_input, start_date_select, save_map_btn, delete_map_btn,
+                       search_map_btn, search_map_input, print_passport_btn):
 
     triggered_id = ctx.triggered_id
 
@@ -150,6 +154,119 @@ def update_asm2000_map(map_rowdata, sel_map_rowdata, accord_rowdata, map_list_ro
         status_code = orders_data.delete_map_from_base(sel_map_list_rowdata)
         print(f'delete map {man_name_input} status code: ', status_code)
         return map_rowdata, accord_rowdata, map_list_rowdata, man_name_input, synth_number_input
+
+    if triggered_id == 'asm2000-search-maps-btn' and search_map_btn is not None:
+        search_map_list = orders_data.search_maps_by_text(search_map_input)
+        if len(search_map_list) > 0:
+            return map_rowdata, accord_rowdata, search_map_list, man_name_input, synth_number_input
+        else:
+            return map_rowdata, accord_rowdata, map_list_rowdata, man_name_input, synth_number_input
+
+    if triggered_id == 'asm2000-print_pass-btn' and print_passport_btn is not None:
+        orders_data.print_pass(map_rowdata, 'map_passport.csv')
+        return map_rowdata, accord_rowdata, map_list_rowdata, man_name_input, synth_number_input
+
+    raise PreventUpdate
+
+
+@callback(
+    Output(component_id='asm2000-map-tab', component_property='rowData', allow_duplicate=True),
+
+    Input(component_id='asm2000-map-tab', component_property='rowData'),
+    Input(component_id='asm2000-map-tab', component_property='selectedRows'),
+    Input(component_id='set-do-lcms-btn', component_property='n_clicks'),
+    Input(component_id='set-do-synth-btn', component_property='n_clicks'),
+    Input(component_id='set-do-cart-btn', component_property='n_clicks'),
+    Input(component_id='set-do-hplc-btn', component_property='n_clicks'),
+    Input(component_id='set-do-paag-btn', component_property='n_clicks'),
+    Input(component_id='set-do-sed-btn', component_property='n_clicks'),
+    Input(component_id='set-do-click-btn', component_property='n_clicks'),
+    Input(component_id='set-do-subl-btn', component_property='n_clicks'),
+    Input(component_id='set-done-lcms-btn', component_property='n_clicks'),
+    Input(component_id='set-done-synth-btn', component_property='n_clicks'),
+    Input(component_id='set-done-cart-btn', component_property='n_clicks'),
+    Input(component_id='set-done-hplc-btn', component_property='n_clicks'),
+    Input(component_id='set-done-paag-btn', component_property='n_clicks'),
+    Input(component_id='set-done-sed-btn', component_property='n_clicks'),
+    Input(component_id='set-done-click-btn', component_property='n_clicks'),
+    Input(component_id='set-done-subl-btn', component_property='n_clicks'),
+    Input(component_id='asm2000-update-order-status-btn', component_property='n_clicks'),
+    prevent_initial_call=True
+)
+def update_flags_tab(map_rowdata, sel_map_rowdata,
+                     do_lcms_btn, do_synth_btn, do_cart_btn, do_hplc_btn, do_paag_btn, do_sed_btn, do_click_btn,
+                     do_subl_btn,
+                     done_lcms_btn, done_synth_btn, done_cart_btn, done_hplc_btn, done_paag_btn, done_sed_btn,
+                     done_click_btn, done_subl_btn, update_order_status_btn):
+    triggered_id = ctx.triggered_id
+
+    if triggered_id == 'set-do-lcms-btn' and do_lcms_btn is not None:
+        out_map_data = orders_data.update_map_flags('Do LCMS', map_rowdata, sel_map_rowdata)
+        return out_map_data
+
+    if triggered_id == 'set-do-synth-btn' and do_synth_btn is not None:
+        out_map_data = orders_data.update_map_flags('Do synth', map_rowdata, sel_map_rowdata)
+        return out_map_data
+
+    if triggered_id == 'set-do-cart-btn' and do_cart_btn is not None:
+        out_map_data = orders_data.update_map_flags('Do cart', map_rowdata, sel_map_rowdata)
+        return out_map_data
+
+    if triggered_id == 'set-do-hplc-btn' and do_hplc_btn is not None:
+        out_map_data = orders_data.update_map_flags('Do hplc', map_rowdata, sel_map_rowdata)
+        return out_map_data
+
+    if triggered_id == 'set-do-paag-btn' and do_paag_btn is not None:
+        out_map_data = orders_data.update_map_flags('Do paag', map_rowdata, sel_map_rowdata)
+        return out_map_data
+
+    if triggered_id == 'set-do-sed-btn' and do_sed_btn is not None:
+        out_map_data = orders_data.update_map_flags('Do sed', map_rowdata, sel_map_rowdata)
+        return out_map_data
+
+    if triggered_id == 'set-do-click-btn' and do_click_btn is not None:
+        out_map_data = orders_data.update_map_flags('Do click', map_rowdata, sel_map_rowdata)
+        return out_map_data
+
+    if triggered_id == 'set-do-subl-btn' and do_subl_btn is not None:
+        out_map_data = orders_data.update_map_flags('Do subl', map_rowdata, sel_map_rowdata)
+        return out_map_data
+
+    if triggered_id == 'set-done-lcms-btn' and done_lcms_btn is not None:
+        out_map_data = orders_data.update_map_flags('Done LCMS', map_rowdata, sel_map_rowdata)
+        return out_map_data
+
+    if triggered_id == 'set-done-synth-btn' and done_synth_btn is not None:
+        out_map_data = orders_data.update_map_flags('Done synth', map_rowdata, sel_map_rowdata)
+        return out_map_data
+
+    if triggered_id == 'set-done-cart-btn' and done_cart_btn is not None:
+        out_map_data = orders_data.update_map_flags('Done cart', map_rowdata, sel_map_rowdata)
+        return out_map_data
+
+    if triggered_id == 'set-done-hplc-btn' and done_hplc_btn is not None:
+        out_map_data = orders_data.update_map_flags('Done hplc', map_rowdata, sel_map_rowdata)
+        return out_map_data
+
+    if triggered_id == 'set-done-paag-btn' and done_paag_btn is not None:
+        out_map_data = orders_data.update_map_flags('Done paag', map_rowdata, sel_map_rowdata)
+        return out_map_data
+
+    if triggered_id == 'set-done-sed-btn' and done_sed_btn is not None:
+        out_map_data = orders_data.update_map_flags('Done sed', map_rowdata, sel_map_rowdata)
+        return out_map_data
+
+    if triggered_id == 'set-done-click-btn' and done_click_btn is not None:
+        out_map_data = orders_data.update_map_flags('Done click', map_rowdata, sel_map_rowdata)
+        return out_map_data
+
+    if triggered_id == 'set-done-subl-btn' and done_subl_btn is not None:
+        out_map_data = orders_data.update_map_flags('Done subl', map_rowdata, sel_map_rowdata)
+        return out_map_data
+
+    if triggered_id == 'asm2000-update-order-status-btn' and update_order_status_btn is not None:
+        out_map_data = orders_data.update_orders_status(map_rowdata)
+        return out_map_data
 
     raise PreventUpdate
 

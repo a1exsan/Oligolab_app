@@ -32,6 +32,7 @@ class orders_db(api_db_interface):
         self.maps_db_name = 'asm2000_map_1.db'
         self.selected_status = 'finished'
         self.strftime_format = "%Y-%m-%d"
+        self.oligo_map_id = -1
 
     def get_orders_by_status(self, status):
         self.selected_status = status
@@ -147,6 +148,7 @@ class orders_db(api_db_interface):
             'Name': names_list,
             'Sequence': seq_list,
             'Purif type': purif_type,
+            'Support type': ['biocomma_1000' for i in range(1, len(names_list) + 1)],
             'Date': [datetime.now().date().strftime(self.strftime_format) for i in range(len(names_list))],
             'Synt number': list([1 for i in range(1, len(names_list) + 1)]),
             'Position': pos_list,
@@ -156,7 +158,25 @@ class orders_db(api_db_interface):
             'Status': ['in queue' for i in range(1, len(names_list) + 1)],
             'Dens, oe/ml': [0. for i in range(1, len(names_list) + 1)],
             'Vol, ml': [0.3 for i in range(1, len(names_list) + 1)],
-            'Purity, %': [50. for i in range(1, len(names_list) + 1)]
+            'Purity, %': [50. for i in range(1, len(names_list) + 1)],
+
+            'Do LCMS': [False for i in range(1, len(names_list) + 1)],
+            'Do synth': [False for i in range(1, len(names_list) + 1)],
+            'Do cart': [False for i in range(1, len(names_list) + 1)],
+            'Do hplc': [False for i in range(1, len(names_list) + 1)],
+            'Do paag': [False for i in range(1, len(names_list) + 1)],
+            'Do sed': [False for i in range(1, len(names_list) + 1)],
+            'Do click': [False for i in range(1, len(names_list) + 1)],
+            'Do subl': [False for i in range(1, len(names_list) + 1)],
+            'Done LCMS': [False for i in range(1, len(names_list) + 1)],
+            'Done synth': [False for i in range(1, len(names_list) + 1)],
+            'Done cart': [False for i in range(1, len(names_list) + 1)],
+            'Done hplc': [False for i in range(1, len(names_list) + 1)],
+            'Done paag': [False for i in range(1, len(names_list) + 1)],
+            'Done sed': [False for i in range(1, len(names_list) + 1)],
+            'Done click': [False for i in range(1, len(names_list) + 1)],
+            'Done subl': [False for i in range(1, len(names_list) + 1)],
+            'DONE': [False for i in range(1, len(names_list) + 1)]
         }
 
         #print(out_tab)
@@ -387,6 +407,24 @@ class orders_db(api_db_interface):
         else:
             return []
 
+    def get_oligomaps_data(self):
+        url = f'{self.api_db_url}/get_all_tab_data/{self.maps_db_name}/main_map'
+        ret = requests.get(url)
+        if ret.status_code == 200:
+            out = []
+            for r in ret.json():
+                d = {}
+                d['#'] = r[0]
+                d['Map name'] = r[2]
+                d['Synth number'] = r[3]
+                d['Date'] = r[1]
+                d['in progress'] = self.map_in_progress(r[4])
+                d['map data'] = pd.DataFrame(json.loads(r[4]))
+                out.append(d)
+            return out
+        else:
+            return []
+
     def load_oligomap(self, seldata):
         if len(seldata) > 0:
             url = f"{self.api_db_url}/get_keys_data/{self.maps_db_name}/main_map/id/{seldata[0]['#']}"
@@ -421,3 +459,109 @@ class orders_db(api_db_interface):
             return ret.status_code
         else:
             return 404
+
+    def search_maps_by_text(self, text):
+        db_content = self.get_oligomaps_data()
+        out = []
+        for row in db_content:
+            df = row['map data']
+
+            if 'Sequence' in list(df.keys()):
+                df_seq = df[df['Sequence'] == text]
+            if 'Name' in list(df.keys()):
+                df_name = df[df['Name'] == text]
+            try:
+                if 'Order id' in list(df.keys()):
+                    df_id = df[df['Order id'] == int(text)]
+            except:
+                df_id = pd.DataFrame()
+
+            if (df_seq.shape[0] > 0) or (df_name.shape[0] > 0) or (df_id.shape[0] > 0):
+
+                d = {}
+                d['#'] = row['#']
+                d['Map name'] = row['Map name']
+                d['Synth number'] = row['Synth number']
+                d['Date'] = row['Date']
+                d['in progress'] = row['in progress']
+                out.append(d)
+
+        return out
+
+    def  print_pass(self, rowData, filename):
+        out_tab = []
+        for row in rowData:
+            o = mmo.oligoNASequence(row['Sequence'])
+            d = {}
+            d['Position'] = row['Position']
+            d['Name'] = row['Name'] + f"  ({row['Position']})"
+            d['Sequence'] = row['Sequence']
+            d['Amount, oe'] = int(round(row['Dens, oe/ml'] * row['Vol, ml'], 0))
+            if o.getExtinction() > 0:
+                d['Amount, nmol'] = int(round(d['Amount, oe'] * 1e6 / o.getExtinction(), 0))
+            else:
+                d['Amount, nmol'] = 0.
+            d['Desolving'] = int(d['Amount, nmol'] * 10)
+
+            d['Purification'] = row['Purif type']
+            d['order ID'] = row['Order id']
+            d['Mass, Da'] = round(o.getAvgMass(), 2)
+            d['Extinction'] = o.getExtinction()
+
+            out_tab.append(d)
+        df = pd.DataFrame(out_tab)
+        df.to_csv(filename, sep=';')
+
+    def update_map_flags(self, type_flags, rowData, selrowData):
+
+        if len(selrowData) == 0:
+            index_list = list(pd.DataFrame(rowData)['#'])
+        else:
+            index_list = list(pd.DataFrame(selrowData)['#'])
+
+        out = []
+        for row in rowData:
+                d = row.copy()
+                if row['#'] in index_list:
+                    if type_flags in list(row.keys()):
+                        d[type_flags] = not d[type_flags]
+                    else:
+                        d[type_flags] = True
+                out.append(d)
+        return out
+
+    def get_order_status(self, row):
+        state_list = ['synth', 'sed', 'click', 'cart', 'hplc', 'paag', 'LCMS', 'subl']
+        flag_list = []
+        for state in state_list:
+            flag_list.append(row[f'Do {state}'] == row[f'Done {state}'])
+        status = 'synthesis'
+        for i in range(8):
+            if not flag_list[i]:
+                if i < 3:
+                    status = 'synthesis'
+                elif i > 2 and i < 6:
+                    status = 'purification'
+                elif i == 7:
+                    status = 'formulation'
+                return status
+            else:
+                if i == 7:
+                    status = 'finished'
+                    return status
+        return status
+
+
+    def update_orders_status(self, rowData):
+        if self.oligo_map_id >= -1:
+            out = []
+            for row in rowData:
+                out.append(row)
+                out[-1]['Status'] = self.get_order_status(row)
+                if out[-1]['Status'] == 'finished':
+                    out[-1]['DONE'] = True
+                else:
+                    out[-1]['DONE'] = False
+            return out
+        else:
+            return rowData
