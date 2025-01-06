@@ -6,6 +6,43 @@ import json
 from oligoMass import molmassOligo as mmo
 from collections import Counter
 
+class click_azide():
+
+    def __init__(self, oligos_sequence, amount_oe):
+        self.seq = oligos_sequence
+        self.amount = amount_oe
+        self.tab = {}
+        self.__rools_protocol()
+
+    def __react_volume(self):
+        o = mmo.oligoNASequence(self.seq)
+        self.amount_nmol = self.amount * 1e6 / o.getExtinction()
+        self.tab['amount nmol'] = round(self.amount_nmol, 2)
+        self.tab['sequence'] = self.seq
+        self.tab['amount oe'] = round(self.amount, 2)
+        if self.amount_nmol >= 1 and self.amount_nmol <= 20:
+            return 100
+        elif self.amount_nmol > 20 and self.amount_nmol <= 40:
+            return 200
+        elif self.amount_nmol > 40 and self.amount_nmol <= 80:
+            return 400
+        elif self.amount_nmol > 80 and self.amount_nmol <= 600:
+            return 600
+        else:
+            return 700
+
+    def __rools_protocol(self):
+        react_volume = self.__react_volume()
+        self.tab['react volume, ul'] = react_volume
+        self.tab['azide volume, ul'] = round(self.amount_nmol * 0.15, 0)
+        self.tab['Cu buffer volume, ul'] = round(react_volume * 0.67, 0)
+        self.tab['activator volume, ul'] = round(react_volume * 0.02, 0)
+        self.tab['water volume, ul'] = round(react_volume - self.tab['azide volume, ul'] -
+                                        self.tab['Cu buffer volume, ul'] - self.tab['activator volume, ul'], 0)
+
+    def __call__(self, *args, **kwargs):
+        return self.tab
+
 def get_IP_addr():
     ipdata = os.popen('ip -br a').read()
     ipdata = ipdata.split('\n')
@@ -176,7 +213,8 @@ class orders_db(api_db_interface):
             'Done sed': [False for i in range(1, len(names_list) + 1)],
             'Done click': [False for i in range(1, len(names_list) + 1)],
             'Done subl': [False for i in range(1, len(names_list) + 1)],
-            'DONE': [False for i in range(1, len(names_list) + 1)]
+            'DONE': [False for i in range(1, len(names_list) + 1)],
+            'Wasted': [False for i in range(1, len(names_list) + 1)]
         }
 
         #print(out_tab)
@@ -407,6 +445,20 @@ class orders_db(api_db_interface):
         else:
             return []
 
+    def get_actual_maps(self):
+        total_maps = self.get_oligomaps_data()
+        if len(total_maps) > 0:
+            out = []
+            for row in total_maps:
+                df = row['map data']
+                if df.shape[0] > 0:
+                    if df[(df['DONE'] == True)|(df['Wasted'] == True)].shape[0] != df.shape[0]:
+                        out.append(row)
+            return out
+        else:
+            return []
+
+
     def get_oligomaps_data(self):
         url = f'{self.api_db_url}/get_all_tab_data/{self.maps_db_name}/main_map'
         ret = requests.get(url)
@@ -552,16 +604,88 @@ class orders_db(api_db_interface):
         return status
 
 
-    def update_orders_status(self, rowData):
-        if self.oligo_map_id >= -1:
+    def update_oligomap_status(self, rowData, accordrowdata):
+        if self.oligo_map_id > -1:
             out = []
             for row in rowData:
                 out.append(row)
-                out[-1]['Status'] = self.get_order_status(row)
+                if not out[-1]['DONE']:
+                    out[-1]['Status'] = self.get_order_status(row)
                 if out[-1]['Status'] == 'finished':
                     out[-1]['DONE'] = True
                 else:
                     out[-1]['DONE'] = False
+
+            url = f"{self.api_db_url}/update_data/{self.maps_db_name}/main_map/{self.oligo_map_id}"
+            r = requests.put(url,
+                              json=json.dumps({
+                                  'name_list': ['map_tab', 'accord_tab'],
+                                  'value_list': [
+                                      json.dumps(out),
+                                      json.dumps(accordrowdata)
+                                  ]
+                              })
+                             )
+            print(f'update status {self.oligo_map_id}: {r.status_code}')
             return out
         else:
             return rowData
+
+    def update_order_status(self, rowData):
+        if len(rowData) > 0:
+            for row in rowData:
+                order_id = row['Order id']
+                order_date = row['Date']
+                order_status = row['Status']
+
+                url = f"{self.api_db_url}/update_data/{self.db_name}/orders_tab/{order_id}"
+                r = requests.put(url,
+                    json=json.dumps({
+                        'name_list': ['output_date', 'status'],
+                        'value_list': [order_date, order_status]
+                    })
+                )
+
+    def culc_click(self, selrowdata):
+        out = []
+        for row in selrowdata:
+            seq = row['Sequence']
+            amount = row['Dens, oe/ml'] * row['Vol, ml']
+            d = click_azide(seq, amount)()
+            d['Order id'] = row['Order id']
+            d['Position'] = row['Position']
+            d['Dye'] = row['Purif type']
+            out.append(d)
+        return out
+
+
+def test1():
+    orders_data = orders_db(db_IP='127.0.0.1', db_port='8012')
+    rowdata = orders_data.get_oligomaps_data()
+
+    for row in rowdata:
+        map_id = row['#']
+        df = row['map data']
+        if 'Status' not in list(df.keys()):
+            df['Status'] = ['finished' for i in range(df.shape[0])]
+
+        df['DONE'] = [False for i in range(df.shape[0])]
+        df['Wasted'] = [False for i in range(df.shape[0])]
+        df.loc[df['Status'] == 'finished', 'DONE'] = True
+        df.loc[df['Status'] != 'finished', 'Wasted'] = True
+
+        url = f"{orders_data.api_db_url}/update_data/{orders_data.maps_db_name}/main_map/{map_id}"
+        r = requests.put(url,
+                         json=json.dumps({
+                             'name_list': ['map_tab'],
+                             'value_list': [
+                                 json.dumps(df.to_dict('records'))
+                             ]
+                         })
+                         )
+
+
+
+if __name__ == '__main__':
+    #test1()
+    pass

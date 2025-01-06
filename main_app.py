@@ -109,13 +109,14 @@ def update_orders_db_tab(orders_db_data, orders_sel_rowdata, invoces_rowdata, in
     Input(component_id='asm2000-search-maps-btn', component_property='n_clicks'),
     Input(component_id='asm2000-search-field', component_property='value'),
     Input(component_id='asm2000-print_pass-btn', component_property='n_clicks'),
+    Input(component_id='asm2000-update-actual-map', component_property='n_clicks'),
     prevent_initial_call=True
 )
 def update_asm2000_map(map_rowdata, sel_map_rowdata, accord_rowdata, map_list_rowdata, sel_map_list_rowdata,
                        update_map_btn, rename_pos_btn, change_alk_btn,
                        gen_map_to_csv_btn, update_maps_btn, load_map_btn,
                        man_name_input, synth_number_input, start_date_select, save_map_btn, delete_map_btn,
-                       search_map_btn, search_map_input, print_passport_btn):
+                       search_map_btn, search_map_input, print_passport_btn, update_actual_map_btn):
 
     triggered_id = ctx.triggered_id
 
@@ -138,6 +139,10 @@ def update_asm2000_map(map_rowdata, sel_map_rowdata, accord_rowdata, map_list_ro
 
     if triggered_id == 'asm2000-update-map' and update_maps_btn is not None:
         map_list = orders_data.get_oligomaps()
+        return map_rowdata, accord_rowdata, map_list, man_name_input, synth_number_input
+
+    if triggered_id == 'asm2000-update-actual-map' and update_actual_map_btn is not None:
+        map_list = orders_data.get_actual_maps()
         return map_rowdata, accord_rowdata, map_list, man_name_input, synth_number_input
 
     if triggered_id == 'asm2000-load-map' and load_map_btn is not None:
@@ -174,6 +179,7 @@ def update_asm2000_map(map_rowdata, sel_map_rowdata, accord_rowdata, map_list_ro
 
     Input(component_id='asm2000-map-tab', component_property='rowData'),
     Input(component_id='asm2000-map-tab', component_property='selectedRows'),
+    Input(component_id='asm2000-accord-tab', component_property='rowData'),
     Input(component_id='set-do-lcms-btn', component_property='n_clicks'),
     Input(component_id='set-do-synth-btn', component_property='n_clicks'),
     Input(component_id='set-do-cart-btn', component_property='n_clicks'),
@@ -190,14 +196,17 @@ def update_asm2000_map(map_rowdata, sel_map_rowdata, accord_rowdata, map_list_ro
     Input(component_id='set-done-sed-btn', component_property='n_clicks'),
     Input(component_id='set-done-click-btn', component_property='n_clicks'),
     Input(component_id='set-done-subl-btn', component_property='n_clicks'),
+    Input(component_id='asm2000-update-oligomap-status-btn', component_property='n_clicks'),
     Input(component_id='asm2000-update-order-status-btn', component_property='n_clicks'),
+    Input(component_id='asm2000-wasted-status-btn', component_property='n_clicks'),
     prevent_initial_call=True
 )
-def update_flags_tab(map_rowdata, sel_map_rowdata,
+def update_flags_tab(map_rowdata, sel_map_rowdata, accord_rowdata,
                      do_lcms_btn, do_synth_btn, do_cart_btn, do_hplc_btn, do_paag_btn, do_sed_btn, do_click_btn,
                      do_subl_btn,
                      done_lcms_btn, done_synth_btn, done_cart_btn, done_hplc_btn, done_paag_btn, done_sed_btn,
-                     done_click_btn, done_subl_btn, update_order_status_btn):
+                     done_click_btn, done_subl_btn, update_omap_status_btn, update_order_status_btn,
+                     wasted_sel_btn):
     triggered_id = ctx.triggered_id
 
     if triggered_id == 'set-do-lcms-btn' and do_lcms_btn is not None:
@@ -265,8 +274,33 @@ def update_flags_tab(map_rowdata, sel_map_rowdata,
         return out_map_data
 
     if triggered_id == 'asm2000-update-order-status-btn' and update_order_status_btn is not None:
-        out_map_data = orders_data.update_orders_status(map_rowdata)
+        orders_data.update_order_status(map_rowdata)
+        return map_rowdata
+
+    if triggered_id == 'asm2000-update-oligomap-status-btn' and update_omap_status_btn is not None:
+        out_map_data = orders_data.update_oligomap_status(map_rowdata, accord_rowdata)
         return out_map_data
+
+    if triggered_id == 'asm2000-wasted-status-btn' and wasted_sel_btn is not None:
+        out_map_data = orders_data.update_map_flags('Wasted', map_rowdata, sel_map_rowdata)
+        return out_map_data
+
+    raise PreventUpdate
+
+@callback(
+    Output(component_id='asm2000-click-tab', component_property='rowData', allow_duplicate=True),
+
+    Input(component_id='asm2000-click-tab', component_property='rowData'),
+    Input(component_id='asm2000-map-tab', component_property='selectedRows'),
+    Input(component_id='asm2000-culc_click-btn', component_property='n_clicks'),
+    prevent_initial_call=True
+)
+def update_click_chem(click_rowdata, sel_map_rowdata, click_btn):
+    triggered_id = ctx.triggered_id
+
+    if triggered_id == 'asm2000-culc_click-btn' and click_btn is not None:
+        culc_click = orders_data.culc_click(sel_map_rowdata)
+        return culc_click
 
     raise PreventUpdate
 

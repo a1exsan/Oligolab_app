@@ -46,6 +46,7 @@ class asm2000_layout():
                 'Do subl': [True],
                 'Done subl': [False],
                 'DONE': [False],
+                'Wasted': [False],
             }
         )
 
@@ -88,7 +89,8 @@ class asm2000_layout():
             {"field": "Done click", 'editable': True},
             {"field": "Do subl", 'editable': True},
             {"field": "Done subl", 'editable': True},
-            {"field": "DONE", 'editable': False}
+            {"field": "DONE", 'editable': False},
+            {"field": "Wasted", 'editable': True}
         ]
 
         self.map_tab_ = dag.AgGrid(
@@ -152,7 +154,9 @@ class asm2000_layout():
                                           #             id='asm2000-status-order-selector'),
                                           #dbc.Button("Set status", outline=True, color="secondary",
                                           #           id='asm2000-set-status-btn'),
-                                          dbc.Button("update order status", outline=False, color="primary",
+                                          dbc.Button("update ologomap status", outline=False, color="primary",
+                                                     id='asm2000-update-oligomap-status-btn', className="me-1", size='lg'),
+                                          dbc.Button("update order status", outline=False, color="success",
                                                      id='asm2000-update-order-status-btn', className="me-1", size='lg'),
                                       ]),
                                       dbc.Row([
@@ -193,6 +197,12 @@ class asm2000_layout():
                                            id='set-done-click-btn', className="me-1", size='lg'),
                                 dbc.Button("Done subl", outline=True, color="warning",
                                            id='set-done-subl-btn', className="me-1", size='lg'),
+                            ])
+                        ]),
+                        dbc.Row([
+                            dbc.Col([
+                                dbc.Button("Wasted selection", outline=False, color="danger",
+                                           id='asm2000-wasted-status-btn', className="me-1", size='sm')
                             ])
                         ])
                                   ]))
@@ -293,6 +303,7 @@ class asm2000_layout():
             {
                 'Order id': [''],
                 'Position': [''],
+                'Dye': [''],
                 'amount nmol': [''],
                 'sequence': [''],
                 'amount oe': [''],
@@ -307,6 +318,7 @@ class asm2000_layout():
         columnDefs = [
             {"field": "Order id"},
             {"field": "Position"},
+            {"field": "Dye"},
             {"field": "amount nmol"},
             {"field": "sequence"},
             {"field": "amount oe"},
@@ -340,6 +352,8 @@ class asm2000_layout():
                 dbc.Col([
                     dbc.Button("Update map", outline=True, color="secondary",
                                id='asm2000-update-map'),
+                    dbc.Button("Update actual", outline=True, color="secondary",
+                               id='asm2000-update-actual-map'),
                     dbc.Button("Load map", outline=True, color="secondary",
                                id='asm2000-load-map'),
                     dcc.Input(placeholder='Enter name, seq or ID', id='asm2000-search-field', type="text",
