@@ -5,6 +5,7 @@ from datetime import datetime
 import json
 from oligoMass import molmassOligo as mmo
 from collections import Counter
+import price_data
 
 class click_azide():
 
@@ -663,6 +664,104 @@ class orders_db(api_db_interface):
             out.append(d)
         return out
 
+    def compute_price(self, tab, price_tab):
+        self.df_tab = pd.DataFrame(tab)
+        self.price_tab = pd.DataFrame(price_tab)
+
+        self.total_price = 0
+
+        df = self.df_tab[self.df_tab['Sequence'] != '']
+
+        len_list = []
+        for seq in df['Sequence']:
+            len_list.append(mmo.oligoNASequence(seq).size())
+        df['Lenght'] = len_list
+
+        self.df_tab.loc[self.df_tab['Sequence'] != '', 'Lenght'] = len_list
+
+        sum_ = df['Lenght'].sum()
+        price_ = self.price_tab[self.price_tab['Unit'] == 'simple N']['Price, RUB'].max()
+
+        self.price_tab.loc[self.price_tab['Unit'] == 'simple N', 'Number'] = sum_
+        self.price_tab.loc[self.price_tab['Unit'] == 'simple N', 'Sum, RUB'] = sum_ * float(price_)
+
+        lbl_list = list(self.price_tab[self.price_tab['Unit'] != 'simple N']['Unit'])
+        for lbl in lbl_list:
+            sum_5 = df[df["5'-end"] == lbl].shape[0]
+            price_5 = self.price_tab[self.price_tab['Unit'] == lbl]['Price, RUB'].max()
+
+            sum_3 = df[df["3'-end"] == lbl].shape[0]
+            price_3 = self.price_tab[self.price_tab['Unit'] == lbl]['Price, RUB'].max()
+
+            sum_purif = df[df["Purification"] == lbl].shape[0]
+            price_purif = self.price_tab[self.price_tab['Unit'] == lbl]['Price, RUB'].max()
+
+            if sum_5 > 0:
+                self.price_tab.loc[self.price_tab['Unit'] == lbl, 'Number'] = sum_5
+                self.price_tab.loc[self.price_tab['Unit'] == lbl, 'Sum, RUB'] = sum_5 * float(price_5)
+
+            if sum_3 > 0:
+                self.price_tab.loc[self.price_tab['Unit'] == lbl, 'Number'] = sum_3
+                self.price_tab.loc[self.price_tab['Unit'] == lbl, 'Sum, RUB'] = sum_3 * float(price_3)
+
+            if sum_purif > 0:
+                self.price_tab.loc[self.price_tab['Unit'] == lbl, 'Number'] = sum_purif
+                self.price_tab.loc[self.price_tab['Unit'] == lbl, 'Sum, RUB'] = sum_purif * float(price_purif)
+
+        self.total_price = self.price_tab['Sum, RUB'].sum()
+        return self.df_tab.to_dict('records'), self.price_tab.to_dict('records'), self.total_price
+
+    def add_invoce_to_base(self, invoce, client, data):
+        url = f"{self.api_db_url}/insert_data/{self.db_name}/invoice_tab"
+        r = requests.post(url, json=json.dumps([invoce, client]))
+
+        url = f"{self.api_db_url}/get_all_tab_data/{self.db_name}/invoice_tab"
+        r = requests.get(url)
+        id_list = [row[0] for row in r.json()]
+        invoce_id = max(id_list)
+
+        out_dataframe = pd.DataFrame(data)
+        out_dataframe = out_dataframe[out_dataframe['Sequence'] != '']
+
+        out_dataframe['order id'] = invoce_id
+        out_dataframe['client id'] = invoce_id
+        out_dataframe['input date'] = datetime.now().strftime('%m.%d.%Y')
+        out_dataframe['output date'] = datetime.now().strftime('%m.%d.%Y')
+        out_dataframe['status'] = 'in queue'
+        out_dataframe['Sequence'] = out_dataframe['Sequence'].str.upper()
+        out_dataframe.loc[out_dataframe["5'-end"] == '', "5'-end"] = 'none'
+        out_dataframe.loc[out_dataframe["3'-end"] == '', "3'-end"] = 'none'
+
+        len_list = []
+        for seq in out_dataframe['Sequence']:
+            len_list.append(mmo.oligoNASequence(seq).size())
+
+        out_dataframe['lenght'] = len_list
+
+        for (client_id, order_id, input_date, output_date, status,
+             sequence, end5, end3, amount, purification, lenght, name) in zip(
+            out_dataframe['client id'],
+            out_dataframe['order id'],
+            out_dataframe['input date'],
+            out_dataframe['output date'],
+            out_dataframe['status'],
+            out_dataframe['Sequence'],
+            out_dataframe["5'-end"],
+            out_dataframe["3'-end"],
+            out_dataframe['Amount, o.e.'],
+            out_dataframe['Purification'],
+            out_dataframe['lenght'],
+            out_dataframe['Name'],
+        ):
+            url = f"{self.api_db_url}/insert_data/{self.db_name}/orders_tab"
+            r = requests.post(url, json=json.dumps([client_id, order_id, input_date, output_date,
+                               status, name, sequence, end5, end3, amount, purification, lenght]))
+
+    def get_price_tab(self, scale):
+        tab = price_data.get_price_tab(scale)
+        return tab.to_dict('records')
+
+
 
 def test1():
     orders_data = orders_db(db_IP='127.0.0.1', db_port='8012')
@@ -688,6 +787,7 @@ def test1():
                              ]
                          })
                          )
+
 
 
 

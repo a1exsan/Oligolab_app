@@ -304,6 +304,41 @@ def update_click_chem(click_rowdata, sel_map_rowdata, click_btn):
 
     raise PreventUpdate
 
+@callback(
+    Output(component_id='orders-tab', component_property='data', allow_duplicate=True),
+    Output(component_id='price-orders-tab', component_property='data', allow_duplicate=True),
+    Output(component_id='total-price', component_property='value', allow_duplicate=True),
+
+    Input(component_id='orders-tab', component_property='data'),
+    Input(component_id='price-orders-tab', component_property='data'),
+    Input(component_id='total-price', component_property='value'),
+    Input(component_id='update-orders', component_property='n_clicks'),
+
+    Input(component_id='add2base-orders', component_property='n_clicks'),
+    Input(component_id='invoce-numbet-text', component_property='value'),
+    Input(component_id='client-name-text', component_property='value'),
+    Input(component_id='synth-scale-selector', component_property='value'),
+
+    prevent_initial_call=True
+)
+def update_orders_price_tab(orders_tab, price_tab, total_price_value, update_orders_btn,
+                            add_to_base_btn, invoce_input, client_input, select_scale):
+    triggered_id = ctx.triggered_id
+
+    if triggered_id == 'update-orders' and update_orders_btn is not None:
+        out_orders_tab, out_price_tab, total_price = orders_data.compute_price(orders_tab, price_tab)
+        return out_orders_tab, out_price_tab, total_price
+
+    if triggered_id == 'add2base-orders' and add_to_base_btn is not None:
+        orders_data.add_invoce_to_base(invoce_input, client_input, orders_tab)
+        return orders_tab, price_tab, total_price_value
+
+    if triggered_id == 'synth-scale-selector' and select_scale is not None:
+        out_price_tab = orders_data.get_price_tab(select_scale)
+        return orders_tab, out_price_tab, total_price_value
+
+    raise PreventUpdate
+
 
 if __name__ == '__main__':
     app.run_server(debug=True, port=8800, host='0.0.0.0')
