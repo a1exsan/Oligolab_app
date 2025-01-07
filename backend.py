@@ -453,11 +453,16 @@ class orders_db(api_db_interface):
                 df = row['map data']
                 if df.shape[0] > 0:
                     if df[(df['DONE'] == True)|(df['Wasted'] == True)].shape[0] != df.shape[0]:
-                        out.append(row)
+                        d = {}
+                        d['#'] = row['#']
+                        d['Map name'] = row['Map name']
+                        d['Synth number'] = row['Synth number']
+                        d['Date'] = row['Date']
+                        d['in progress'] = row['in progress']
+                        out.append(d)
             return out
         else:
             return []
-
 
     def get_oligomaps_data(self):
         url = f'{self.api_db_url}/get_all_tab_data/{self.maps_db_name}/main_map'
@@ -609,8 +614,8 @@ class orders_db(api_db_interface):
             out = []
             for row in rowData:
                 out.append(row)
-                if not out[-1]['DONE']:
-                    out[-1]['Status'] = self.get_order_status(row)
+                #if not out[-1]['DONE']:
+                out[-1]['Status'] = self.get_order_status(row)
                 if out[-1]['Status'] == 'finished':
                     out[-1]['DONE'] = True
                 else:

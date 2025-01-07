@@ -152,12 +152,12 @@ def update_asm2000_map(map_rowdata, sel_map_rowdata, accord_rowdata, map_list_ro
     if triggered_id == 'asm2000-save-map-btn' and save_map_btn is not None:
         status_code = orders_data.insert_map_to_base(man_name_input, synth_number_input, start_date_select,
                                                      map_rowdata, accord_rowdata)
-        print(f'save map {man_name_input} status code: ', status_code)
+        #print(f'save map {man_name_input} status code: ', status_code)
         return map_rowdata, accord_rowdata, map_list_rowdata, man_name_input, synth_number_input
 
     if triggered_id == 'asm2000-delete-map' and delete_map_btn is not None:
         status_code = orders_data.delete_map_from_base(sel_map_list_rowdata)
-        print(f'delete map {man_name_input} status code: ', status_code)
+        #print(f'delete map {man_name_input} status code: ', status_code)
         return map_rowdata, accord_rowdata, map_list_rowdata, man_name_input, synth_number_input
 
     if triggered_id == 'asm2000-search-maps-btn' and search_map_btn is not None:
