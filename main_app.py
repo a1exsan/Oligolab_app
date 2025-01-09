@@ -5,6 +5,7 @@ from dash.exceptions import PreventUpdate
 from flask import request
 
 import backend
+import backend_stock
 
 import frontend_layout as frontend
 
@@ -16,6 +17,9 @@ frontend_obj.IP_addres = backend.get_IP_addr()
 frontend_obj.make_layout()
 
 orders_data = backend.orders_db(db_IP='127.0.0.1', db_port='8012')
+#orders_data = backend.orders_db(db_IP='192.168.17.250', db_port='8012')
+#stock_data = backend_stock.stock_manager(db_IP='192.168.17.250', db_port='8012')
+stock_data = backend_stock.stock_manager(db_IP='127.0.0.1', db_port='8012')
 
 app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP], suppress_callback_exceptions=True)
 
@@ -336,6 +340,63 @@ def update_orders_price_tab(orders_tab, price_tab, total_price_value, update_ord
     if triggered_id == 'synth-scale-selector' and select_scale is not None:
         out_price_tab = orders_data.get_price_tab(select_scale)
         return orders_tab, out_price_tab, total_price_value
+
+    raise PreventUpdate
+
+
+@callback(
+    Output(component_id='main-stock-tab-database', component_property='rowData', allow_duplicate=True),
+    Output(component_id='input-stock-tab-database', component_property='rowData', allow_duplicate=True),
+    Output(component_id='output-stock-tab-database', component_property='rowData', allow_duplicate=True),
+    Output(component_id='user-stock-tab-database', component_property='rowData', allow_duplicate=True),
+
+    Input(component_id='main-stock-tab-database', component_property='rowData'),
+    Input(component_id='main-stock-tab-database', component_property='selectedRows'),
+    Input(component_id='input-stock-tab-database', component_property='rowData'),
+    Input(component_id='output-stock-tab-database', component_property='rowData'),
+    Input(component_id='user-stock-tab-database', component_property='rowData'),
+
+    Input(component_id='show-stock-data-btn', component_property='n_clicks'),
+    Input(component_id='update-stock-data-btn', component_property='n_clicks'),
+    Input(component_id='add-row-stock-data-btn', component_property='n_clicks'),
+    Input(component_id='delete-row-stock-data-btn', component_property='n_clicks'),
+    Input(component_id='substruct_from-stock-data-btn', component_property='n_clicks'),
+    Input(component_id='add-to-stock-data-btn', component_property='n_clicks'),
+
+    prevent_initial_call=True
+)
+def update_stock_tab(stock_rowdata, sel_stock_rowdata, input_rowdata, output_rowdata, users_rowdata,
+                     show_stock_btn, update_stock_btn, add_row_stock_btn, delete_row_stock_btn,
+                     substruct_btn, adjust_btn):
+    triggered_id = ctx.triggered_id
+
+    if triggered_id == 'show-stock-data-btn' and show_stock_btn is not None:
+        out_stock_rowdata, out_output_rowdata, out_input_rowdata, out_users_rowdata = stock_data.show_main_tab_data()
+        return out_stock_rowdata, out_output_rowdata, out_input_rowdata, out_users_rowdata
+
+    if triggered_id == 'update-stock-data-btn' and update_stock_btn is not None:
+        out_stock_rowdata, out_output_rowdata, out_input_rowdata, out_users_rowdata = (
+            stock_data.update_tab(stock_rowdata))
+        return out_stock_rowdata, out_output_rowdata, out_input_rowdata, out_users_rowdata
+
+    if triggered_id == 'add-row-stock-data-btn' and add_row_stock_btn is not None:
+        out_stock_rowdata, out_output_rowdata, out_input_rowdata, out_users_rowdata = stock_data.add_row()
+        return out_stock_rowdata, out_output_rowdata, out_input_rowdata, out_users_rowdata
+
+    if triggered_id == 'delete-row-stock-data-btn' and delete_row_stock_btn is not None:
+        out_stock_rowdata, out_output_rowdata, out_input_rowdata, out_users_rowdata = (
+            stock_data.delete_rows(sel_stock_rowdata))
+        return out_stock_rowdata, out_output_rowdata, out_input_rowdata, out_users_rowdata
+
+    if triggered_id == 'substruct_from-stock-data-btn' and substruct_btn is not None:
+        out_stock_rowdata, out_output_rowdata, out_input_rowdata, out_users_rowdata = (
+            stock_data.substruct_from_stock('1848570232', 'output_tab', stock_rowdata))
+        return out_stock_rowdata, out_output_rowdata, out_input_rowdata, out_users_rowdata
+
+    if triggered_id == 'add-to-stock-data-btn' and substruct_btn is not None:
+        out_stock_rowdata, out_output_rowdata, out_input_rowdata, out_users_rowdata = (
+            stock_data.substruct_from_stock('1848570232', 'input_tab', stock_rowdata))
+        return out_stock_rowdata, out_output_rowdata, out_input_rowdata, out_users_rowdata
 
     raise PreventUpdate
 
