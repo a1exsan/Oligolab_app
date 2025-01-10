@@ -40,6 +40,8 @@ class oligo_syn_form_layout():
             dcc.Location(id='url', refresh=False),
             dbc.Row(dbc.Col(dbc.Alert(f"User: {self.user_name}"
                                       f"     IP adress: {self.IP_addres}"), width='100%')),
+            dbc.Row(dbc.Col([
+                dbc.Input(placeholder='Enter pincode', type='text', id='pincode-input')])),
             dbc.Row([
                 dbc.Col(self.tabs)
             ])

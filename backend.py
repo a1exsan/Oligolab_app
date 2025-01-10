@@ -61,6 +61,10 @@ class api_db_interface():
         self.db_IP = db_IP
         self.db_port = db_port
         self.api_db_url = f'http://{self.db_IP}:{self.db_port}'
+        self.pincode = ''
+
+    def headers(self):
+        return {'Authorization': f'Pincode {self.pincode}'}
 
 class orders_db(api_db_interface):
     def __init__(self, db_IP, db_port):
@@ -75,12 +79,12 @@ class orders_db(api_db_interface):
     def get_orders_by_status(self, status):
         self.selected_status = status
         url = f'{self.api_db_url}/get_orders_by_status/{self.db_name}/{status}'
-        ret = requests.get(url)
+        ret = requests.get(url, headers=self.headers())
         return ret.json()
 
     def get_all_invoces(self):
         url = f'{self.api_db_url}/get_all_invoces/{self.db_name}'
-        ret = requests.get(url)
+        ret = requests.get(url, headers=self.headers())
         return ret.json()
 
     def get_in_progress_invoces(self):
@@ -114,7 +118,7 @@ class orders_db(api_db_interface):
             out = []
             url = f"{self.api_db_url}/get_keys_data/{self.db_name}/orders_tab/order_id/{row['#']}"
             #orders_list = self.uny_db.get_all_tab_data_by_keys('orders_tab', 'order_id', row['#'])
-            orders_list = requests.get(url)
+            orders_list = requests.get(url, headers=self.headers())
             for r in orders_list.json():
                 d = {}
                 d['#'] = r[0]
@@ -247,7 +251,8 @@ class orders_db(api_db_interface):
                              json=json.dumps({'name_list':['input_date', 'output_date', 'status', 'name',
                                                            'sequence', 'end5', 'end3', 'amount', 'purification'],
                                               'value_list':[input_date, output_date, status, name,
-                                                            sequence, end5, end3, amount, purification]}))
+                                                            sequence, end5, end3, amount, purification]}),
+                            headers=self.headers())
             #print(id, name, sequence, r.status_code)
             #self.db.update_orders_tab(id, input_date, output_date, status, name,
             #                          sequence, end5, end3, amount, purification)
@@ -430,8 +435,10 @@ class orders_db(api_db_interface):
             return 100
 
     def get_oligomaps(self):
+
         url = f'{self.api_db_url}/get_all_tab_data/{self.maps_db_name}/main_map'
-        ret = requests.get(url)
+        ret = requests.get(url, headers=self.headers())
+
         if ret.status_code == 200:
             out = []
             for r in ret.json():
@@ -467,7 +474,7 @@ class orders_db(api_db_interface):
 
     def get_oligomaps_data(self):
         url = f'{self.api_db_url}/get_all_tab_data/{self.maps_db_name}/main_map'
-        ret = requests.get(url)
+        ret = requests.get(url, headers=self.headers())
         if ret.status_code == 200:
             out = []
             for r in ret.json():
@@ -486,7 +493,7 @@ class orders_db(api_db_interface):
     def load_oligomap(self, seldata):
         if len(seldata) > 0:
             url = f"{self.api_db_url}/get_keys_data/{self.maps_db_name}/main_map/id/{seldata[0]['#']}"
-            ret = requests.get(url)
+            ret = requests.get(url, headers=self.headers())
             if ret.status_code == 200:
                 self.oligo_map_id = seldata[0]['#']
                 meta = ret.json()
@@ -504,7 +511,7 @@ class orders_db(api_db_interface):
             r = requests.post(url,
                               json=json.dumps([synth_date, name, synth_number,
                                                json.dumps(rowData),
-                                               json.dumps(accordData)]))
+                                               json.dumps(accordData)]), headers=self.headers())
             return r.status_code
         else:
             return 404
@@ -513,7 +520,7 @@ class orders_db(api_db_interface):
         if len(seldata) > 0:
             self.oligo_map_id = -1
             url = f"{self.api_db_url}/delete_data/{self.maps_db_name}/main_map/{seldata[0]['#']}"
-            ret = requests.delete(url)
+            ret = requests.delete(url, headers=self.headers())
             return ret.status_code
         else:
             return 404
@@ -631,7 +638,7 @@ class orders_db(api_db_interface):
                                       json.dumps(accordrowdata)
                                   ]
                               })
-                             )
+                             , headers=self.headers())
             print(f'update status {self.oligo_map_id}: {r.status_code}')
             return out
         else:
@@ -650,7 +657,7 @@ class orders_db(api_db_interface):
                         'name_list': ['output_date', 'status'],
                         'value_list': [order_date, order_status]
                     })
-                )
+                , headers=self.headers())
 
     def culc_click(self, selrowdata):
         out = []
@@ -713,10 +720,10 @@ class orders_db(api_db_interface):
 
     def add_invoce_to_base(self, invoce, client, data):
         url = f"{self.api_db_url}/insert_data/{self.db_name}/invoice_tab"
-        r = requests.post(url, json=json.dumps([invoce, client]))
+        r = requests.post(url, json=json.dumps([invoce, client]), headers=self.headers())
 
         url = f"{self.api_db_url}/get_all_tab_data/{self.db_name}/invoice_tab"
-        r = requests.get(url)
+        r = requests.get(url, headers=self.headers())
         id_list = [row[0] for row in r.json()]
         invoce_id = max(id_list)
 
@@ -755,7 +762,8 @@ class orders_db(api_db_interface):
         ):
             url = f"{self.api_db_url}/insert_data/{self.db_name}/orders_tab"
             r = requests.post(url, json=json.dumps([client_id, order_id, input_date, output_date,
-                               status, name, sequence, end5, end3, amount, purification, lenght]))
+                               status, name, sequence, end5, end3, amount, purification, lenght]),
+                              headers=self.headers())
 
     def get_price_tab(self, scale):
         tab = price_data.get_price_tab(scale)
@@ -786,7 +794,7 @@ def test1():
                                  json.dumps(df.to_dict('records'))
                              ]
                          })
-                         )
+                         , headers={'Authorization': f'Pincode {orders_data.pincode}'})
 
 
 

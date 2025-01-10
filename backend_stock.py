@@ -14,10 +14,9 @@ class stock_manager(backend.api_db_interface):
         self.strftime_format = "%Y-%m-%d"
         self.time_format = "%H:%M:%S"
 
-
     def get_remaining_stock(self, unicode):
         url = f"{self.api_db_url}/get_remaining_stock/{self.db_name}/{unicode}"
-        input_ret = requests.get(url)
+        input_ret = requests.get(url, headers=self.headers())
         try:
             return input_ret.json()
         except:
@@ -26,7 +25,7 @@ class stock_manager(backend.api_db_interface):
 
     def get_all_data_in_tab(self, tab_name):
         url = f'{self.api_db_url}/get_all_tab_data/{self.db_name}/{tab_name}'
-        ret = requests.get(url)
+        ret = requests.get(url, headers=self.headers())
         return ret.json()
 
 
@@ -151,7 +150,7 @@ class stock_manager(backend.api_db_interface):
                                            row['units'], row['Description'],
                                            row['low limit']]
                 }
-            ))
+            ), headers=self.headers())
         return self.show_main_tab_data()
 
     def add_row(self):
@@ -162,13 +161,13 @@ class stock_manager(backend.api_db_interface):
                                   'new', 'default', 'шт', 'default', '1'
                               ]
                           )
-                          )
+                          , headers=self.headers())
         return self.show_main_tab_data()
 
     def delete_rows(self, selrowdata):
         for row in selrowdata:
             url = f"{self.api_db_url}/delete_data/{self.db_name}/total_tab/{row['#']}"
-            r = requests.delete(url)
+            r = requests.delete(url, headers=self.headers())
         return self.show_main_tab_data()
 
     def substruct_from_stock(self, user_id, tab_name, rowdata):
@@ -184,5 +183,5 @@ class stock_manager(backend.api_db_interface):
                         user_id
                         ]
                     )
-                )
+                , headers=self.headers())
         return self.show_main_tab_data()

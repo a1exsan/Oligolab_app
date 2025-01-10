@@ -32,6 +32,7 @@ app.layout = frontend_obj.layout
     Output(component_id='invoce-tab-database', component_property='rowData', allow_duplicate=True),
     Output(component_id='asm2000-map-tab', component_property='rowData', allow_duplicate=True),
 
+    Input(component_id='pincode-input', component_property='value'),
     Input(component_id='orders-tab-database', component_property='rowData'),
     Input(component_id='orders-tab-database', component_property='selectedRows'),
     Input(component_id='invoce-tab-database', component_property='rowData'),
@@ -48,12 +49,14 @@ app.layout = frontend_obj.layout
     Input(component_id='update-outdate-btn', component_property='n_clicks'),
     prevent_initial_call=True
 )
-def update_orders_db_tab(orders_db_data, orders_sel_rowdata, invoces_rowdata, invoces_selRows, asm2000_map_rowdata,
+def update_orders_db_tab(pincode, orders_db_data, orders_sel_rowdata, invoces_rowdata, invoces_selRows, asm2000_map_rowdata,
                          status_selector, show_by_status_btn,
                          show_all_invoces_btn, show_in_progress_btn, shoe_invoce_content_btn, sel_to_asm_2000_btn,
                          numper_of_copies, show_in_queue_btn, update_orders_tab_btn):
 
     triggered_id = ctx.triggered_id
+
+    orders_data.pincode = pincode
 
     if triggered_id == 'show-orders-by-status-btn' and show_by_status_btn is not None:
         orders_tab = orders_data.get_orders_by_status(status_selector)
@@ -94,6 +97,7 @@ def update_orders_db_tab(orders_db_data, orders_sel_rowdata, invoces_rowdata, in
     Output(component_id='asm2000-map-name', component_property='value', allow_duplicate=True),
     Output(component_id='asm2000-map-synt_number', component_property='value', allow_duplicate=True),
 
+    Input(component_id='pincode-input', component_property='value'),
     Input(component_id='asm2000-map-tab', component_property='rowData'),
     Input(component_id='asm2000-map-tab', component_property='selectedRows'),
     Input(component_id='asm2000-accord-tab', component_property='rowData'),
@@ -116,13 +120,15 @@ def update_orders_db_tab(orders_db_data, orders_sel_rowdata, invoces_rowdata, in
     Input(component_id='asm2000-update-actual-map', component_property='n_clicks'),
     prevent_initial_call=True
 )
-def update_asm2000_map(map_rowdata, sel_map_rowdata, accord_rowdata, map_list_rowdata, sel_map_list_rowdata,
+def update_asm2000_map(pincode, map_rowdata, sel_map_rowdata, accord_rowdata, map_list_rowdata, sel_map_list_rowdata,
                        update_map_btn, rename_pos_btn, change_alk_btn,
                        gen_map_to_csv_btn, update_maps_btn, load_map_btn,
                        man_name_input, synth_number_input, start_date_select, save_map_btn, delete_map_btn,
                        search_map_btn, search_map_input, print_passport_btn, update_actual_map_btn):
 
     triggered_id = ctx.triggered_id
+
+    orders_data.pincode = pincode
 
     if triggered_id == 'asm2000-update-tab-btn' and update_map_btn is not None:
         map_out_tab = orders_data.seq_to_asm_seq(accord_rowdata, map_rowdata)
@@ -181,6 +187,7 @@ def update_asm2000_map(map_rowdata, sel_map_rowdata, accord_rowdata, map_list_ro
 @callback(
     Output(component_id='asm2000-map-tab', component_property='rowData', allow_duplicate=True),
 
+    Input(component_id='pincode-input', component_property='value'),
     Input(component_id='asm2000-map-tab', component_property='rowData'),
     Input(component_id='asm2000-map-tab', component_property='selectedRows'),
     Input(component_id='asm2000-accord-tab', component_property='rowData'),
@@ -205,13 +212,15 @@ def update_asm2000_map(map_rowdata, sel_map_rowdata, accord_rowdata, map_list_ro
     Input(component_id='asm2000-wasted-status-btn', component_property='n_clicks'),
     prevent_initial_call=True
 )
-def update_flags_tab(map_rowdata, sel_map_rowdata, accord_rowdata,
+def update_flags_tab(pincode, map_rowdata, sel_map_rowdata, accord_rowdata,
                      do_lcms_btn, do_synth_btn, do_cart_btn, do_hplc_btn, do_paag_btn, do_sed_btn, do_click_btn,
                      do_subl_btn,
                      done_lcms_btn, done_synth_btn, done_cart_btn, done_hplc_btn, done_paag_btn, done_sed_btn,
                      done_click_btn, done_subl_btn, update_omap_status_btn, update_order_status_btn,
                      wasted_sel_btn):
     triggered_id = ctx.triggered_id
+
+    orders_data.pincode = pincode
 
     if triggered_id == 'set-do-lcms-btn' and do_lcms_btn is not None:
         out_map_data = orders_data.update_map_flags('Do LCMS', map_rowdata, sel_map_rowdata)
@@ -294,13 +303,16 @@ def update_flags_tab(map_rowdata, sel_map_rowdata, accord_rowdata,
 @callback(
     Output(component_id='asm2000-click-tab', component_property='rowData', allow_duplicate=True),
 
+    Input(component_id='pincode-input', component_property='value'),
     Input(component_id='asm2000-click-tab', component_property='rowData'),
     Input(component_id='asm2000-map-tab', component_property='selectedRows'),
     Input(component_id='asm2000-culc_click-btn', component_property='n_clicks'),
     prevent_initial_call=True
 )
-def update_click_chem(click_rowdata, sel_map_rowdata, click_btn):
+def update_click_chem(pincode, click_rowdata, sel_map_rowdata, click_btn):
     triggered_id = ctx.triggered_id
+
+    orders_data.pincode = pincode
 
     if triggered_id == 'asm2000-culc_click-btn' and click_btn is not None:
         culc_click = orders_data.culc_click(sel_map_rowdata)
@@ -312,6 +324,8 @@ def update_click_chem(click_rowdata, sel_map_rowdata, click_btn):
     Output(component_id='orders-tab', component_property='data', allow_duplicate=True),
     Output(component_id='price-orders-tab', component_property='data', allow_duplicate=True),
     Output(component_id='total-price', component_property='value', allow_duplicate=True),
+
+    Input(component_id='pincode-input', component_property='value'),
 
     Input(component_id='orders-tab', component_property='data'),
     Input(component_id='price-orders-tab', component_property='data'),
@@ -325,9 +339,11 @@ def update_click_chem(click_rowdata, sel_map_rowdata, click_btn):
 
     prevent_initial_call=True
 )
-def update_orders_price_tab(orders_tab, price_tab, total_price_value, update_orders_btn,
+def update_orders_price_tab(pincode, orders_tab, price_tab, total_price_value, update_orders_btn,
                             add_to_base_btn, invoce_input, client_input, select_scale):
     triggered_id = ctx.triggered_id
+
+    orders_data.pincode = pincode
 
     if triggered_id == 'update-orders' and update_orders_btn is not None:
         out_orders_tab, out_price_tab, total_price = orders_data.compute_price(orders_tab, price_tab)
@@ -350,6 +366,8 @@ def update_orders_price_tab(orders_tab, price_tab, total_price_value, update_ord
     Output(component_id='output-stock-tab-database', component_property='rowData', allow_duplicate=True),
     Output(component_id='user-stock-tab-database', component_property='rowData', allow_duplicate=True),
 
+    Input(component_id='pincode-input', component_property='value'),
+
     Input(component_id='main-stock-tab-database', component_property='rowData'),
     Input(component_id='main-stock-tab-database', component_property='selectedRows'),
     Input(component_id='input-stock-tab-database', component_property='rowData'),
@@ -365,10 +383,12 @@ def update_orders_price_tab(orders_tab, price_tab, total_price_value, update_ord
 
     prevent_initial_call=True
 )
-def update_stock_tab(stock_rowdata, sel_stock_rowdata, input_rowdata, output_rowdata, users_rowdata,
+def update_stock_tab(pincode, stock_rowdata, sel_stock_rowdata, input_rowdata, output_rowdata, users_rowdata,
                      show_stock_btn, update_stock_btn, add_row_stock_btn, delete_row_stock_btn,
                      substruct_btn, adjust_btn):
     triggered_id = ctx.triggered_id
+
+    stock_data.pincode = pincode
 
     if triggered_id == 'show-stock-data-btn' and show_stock_btn is not None:
         out_stock_rowdata, out_output_rowdata, out_input_rowdata, out_users_rowdata = stock_data.show_main_tab_data()
