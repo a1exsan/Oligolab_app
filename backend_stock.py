@@ -10,7 +10,7 @@ class stock_manager(backend.api_db_interface):
     def __init__(self, db_IP, db_port):
         super().__init__(db_IP, db_port)
 
-        self.db_name = 'stock_oligolab_4.db'
+        self.db_name = 'stock_oligolab_5.db'
         self.strftime_format = "%Y-%m-%d"
         self.time_format = "%H:%M:%S"
 
@@ -108,7 +108,9 @@ class stock_manager(backend.api_db_interface):
             '#': [],
             'Name': [],
             'Telegram id': [],
-            'Status': []
+            'Status': [],
+            'PIN': [],
+            'Date': [],
         }
 
         for row in self.get_all_data_in_tab('users'):
@@ -116,6 +118,13 @@ class stock_manager(backend.api_db_interface):
             users['Name'].append(row[1])
             users['Telegram id'].append(row[2])
             users['Status'].append(row[3])
+
+            if self.pincode == row[4]:
+                users['PIN'].append(row[4])
+            else:
+                users['PIN'].append("****")
+
+            users['Date'].append(row[5])
 
         df_users = pd.DataFrame(users)
 
@@ -180,8 +189,14 @@ class stock_manager(backend.api_db_interface):
                         row['Name'], row['Unicode'], row['SUB'],
                         datetime.datetime.now().date().strftime(self.strftime_format),
                         datetime.datetime.now().time().strftime(self.time_format),
-                        user_id
+                        #user_id
+                        self.get_user_id()
                         ]
                     )
                 , headers=self.headers())
         return self.show_main_tab_data()
+
+    def get_user_id(self):
+        url = f"{self.api_db_url}/get_keys_data/{self.db_name}/users/pin/{self.pincode}"
+        r = requests.get(url, headers=self.headers())
+        return r.json()[0][2]

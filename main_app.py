@@ -362,8 +362,8 @@ def update_orders_price_tab(pincode, orders_tab, price_tab, total_price_value, u
 
 @callback(
     Output(component_id='main-stock-tab-database', component_property='rowData', allow_duplicate=True),
-    Output(component_id='input-stock-tab-database', component_property='rowData', allow_duplicate=True),
     Output(component_id='output-stock-tab-database', component_property='rowData', allow_duplicate=True),
+    Output(component_id='input-stock-tab-database', component_property='rowData', allow_duplicate=True),
     Output(component_id='user-stock-tab-database', component_property='rowData', allow_duplicate=True),
 
     Input(component_id='pincode-input', component_property='value'),

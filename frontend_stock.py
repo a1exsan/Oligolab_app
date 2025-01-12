@@ -150,7 +150,9 @@ class oligo_stock_database_layout():
                 '#': [0],
                 'Name': [''],
                 "Telegram id": [''],
-                'Status': ['']
+                'Status': [''],
+                'PIN': [''],
+                'Date': ['']
             }
         )
 
@@ -164,6 +166,8 @@ class oligo_stock_database_layout():
             {"field": "Name"},
             {"field": "Telegram id"},
             {"field": "Status"},
+            {"field": "PIN"},
+            {"field": "Date"},
         ]
 
         self.users_tab = dag.AgGrid(
