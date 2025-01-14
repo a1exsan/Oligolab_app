@@ -87,6 +87,11 @@ class orders_db(api_db_interface):
         ret = requests.get(url, headers=self.headers())
         return ret.json()
 
+    def check_pincode(self):
+        url = f'{self.api_db_url}/get_all_invoces/{self.db_name}'
+        ret = requests.get(url, headers=self.headers())
+        return ret.status_code == 200
+
     def get_in_progress_invoces(self):
         data = self.get_all_invoces()
         out = []
@@ -577,6 +582,13 @@ class orders_db(api_db_interface):
         df = pd.DataFrame(out_tab)
         df.to_csv(filename, sep=';')
 
+    def download_sequences_file(self, rowData):
+        seq_file = ''
+        for row in rowData:
+            seq_file += f"{row['Position']},{row['asm Sequence']},+\n"
+        return seq_file
+
+
     def update_map_flags(self, type_flags, rowData, selrowData):
 
         if len(selrowData) == 0:
@@ -622,7 +634,6 @@ class orders_db(api_db_interface):
             out = []
             for row in rowData:
                 out.append(row)
-                #if not out[-1]['DONE']:
                 out[-1]['Status'] = self.get_order_status(row)
                 if out[-1]['Status'] == 'finished':
                     out[-1]['DONE'] = True

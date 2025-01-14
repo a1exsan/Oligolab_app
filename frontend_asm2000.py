@@ -131,6 +131,9 @@ class asm2000_layout():
                                        id='asm2000-print_pass-btn'),
                             dbc.Button("culc click", outline=True, color="secondary",
                                        id='asm2000-culc_click-btn'),
+                            dbc.Button("save sequences file", outline=False, color="info",
+                                       id='asm2000-save-seq-file-btn'),
+                            dcc.Download(id="download-seq-file")
                         ]),
                     ])
                 ),

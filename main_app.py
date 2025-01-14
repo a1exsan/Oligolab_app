@@ -1,4 +1,4 @@
-from dash import Dash, Input, Output, Patch, callback, ctx
+from dash import Dash, Input, Output, Patch, callback, ctx, dcc
 import dash_bootstrap_components as dbc
 from dash.exceptions import PreventUpdate
 
@@ -16,10 +16,12 @@ frontend_obj = frontend.oligo_syn_form_layout()
 frontend_obj.IP_addres = backend.get_IP_addr()
 frontend_obj.make_layout()
 
-orders_data = backend.orders_db(db_IP='127.0.0.1', db_port='8012')
-#orders_data = backend.orders_db(db_IP='192.168.17.250', db_port='8012')
-#stock_data = backend_stock.stock_manager(db_IP='192.168.17.250', db_port='8012')
-stock_data = backend_stock.stock_manager(db_IP='127.0.0.1', db_port='8012')
+
+orders_data = backend.orders_db(db_IP='192.168.17.250', db_port='8012')
+stock_data = backend_stock.stock_manager(db_IP='192.168.17.250', db_port='8012')
+
+#orders_data = backend.orders_db(db_IP='127.0.0.1', db_port='8012')
+#stock_data = backend_stock.stock_manager(db_IP='127.0.0.1', db_port='8012')
 
 app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP], suppress_callback_exceptions=True)
 
@@ -183,6 +185,28 @@ def update_asm2000_map(pincode, map_rowdata, sel_map_rowdata, accord_rowdata, ma
 
     raise PreventUpdate
 
+@callback(
+Output(component_id="download-seq-file", component_property="data", allow_duplicate=True),
+
+    Input(component_id='pincode-input', component_property='value'),
+    Input(component_id='asm2000-map-tab', component_property='rowData'),
+    Input(component_id='asm2000-map-name', component_property='value'),
+    Input(component_id='asm2000-save-seq-file-btn', component_property='n_clicks'),
+    prevent_initial_call=True
+)
+def download_sequences_file(pincode, rowdata, map_name, download_btn):
+    triggered_id = ctx.triggered_id
+
+    orders_data.pincode = pincode
+
+    if triggered_id == 'asm2000-save-seq-file-btn' and download_btn is not None:
+        if orders_data.check_pincode():
+            file_content = orders_data.download_sequences_file(rowdata)
+        else:
+            file_content = 'Enter PIN'
+        return dict(content=file_content, filename=f"{map_name}.txt")
+
+    raise PreventUpdate
 
 @callback(
     Output(component_id='asm2000-map-tab', component_property='rowData', allow_duplicate=True),
