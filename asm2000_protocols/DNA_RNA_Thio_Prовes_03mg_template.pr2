@@ -1,0 +1,4111 @@
+// DNA RNA Thio Probes-03mg-490mer v 05_2022 Plate.pr2
+
+// This protocol provides the synthesis of standard (dA,dC,dG,T) 
+// and degenerates (IUB codes) DNA oligonucleotides with lenth up to 490 mer 
+// in the 60 nmol (3 mg support) synthesis scale only for plate format.  
+
+
+Monomer a,c,g,t,1,2,3,4,5,6
+Monomer 7,8,R3_1,R3_2,r,y
+Monomer k,m,s,w,b,d,h,v,n
+Monomer SR_A1,SR_A2,SR_A3,SR_A4,SR_A5
+Monomer SR_B1,SR_B2,SR_B3,SR_B4,SR_B5
+Monomer SR_C1,SR_C2,SR_C3,SR_C4,SR_C5
+Monomer SR_D1,SR_D2,SR_D3,SR_D4,SR_D5
+Monomer SR_E1,SR_E2,SR_E3,SR_E4,SR_E5
+Monomer A,C,G,T,R,Y,K,M,S
+Monomer W,B,D,H,V,N
+Monomer As,Cs,Gs,Ts,1s,2s,3s
+Monomer 0,4s,5s,6s,7s,8s
+Monomer FAM,BHQ_1,9,10,11,12
+Monomer FdT,dI,HEX,6_FAM,6FAM,BHQ1
+Monomer 9s,10s,11s,12s
+
+//******************************************
+//**************** Refresh *****************
+//******************************************
+
+
+PB 1-1,Refresh
+
+   VacuumPump Auto
+   CameraFilling Auto
+
+   Wait [0:10:0]
+
+   Check He
+   Check Ar
+   Check Condenser
+   Check Waste
+
+   //-------------------------
+		SafePoint
+   //-------------------------
+
+   MoveAbsolute x = 0 y = 0
+
+     Valve +v21 +v19
+        Wait [0:1:0]
+     Valve -v21 -v19
+
+
+   MoveToPosition Head , Waste
+
+     Valve +v31 +v4
+	Wait [0:5:0]
+
+   Check PS2_High
+   Check PS2_Low
+   Check Vacuum_Low
+
+   //-------------------------
+		SafePoint
+   //-------------------------
+
+	Valve +W1_1 +W1_2 +W1_3 +W1_4
+	   Wait [0:1:0]
+	Valve -W1_1 -W1_2 -W1_3 -W1_4
+
+	RepeatBegin 6
+	   Valve +W1_1 +W1_2 +W1_3 +W1_4
+	      Wait [0:0:50]
+	   Valve -W1_1 -W1_2 -W1_3 -W1_4
+	RepeatEnd 
+
+	Valve +W1_1 +W1_2 +W1_3 +W1_4
+	   Wait [0:1:0]
+	Valve -W1_1 -W1_2 -W1_3 -W1_4
+
+	RepeatBegin 6
+	   Valve +W1_1 +W1_2 +W1_3 +W1_4
+	      Wait [0:0:50]
+	   Valve -W1_1 -W1_2 -W1_3 -W1_4
+	RepeatEnd 
+
+     Valve -v31 +v11
+
+     Valve +v19
+        Wait [0:1:0]
+     Valve -v19
+
+    
+	Valve +W2_1 +W2_2 +W2_3 +W2_4
+	   Wait [0:2:0]
+	Valve -W2_1 -W2_2 -W2_3 -W2_4
+
+	RepeatBegin 6
+	   Valve +W2_1 +W2_2 +W2_3 +W2_4
+	      Wait [0:0:50]
+	   Valve -W2_1 -W2_2 -W2_3 -W2_4
+	RepeatEnd 
+
+     Valve -v11 -v4
+
+     Valve +v19
+        Wait [0:1:0]
+     Valve -v19
+
+
+//******************************************
+//************* Mon1 Refresh **************
+//******************************************
+
+Select a,A,c,C,g,G,t,T,As,Cs,Gs,Ts,r,R,y,Y,k,K,m,M,s,S,w,W,b,B,d,D,h,H,v,V,n,N
+
+     Valve +v12 +v4
+	Wait [0:3:0]
+
+   Check PS2_High
+   Check PS2_Low
+   Check Vacuum_Low
+
+   //-------------------------
+		SafePoint
+   //-------------------------
+
+	Valve +Act1_1 +Act1_2 +Act1_3 +Act1_4
+	   Wait [0:2:0]
+	Valve -Act1_1 -Act1_2 -Act1_3 -Act1_4
+
+	RepeatBegin 6
+	Valve +Act1_1 +Act1_2 +Act1_3 +Act1_4
+	    Wait [0:0:50]
+	Valve -Act1_1 -Act1_2 -Act1_3 -Act1_4
+	RepeatEnd 
+
+	Valve +A +C +g +T
+	   Wait [0:2:0]
+	Valve -A -C -g -T
+
+	RepeatBegin 6
+	   Valve +A +C +g +T
+	      Wait [0:0:50]
+	   Valve -A -C -g -T
+	RepeatEnd
+
+     Valve -v12 +v11
+
+     Valve +v19
+        Wait [0:1:0]
+     Valve -v19
+
+	RepeatBegin 6
+	   Valve +W2_1 +W2_2 +W2_3 +W2_4
+	     Wait [0:0:200]
+	   Valve -W2_1 -W2_2 -W2_3 -W2_4
+	RepeatEnd 
+
+     Valve +v19
+        Wait [0:1:0]
+     Valve -v19
+  
+     Valve -v11 -v4
+
+//******************************************
+//************* Mon3 Refresh **************
+//******************************************
+
+
+Select 5,6,7,8,5s,6s,7s,8s,BHQ_1,BHQ1,FdT,dI,HEX,6_FAM,6FAM,FAM
+
+     Valve +v13 +v4
+	Wait [0:4:0]
+
+   Check PS2_High
+   Check PS2_Low
+   Check Vacuum_Low
+
+   //-------------------------
+		SafePoint
+   //-------------------------
+
+     Valve +m5 +m6 +m7 +m8
+        Wait [0:2:0]
+     Valve -m5 -m6 -m7 -m8
+
+     Valve +Act2_1 +Act2_2 +Act2_3 +Act2_4
+        Wait [0:2:0]
+     Valve -Act2_1 -Act2_2 -Act2_3 -Act2_4
+
+	RepeatBegin 6
+	   Valve +m5 +m6 +m7 +m8
+	      Wait [0:0:50]
+	   Valve -m5 -m6 -m7 -m8
+	RepeatEnd 
+
+	RepeatBegin 6
+	Valve +Act2_1 +Act2_2 +Act2_3 +Act2_4
+	      Wait [0:0:50]
+	Valve -Act2_1 -Act2_2 -Act2_3 -Act2_4
+	RepeatEnd 
+
+     Valve -v13 +v11
+
+     Valve +v19
+        Wait [0:1:0]
+     Valve -v19
+
+	RepeatBegin 6
+	   Valve +W2_1 +W2_2 +W2_3 +W2_4
+	     Wait [0:0:200]
+	   Valve -W2_1 -W2_2 -W2_3 -W2_4
+	RepeatEnd 
+
+     Valve +v19
+        Wait [0:1:0]
+     Valve -v19
+
+    Valve -v11 -v4
+
+//******************************************
+//************* Mon2 Refresh **************
+//******************************************
+
+
+Select 1,2,3,4,1s,2s,3s,4s
+
+     Valve +v12 +v4
+	Wait [0:2:0]
+
+   Check PS2_High
+   Check PS2_Low
+   Check Vacuum_Low
+
+   //-------------------------
+		SafePoint
+   //-------------------------
+
+     Valve +m1 +m2 +m3 +m4
+        Wait [0:2:0]
+     Valve -m1 -m2 -m3 -m4
+
+      RepeatBegin 6
+	Valve +m1 +m2 +m3 +m4
+	   Wait [0:0:50]
+	Valve -m1 -m2 -m3 -m4
+      RepeatEnd 
+
+     Valve -v13 +v11
+
+     Valve +v19
+        Wait [0:1:0]
+     Valve -v19
+
+	RepeatBegin 6
+	   Valve +W2_1 +W2_2 +W2_3 +W2_4
+	     Wait [0:0:200]
+	   Valve -W2_1 -W2_2 -W2_3 -W2_4
+	RepeatEnd 
+
+     Valve -v11 -v4
+
+     Valve +v19
+        Wait [0:1:0]
+     Valve -v19
+
+//******************************************
+//************* Mon4 Refresh **************
+//******************************************
+
+
+Select 9,10,11,12,9s,10s,11s,12s
+
+     Valve +v13 +v4
+	Wait [0:2:0]
+
+   Check PS2_High
+   Check PS2_Low
+   Check Vacuum_Low
+
+   //-------------------------
+		SafePoint
+   //-------------------------
+
+     Valve +m9 +m10 +m11 +m12
+        Wait [0:2:0]
+     Valve -m9 -m10 -m11 -m12
+
+      RepeatBegin 6
+	Valve +m9 +m10 +m11 +m12
+	   Wait [0:0:50]
+	Valve -m9 -m10 -m11 -m12
+      RepeatEnd 
+
+     Valve -v12 +v11
+
+     Valve +v19
+        Wait [0:1:0]
+     Valve -v19
+
+	RepeatBegin 6
+	   Valve +W2_1 +W2_2 +W2_3 +W2_4
+	     Wait [0:0:200]
+	   Valve -W2_1 -W2_2 -W2_3 -W2_4
+	RepeatEnd 
+
+     Valve -v11 -v4
+
+     Valve +v19
+        Wait [0:1:0]
+     Valve -v19
+
+
+//******************************************
+//*************** Oxd Refresh **************
+//******************************************
+
+Select All
+
+     Valve +v9 +v2
+	Wait [0:5:0]
+
+   Check PS1_High
+   Check PS1_Low
+   Check Vacuum_Low
+
+   //-------------------------
+		SafePoint
+   //-------------------------
+
+	Valve +Oxd_1 +Oxd_2 +Oxd_3 +Oxd_4
+	   Wait [0:2:0]
+	Valve -Oxd_1 -Oxd_2 -Oxd_3 -Oxd_4
+
+	RepeatBegin 6
+	   Valve +Oxd_1 +Oxd_2 +Oxd_3 +Oxd_4
+	      Wait [0:0:50]
+	   Valve -Oxd_1 -Oxd_2 -Oxd_3 -Oxd_4
+	RepeatEnd
+ 
+     Valve -v9 -v2 +v4 +v11
+
+     Valve +v19
+        Wait [0:1:0]
+     Valve -v19
+
+	RepeatBegin 6
+	   Valve +W2_1 +W2_2 +W2_3 +W2_4
+	      Wait [0:0:300]
+	   Valve -W2_1 -W2_2 -W2_3 -W2_4
+	RepeatEnd 
+
+     Valve +v19
+        Wait [0:1:0]
+     Valve -v19
+
+
+   MoveToPosition W2_1 , Washer
+   MoveDevice WD,pos
+
+	RepeatBegin 3
+	   Valve +W2_1
+	      Wait [0:0:250]
+	   Valve -W2_1
+	   Valve +v21
+	      Wait [0:0:250]
+	   Valve -v21
+	      Wait [0:2:0]
+	RepeatEnd 
+
+     Valve +W2_1
+        Wait [0:0:250]
+     Valve -W2_1
+
+   MoveDevice WD,zero
+
+ //----------------------------------
+
+   MoveToPosition Oxd_1 , Washer
+   MoveDevice WD,pos
+
+        Wait [0:3:0]
+     Valve +v21
+        Wait [0:1:0]
+     Valve -v21
+
+   MoveDevice WD,zero
+
+   MoveToPosition W2_1 , Washer
+   MoveDevice WD,pos
+
+	RepeatBegin 1
+	   Valve +W2_1
+	      Wait [0:0:250]
+	   Valve -W2_1
+           Valve +v21
+	      Wait [0:0:250]
+	   Valve -v21
+	      Wait [0:2:0]
+	RepeatEnd 
+
+     Valve +W2_1
+        Wait [0:0:250]
+     Valve -W2_1
+
+   MoveDevice WD,zero
+
+//----------------------------------
+
+   MoveToPosition Oxd_2 , Washer
+   MoveDevice WD,pos
+
+        Wait [0:3:0]
+     Valve +v21
+        Wait [0:1:0]
+     Valve -v21
+
+   MoveDevice WD,zero
+
+   MoveToPosition W2_1 , Washer
+   MoveDevice WD,pos
+
+	RepeatBegin 1
+	   Valve +W2_1
+	      Wait [0:0:250]
+	   Valve -W2_1
+           Valve +v21
+	      Wait [0:0:250]
+	   Valve -v21
+	      Wait [0:2:0]
+	RepeatEnd 
+
+     Valve +W2_1
+        Wait [0:0:250]
+     Valve -W2_1
+
+   MoveDevice WD,zero
+
+//----------------------------------
+
+   MoveToPosition Oxd_3 , Washer
+   MoveDevice WD,pos
+
+        Wait [0:3:0]
+     Valve +v21
+        Wait [0:1:0]
+     Valve -v21
+
+   MoveDevice WD,zero
+
+   MoveToPosition W2_1 , Washer
+   MoveDevice WD,pos
+
+	RepeatBegin 1
+	   Valve +W2_1
+	      Wait [0:0:250]
+	   Valve -W2_1
+           Valve +v21
+	      Wait [0:0:250]
+	   Valve -v21
+	      Wait [0:2:0]
+	RepeatEnd 
+
+     Valve +W2_1
+        Wait [0:0:250]
+     Valve -W2_1
+
+   MoveDevice WD,zero
+
+//----------------------------------
+
+   MoveToPosition Oxd_4 , Washer
+   MoveDevice WD,pos
+
+        Wait [0:3:0]
+     Valve +v21
+        Wait [0:1:0]
+     Valve -v21
+
+   MoveDevice WD,zero
+
+   MoveToPosition W2_1 , Washer
+   MoveDevice WD,pos
+
+	RepeatBegin 1
+	   Valve +W2_1
+	      Wait [0:0:250]
+	   Valve -W2_1
+           Valve +v21
+	      Wait [0:0:250]
+	   Valve -v21
+	      Wait [0:2:0]
+	RepeatEnd 
+
+   MoveDevice WD,zero
+   
+   Valve -v4 -v11
+   
+   MoveToPosition Head , Waste
+
+
+//******************************************
+//*************** Dbl Refresh **************
+//******************************************
+
+     Valve +v8 +v2
+	Wait [0:4:0]
+
+   Check PS1_High
+   Check PS1_Low
+   Check Vacuum_Low
+
+   //-------------------------
+		SafePoint
+   //-------------------------
+
+	Valve +Dbl_1 +Dbl_2 +Dbl_3 +Dbl_4
+	   Wait [0:2:0]
+	Valve -Dbl_1 -Dbl_2 -Dbl_3 -Dbl_4
+
+	RepeatBegin 6
+	   Valve +Dbl_1 +Dbl_2 +Dbl_3 +Dbl_4
+	      Wait [0:0:50]
+	   Valve -Dbl_1 -Dbl_2 -Dbl_3 -Dbl_4
+	RepeatEnd 
+
+     Valve -v8 -v2 +v4 +v11
+
+     Valve +v19
+        Wait [0:1:0]
+     Valve -v19
+
+	RepeatBegin 6
+	   Valve +W2_1 +W2_2 +W2_3 +W2_4
+	      Wait [0:0:200]
+	   Valve -W2_1 -W2_2 -W2_3 -W2_4
+	RepeatEnd 
+
+     Valve +v19
+        Wait [0:1:0]
+     Valve -v19
+
+	RepeatBegin 6
+	   Valve +W2_1 +W2_2 +W2_3 +W2_4
+	      Wait [0:0:200]
+	   Valve -W2_1 -W2_2 -W2_3 -W2_4
+	RepeatEnd 
+
+      Valve -v4 -v11
+    
+     Valve +v19
+        Wait [0:1:0]
+     Valve -v19
+
+
+//******************************************
+//************** CpA Refresh ***************
+//******************************************
+
+     Valve +v10 +v4
+	Wait [0:4:0]
+
+   Check PS2_High
+   Check PS2_Low
+   Check Vacuum_Low
+
+   //-------------------------
+		SafePoint
+   //-------------------------
+
+	Valve +CpA_1 +CpA_2
+	   Wait [0:2:0]
+	Valve -CpA_1 -CpA_2
+
+	RepeatBegin 6
+	   Valve +CpA_1 +CpA_2
+	      Wait [0:0:50]
+	   Valve -CpA_1 -CpA_2
+	RepeatEnd 
+
+     Valve -v10 +v11
+
+     Valve +v19
+        Wait [0:1:0]
+     Valve -v19
+
+	RepeatBegin 6
+	   Valve +W2_1 +W2_2 +W2_3 +W2_4
+	      Wait [0:0:200]
+	   Valve -W2_1 -W2_2 -W2_3 -W2_4
+	RepeatEnd 
+
+     Valve +v19
+        Wait [0:1:0]
+     Valve -v19
+
+     Valve -v4 -v11
+
+//******************************************
+//************** CpB Refresh ***************
+//******************************************
+
+     Valve +v10 +v4
+
+	Valve +CpB_1 +CpB_2
+	   Wait [0:2:0]
+	Valve -CpB_1 -CpB_2
+
+	RepeatBegin 6
+	   Valve +CpB_1 +CpB_2
+	      Wait [0:0:50]
+	   Valve -CpB_1 -CpB_2
+	RepeatEnd 
+
+     Valve -v10 +v11
+
+     Valve +v19
+        Wait [0:1:0]
+     Valve -v19
+
+	RepeatBegin 6
+	   Valve +W2_1 +W2_2 +W2_3 +W2_4
+	      Wait [0:0:200]
+	   Valve -W2_1 -W2_2 -W2_3 -W2_4
+	RepeatEnd 
+
+     Valve +v19
+        Wait [0:1:0]
+     Valve -v19
+
+     Valve +v17
+        Wait [0:1:0]
+     Valve -v17
+
+     Valve -v4 -v11
+
+
+//******************************************
+//*************** R1 Refresh ***************
+//******************************************
+
+     Valve +v14 +v4
+	Wait [0:4:0]
+
+     Valve +R1
+        Wait [0:2:0]
+     Valve -R1
+
+	RepeatBegin 6
+	   Valve +R1
+	      Wait [0:0:50]
+	   Valve -R1
+	RepeatEnd 
+
+     Valve -v14 +v11
+  
+     Valve +v19
+        Wait [0:2:0]
+     Valve -v19
+
+	RepeatBegin 6
+	   Valve +W2_1 +W2_2 +W2_3 +W2_4
+	      Wait [0:0:200]
+	   Valve -W2_1 -W2_2 -W2_3 -W2_4
+
+	RepeatEnd 
+     Valve +v19 +v21
+        Wait [0:1:0]
+     Valve -v19 -v21
+
+     Valve +v17
+        Wait [0:1:0]
+     Valve -v17
+
+     Valve -v4 -v11
+
+
+//******************************************
+//*************** Synthesis ****************
+//******************************************
+
+PB 1-500
+
+   MoveAbsolute x = 0 y = 0
+
+   SwitchOffAllValves
+
+   CameraFilling Auto
+   VacuumPump Auto
+
+     Valve +v2 +v4 +v6
+        Wait [0:3:0]
+     Valve -v2 -v4 -v6
+        Wait [0:0:500]
+
+   Check He
+   Check Ar
+   Check Condenser
+   Check Waste
+   Check PS1_High
+   Check PS1_Low
+   Check PS2_High
+   Check PS2_Low
+   Check PS3_High
+   Check PS3_Low
+   Check PS4_High
+   Check PS4_Low
+   Check Vacuum_Low
+
+   //-------------------------
+		SafePoint
+   //-------------------------
+
+     Valve +v22 +v24 +v25 
+        Wait [0:1:500]
+     Valve -v22 -v24 -v25 
+
+
+//******************************************
+//************** First Wash ****************
+//******************************************
+
+PB 1-1
+
+Message " First Washing for all wells"
+
+   CameraFilling Auto
+   VacuumPump Auto
+
+     Valve +v4 +v11
+        Wait [0:2:0]
+     Dispense W2,z4,1000
+        MoveAbsolute y = 650
+     Valve +v22 +v24 +v25
+	Wait [0:2:0]
+     Valve -v22 -v24 -v25    
+     Valve -v4 -v11
+   	    
+//Check Well Drying
+
+
+Message " Check wells! Wells must be empty or stop synthesis or drop not empty wells" inWindow
+
+   Beep 
+
+Pause 
+     
+   //-------------------------
+		SafePoint
+   //------------------------- 
+
+   MoveAbsolute x = 0 y = 0
+
+//******************************************
+//*** Trityl Collection (install plate) ****
+//******************************************
+
+
+PB 1-500,Collection
+
+   CameraFilling Auto
+   VacuumPump Auto
+
+     Valve +v22 +v24 +v25
+        Wait [0:2:0]
+     Valve -v22 -v24 -v25
+        Wait [0:2:0]
+     Valve +v22 +v24 +v25
+        Wait [0:2:0]
+     Valve -v22 -v24 -v25
+
+   MoveAbsolute y = 815
+
+Message " Install empty trityl collection plate" inWindow
+
+   Beep 
+
+//------------
+   Pause 
+//------------
+
+   CameraFilling Auto
+   VacuumPump Auto
+
+   MoveAbsolute y = 0
+
+//******************************************
+//************* Deblocking... **************
+//******************************************
+
+
+PB 1-500,Deblock
+
+   CameraFilling Auto
+   VacuumPump Auto
+
+Message " Deblocking "
+
+     Valve +v2 +v8 +v23
+         Wait [0:0:500]
+     Valve -v2 -v8
+         Wait [0:0:500]
+     
+   Check He
+   Check Ar
+   Check Condenser
+   Check Waste
+   Check PS1_High
+   Check PS1_Low
+   Check PS2_High
+   Check PS2_Low
+   Check Vacuum_Low
+
+   //-------------------------
+		SafePoint
+   //-------------------------
+
+    Valve +v2 +v8
+    Dispense Dbl,z4,300
+    MoveAbsolute y = 520
+        Wait [0:10:0]
+     Valve -v23
+        Wait [0:0:500]
+     Valve +v22 +v24 +v25
+        Wait [0:0:600]
+     Valve -v22 -v24 -v25
+ 
+       RepeatBegin 5
+	   Valve +v23
+              Wait [0:3:0]
+	   Dispense Dbl,z4,260
+	   MoveAbsolute y = 520
+              Wait [0:10:0]
+           Valve -v23
+              Wait [0:0:500]
+	   Valve +v22 +v24 +v25
+	      Wait [0:0:600]
+	   Valve -v22 -v24 -v25
+           Valve +v16 +v15 +v23
+           Wait [0:1:0]
+           Valve -v16 -v15 -v23 
+	RepeatEnd 
+
+     Valve -v2 -v8
+	   
+
+PB 1-1
+
+   CameraFilling Auto
+   VacuumPump Auto
+
+     Valve +v2 +v8 +v23
+        Wait [0:3:0]
+	Dispense Dbl,z4,260
+     MoveAbsolute y = 520
+      	 Wait [0:10:0]
+     Valve -v23
+         Wait [0:0:500]
+     Valve +v22 +v24 +v25
+	 Wait [0:0:600]
+     Valve -v22 -v24 -v25
+     Valve +v16 +v15 +v23
+         Wait [0:1:0]
+     Valve -v16 -v15 -v23 
+
+
+//******************************************
+//**** Trityl Collection (Remove Plate) ****
+//******************************************
+
+
+PB 1-500,Collection
+
+   CameraFilling Auto
+   VacuumPump Auto
+
+     Valve +v22 +v24 +v25
+        Wait [0:2:0]
+     Valve -v22 -v24 -v25
+        Wait [0:2:0]
+
+   MoveAbsolute y = 815
+
+Message " Remove trityl collection plate" inWindow
+
+   Beep 
+
+//------------
+   Pause 
+//------------
+
+   MoveAbsolute y = 0
+
+
+//******************************************
+//*********** Washing after Deblock ********
+//******************************************
+
+
+PB 1-500,Deblock
+
+   CameraFilling Auto
+   VacuumPump Auto
+
+      Valve +v4 +v11 +v14
+	Wait [0:2:0]
+
+Message " Washing after Deblock >>>>>>"
+
+   StartTimer 1,[0:5:0]
+	Dispense R2,z1,500
+	MoveAbsolute y = 520
+        Valve +v22 +v24 +v25
+           Wait [0:1:200]
+        Valve -v22 -v24 -v25
+   WaitTimer 1
+
+   StartTimer 1,[0:7:0]
+	Dispense W2,z4,1000
+	MoveAbsolute y = 520
+        Valve +v22 +v24 +v25
+           Wait [0:1:800]
+        Valve -v22 -v24 -v25
+   WaitTimer 1
+
+     Valve +v31 -v11 -v14
+     
+     Valve +v22 +v24 +v25
+        Wait [0:1:800]
+     Valve -v22 -v24 -v25
+
+        Wait [0:0:500]
+
+     Valve +v17 +v23
+        Wait [0:2:0]
+     Valve -v17 -v23
+   
+   Check He
+   Check Ar
+   Check Condenser
+   Check Waste
+   Check PS2_High
+   Check PS2_Low
+   Check Vacuum_Low
+
+   //-------------------------
+		SafePoint
+   //-------------------------
+
+//******************************************
+//************* Auto Sampler ***************
+//******************************************
+
+
+PB 1-500
+
+   CameraFilling Auto
+   VacuumPump Auto
+
+Select SR_A1,SR_A2,SR_A3,SR_A4,SR_A5,SR_B1,SR_B2,SR_B3,SR_B4,SR_B5,SR_C1,SR_C2,SR_C3,SR_C4,SR_C5,SR_D1,SR_D2,SR_D3,SR_D4,SR_D5,SR_E1,SR_E2,SR_E3,SR_E4,SR_E5
+
+Message " Auto Sampler " 
+
+   Check He
+   Check Ar
+   Check Condenser
+   Check Waste
+   Check PS3_High
+   Check PS3_Low
+   Check Vacuum_Low
+
+   //-------------------------
+		SafePoint
+   //------------------------- 
+
+
+   CameraFilling Auto
+   VacuumPump Auto
+
+   MoveToPosition R3_1 , Waste
+
+Message " Insert Sampler Reagents" inWindow
+
+Beep
+Beep
+
+//------------
+   Pause 
+//------------
+
+   CameraFilling Auto
+   VacuumPump Auto
+
+     Valve +v15 +v16 +v23
+	Wait [0:3:0]
+     Valve -v15 -v16 -v23
+
+     Valve +v4 +v6 +v12
+
+   MoveToPosition Head , Waste
+
+     Valve +Act1_1 +Act1_2 +Act1_3 +Act1_4
+        Wait [0:0:30]
+     Valve -Act1_1 -Act1_2 -Act1_3 -Act1_4
+        Wait [0:1:0]
+     Valve +Act1_1 +Act1_2 +Act1_3 +Act1_4
+        Wait [0:0:30]
+     Valve -Act1_1 -Act1_2 -Act1_3 -Act1_4
+        Wait [0:1:0]
+
+     Valve -v4 -v12 +v19
+        	
+	RepeatBegin 3
+	   Valve +R3_1 +R3_2
+	      Wait [0:1:0]
+	   Valve -R3_2
+	      Wait [0:0:500]
+	   Valve -R3_1
+	      Wait [0:0:300]
+	RepeatEnd
+     
+        Valve -v19 -v6
+
+
+Select SR_A1
+
+Message " Coupling SR-A1"
+
+   VacuumPump Off
+   Vacuumize_R3
+   CameraFilling Auto
+   VacuumPump Auto
+
+   MoveToPosition R3_1 , SR_A1
+
+     Valve +R3_1
+        Wait [0:0:200]
+     Valve -R3_1
+
+   MoveDevice SD,pos
+
+     Valve +R3_1
+        Wait [0:0:950]
+     Valve -R3_1
+
+   MoveDevice SD,zero
+
+     Valve +v4 +v6 +v12
+        Wait [0:6:0]
+
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+
+   MoveToPosition R3_1 , Waste
+              Wait [{sr_a1_m}:{sr_a1_s}:0]
+	      
+          Valve +v22 +v24 +v25
+	      Wait [0:0:600]
+	  Valve -v22 -v24 -v25
+          Valve +v23
+              Wait [0:4:0]
+          Valve -v23
+
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+
+   MoveToPosition R3_1 , Waste
+              Wait [{sr_a1_m}:{sr_a1_s}:0]
+
+          Valve +v22 +v24 +v25
+	      Wait [0:0:600]
+	  Valve -v22 -v24 -v25
+          Valve +v23
+              Wait [0:4:0]
+          Valve -v23
+        
+	  Valve +v19
+
+	RepeatBegin 3
+	   Valve +R3_1 +R3_2
+	      Wait [0:1:600]
+	   Valve -R3_2
+	      Wait [0:0:500]
+	   Valve -R3_1
+	      Wait [0:0:300]
+	RepeatEnd
+
+           Valve -v4 -v6 -v12 -v19
+
+	Dispense R3_1,z1,450
+
+     Valve +v22 +v24 +v25
+        Wait [0:0:600]
+     Valve -v22 -v24 -v25
+     Valve +v23
+        Wait [0:4:0]
+     Valve -v23
+
+   MoveToPosition R3_1 , Waste
+
+
+Select SR_A2
+
+Message " Coupling SR-A2"
+
+   VacuumPump Off
+   Vacuumize_R3
+   CameraFilling Auto
+   VacuumPump Auto
+
+   MoveToPosition R3_1 , SR_A2
+
+      Valve +R3_1
+        Wait [0:0:200]
+     Valve -R3_1
+
+   MoveDevice SD,pos
+
+     Valve +R3_1
+        Wait [0:0:950]
+     Valve -R3_1
+
+   MoveDevice SD,zero
+
+     Valve +v4 +v6 +v12
+        Wait [0:6:0]
+
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+
+   MoveToPosition R3_1 , Waste
+              Wait [{sr_a2_m}:{sr_a2_s}:0]
+	      
+          Valve +v22 +v24 +v25
+	      Wait [0:0:600]
+	  Valve -v22 -v24 -v25
+          Valve +v23
+              Wait [0:4:0]
+          Valve -v23
+
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+
+   MoveToPosition R3_1 , Waste
+              Wait [{sr_a2_m}:{sr_a2_s}:0]
+
+          Valve +v22 +v24 +v25
+	      Wait [0:0:600]
+	  Valve -v22 -v24 -v25
+          Valve +v23
+              Wait [0:4:0]
+          Valve -v23
+        
+	  Valve +v19
+
+	RepeatBegin 3
+	   Valve +R3_1 +R3_2
+	      Wait [0:1:600]
+	   Valve -R3_2
+	      Wait [0:0:500]
+	   Valve -R3_1
+	      Wait [0:0:300]
+	RepeatEnd
+
+           Valve -v4 -v6 -v12 -v19
+
+	Dispense R3_1,z1,450
+
+     Valve +v22 +v24 +v25
+        Wait [0:0:600]
+     Valve -v22 -v24 -v25
+     Valve +v23
+        Wait [0:4:0]
+     Valve -v23
+
+   MoveToPosition R3_1 , Waste
+   
+
+Select SR_A3
+
+Message " Coupling SR-A3"
+
+   VacuumPump Off
+   Vacuumize_R3
+   CameraFilling Auto
+   VacuumPump Auto
+
+   MoveToPosition R3_1 , SR_A3
+
+     Valve +R3_1
+        Wait [0:0:200]
+     Valve -R3_1
+
+   MoveDevice SD,pos
+
+     Valve +R3_1
+        Wait [0:0:950]
+     Valve -R3_1
+
+   MoveDevice SD,zero
+
+     Valve +v4 +v6 +v12
+        Wait [0:6:0]
+
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+
+   MoveToPosition R3_1 , Waste
+              Wait [{sr_a3_m}:{sr_a3_s}:0]
+	      
+          Valve +v22 +v24 +v25
+	      Wait [0:0:600]
+	  Valve -v22 -v24 -v25
+          Valve +v23
+              Wait [0:4:0]
+          Valve -v23
+
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+
+   MoveToPosition R3_1 , Waste
+              Wait [{sr_a3_m}:{sr_a3_s}:0]
+
+          Valve +v22 +v24 +v25
+	      Wait [0:0:600]
+	  Valve -v22 -v24 -v25
+          Valve +v23
+              Wait [0:4:0]
+          Valve -v23
+        
+	  Valve +v19
+
+	RepeatBegin 3
+	   Valve +R3_1 +R3_2
+	      Wait [0:1:600]
+	   Valve -R3_2
+	      Wait [0:0:500]
+	   Valve -R3_1
+	      Wait [0:0:300]
+	RepeatEnd
+
+           Valve -v4 -v6 -v12 -v19
+
+	Dispense R3_1,z1,450
+
+     Valve +v22 +v24 +v25
+        Wait [0:0:600]
+     Valve -v22 -v24 -v25
+     Valve +v23
+        Wait [0:4:0]
+     Valve -v23
+
+   MoveToPosition R3_1 , Waste
+
+
+Select SR_A4
+
+Message " Coupling SR-A4"
+
+   VacuumPump Off
+   Vacuumize_R3
+   CameraFilling Auto
+   VacuumPump Auto
+
+   MoveToPosition R3_1 , SR_A4
+
+     Valve +R3_1
+        Wait [0:0:200]
+     Valve -R3_1
+
+   MoveDevice SD,pos
+
+     Valve +R3_1
+        Wait [0:0:950]
+     Valve -R3_1
+
+   MoveDevice SD,zero
+
+     Valve +v4 +v6 +v12
+        Wait [0:6:0]
+
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+
+   MoveToPosition R3_1 , Waste
+              Wait [{sr_a4_m}:{sr_a4_s}:0]
+	      
+          Valve +v22 +v24 +v25
+	      Wait [0:0:600]
+	  Valve -v22 -v24 -v25
+          Valve +v23
+              Wait [0:4:0]
+          Valve -v23
+
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+
+   MoveToPosition R3_1 , Waste
+              Wait [{sr_a4_m}:{sr_a4_s}:0]
+
+          Valve +v22 +v24 +v25
+	      Wait [0:0:600]
+	  Valve -v22 -v24 -v25
+          Valve +v23
+              Wait [0:4:0]
+          Valve -v23
+        
+	  Valve +v19
+
+	RepeatBegin 3
+	   Valve +R3_1 +R3_2
+	      Wait [0:1:600]
+	   Valve -R3_2
+	      Wait [0:0:500]
+	   Valve -R3_1
+	      Wait [0:0:300]
+	RepeatEnd
+
+           Valve -v4 -v6 -v12 -v19
+
+	Dispense R3_1,z1,450
+
+     Valve +v22 +v24 +v25
+        Wait [0:0:600]
+     Valve -v22 -v24 -v25
+     Valve +v23
+        Wait [0:4:0]
+     Valve -v23
+
+   MoveToPosition R3_1 , Waste
+
+
+Select SR_A5
+
+Message " Coupling SR-A5"
+
+   VacuumPump Off
+   Vacuumize_R3
+   CameraFilling Auto
+   VacuumPump Auto
+
+   MoveToPosition R3_1 , SR_A5
+
+     Valve +R3_1
+        Wait [0:0:200]
+     Valve -R3_1
+
+   MoveDevice SD,pos
+
+     Valve +R3_1
+        Wait [0:0:950]
+     Valve -R3_1
+
+   MoveDevice SD,zero
+
+     Valve +v4 +v6 +v12
+        Wait [0:6:0]
+
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+
+   MoveToPosition R3_1 , Waste
+              Wait [{sr_a5_m}:{sr_a5_s}:0]
+	      
+          Valve +v22 +v24 +v25
+	      Wait [0:0:600]
+	  Valve -v22 -v24 -v25
+          Valve +v23
+              Wait [0:4:0]
+          Valve -v23
+
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+
+   MoveToPosition R3_1 , Waste
+              Wait [{sr_a5_m}:{sr_a5_s}:0]
+
+          Valve +v22 +v24 +v25
+	      Wait [0:0:600]
+	  Valve -v22 -v24 -v25
+          Valve +v23
+              Wait [0:4:0]
+          Valve -v23
+        
+	  Valve +v19
+
+	RepeatBegin 3
+	   Valve +R3_1 +R3_2
+	      Wait [0:1:600]
+	   Valve -R3_2
+	      Wait [0:0:500]
+	   Valve -R3_1
+	      Wait [0:0:300]
+	RepeatEnd
+
+           Valve -v4 -v6 -v12 -v19
+
+	Dispense R3_1,z1,450
+
+     Valve +v22 +v24 +v25
+        Wait [0:0:600]
+     Valve -v22 -v24 -v25
+     Valve +v23
+        Wait [0:4:0]
+     Valve -v23
+
+   MoveToPosition R3_1 , Waste
+
+
+Select SR_B1
+
+Message " Coupling SR-B1"
+
+   VacuumPump Off
+   Vacuumize_R3
+   CameraFilling Auto
+   VacuumPump Auto
+
+   MoveToPosition R3_1 , SR_B1
+
+     Valve +R3_1
+        Wait [0:0:200]
+     Valve -R3_1
+
+   MoveDevice SD,pos
+
+     Valve +R3_1
+        Wait [0:0:950]
+     Valve -R3_1
+
+   MoveDevice SD,zero
+
+     Valve +v4 +v6 +v12
+        Wait [0:6:0]
+
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+
+   MoveToPosition R3_1 , Waste
+              Wait [{sr_b1_m}:{sr_b1_s}:0]
+	      
+          Valve +v22 +v24 +v25
+	      Wait [0:0:600]
+	  Valve -v22 -v24 -v25
+          Valve +v23
+              Wait [0:4:0]
+          Valve -v23
+
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+
+   MoveToPosition R3_1 , Waste
+              Wait [{sr_b1_m}:{sr_b1_s}:0]
+
+          Valve +v22 +v24 +v25
+	      Wait [0:0:600]
+	  Valve -v22 -v24 -v25
+          Valve +v23
+              Wait [0:4:0]
+          Valve -v23
+        
+	  Valve +v19
+
+	RepeatBegin 3
+	   Valve +R3_1 +R3_2
+	      Wait [0:1:600]
+	   Valve -R3_2
+	      Wait [0:0:500]
+	   Valve -R3_1
+	      Wait [0:0:300]
+	RepeatEnd
+
+           Valve -v4 -v6 -v12 -v19
+
+	Dispense R3_1,z1,450
+
+     Valve +v22 +v24 +v25
+        Wait [0:0:600]
+     Valve -v22 -v24 -v25
+     Valve +v23
+        Wait [0:4:0]
+     Valve -v23
+
+   MoveToPosition R3_1 , Waste
+
+
+Select SR_B2
+
+Message " Coupling SR-B2"
+
+   VacuumPump Off
+   Vacuumize_R3
+   CameraFilling Auto
+   VacuumPump Auto
+
+   MoveToPosition R3_1 , SR_B2
+
+     Valve +R3_1
+        Wait [0:0:200]
+     Valve -R3_1
+
+   MoveDevice SD,pos
+
+     Valve +R3_1
+        Wait [0:0:950]
+     Valve -R3_1
+
+   MoveDevice SD,zero
+
+     Valve +v4 +v6 +v12
+        Wait [0:6:0]
+
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+
+   MoveToPosition R3_1 , Waste
+              Wait [{sr_b2_m}:{sr_b2_s}:0]
+	      
+          Valve +v22 +v24 +v25
+	      Wait [0:0:600]
+	  Valve -v22 -v24 -v25
+          Valve +v23
+              Wait [0:4:0]
+          Valve -v23
+
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+
+   MoveToPosition R3_1 , Waste
+              Wait [{sr_b2_m}:{sr_b2_s}:0]
+
+          Valve +v22 +v24 +v25
+	      Wait [0:0:600]
+	  Valve -v22 -v24 -v25
+          Valve +v23
+              Wait [0:4:0]
+          Valve -v23
+        
+	  Valve +v19
+
+	RepeatBegin 3
+	   Valve +R3_1 +R3_2
+	      Wait [0:1:600]
+	   Valve -R3_2
+	      Wait [0:0:500]
+	   Valve -R3_1
+	      Wait [0:0:300]
+	RepeatEnd
+
+           Valve -v4 -v6 -v12 -v19
+
+	Dispense R3_1,z1,450
+
+     Valve +v22 +v24 +v25
+        Wait [0:0:600]
+     Valve -v22 -v24 -v25
+     Valve +v23
+        Wait [0:4:0]
+     Valve -v23
+
+   MoveToPosition R3_1 , Waste
+
+
+Select SR_B3
+
+Message " Coupling SR-B3"
+
+   VacuumPump Off
+   Vacuumize_R3
+   CameraFilling Auto
+   VacuumPump Auto
+
+   MoveToPosition R3_1 , SR_B3
+
+     Valve +R3_1
+        Wait [0:0:200]
+     Valve -R3_1
+
+   MoveDevice SD,pos
+
+     Valve +R3_1
+        Wait [0:0:950]
+     Valve -R3_1
+
+   MoveDevice SD,zero
+
+     Valve +v4 +v6 +v12
+        Wait [0:6:0]
+
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+
+   MoveToPosition R3_1 , Waste
+              Wait [{sr_b3_m}:{sr_b3_s}:0]
+	      
+          Valve +v22 +v24 +v25
+	      Wait [0:0:600]
+	  Valve -v22 -v24 -v25
+          Valve +v23
+              Wait [0:4:0]
+          Valve -v23
+
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+
+   MoveToPosition R3_1 , Waste
+              Wait [{sr_b3_m}:{sr_b3_s}:0]
+
+          Valve +v22 +v24 +v25
+	      Wait [0:0:600]
+	  Valve -v22 -v24 -v25
+          Valve +v23
+              Wait [0:4:0]
+          Valve -v23
+        
+	  Valve +v19
+
+	RepeatBegin 3
+	   Valve +R3_1 +R3_2
+	      Wait [0:1:600]
+	   Valve -R3_2
+	      Wait [0:0:500]
+	   Valve -R3_1
+	      Wait [0:0:300]
+	RepeatEnd
+
+           Valve -v4 -v6 -v12 -v19
+
+	Dispense R3_1,z1,450
+
+     Valve +v22 +v24 +v25
+        Wait [0:0:600]
+     Valve -v22 -v24 -v25
+     Valve +v23
+        Wait [0:4:0]
+     Valve -v23
+
+   MoveToPosition R3_1 , Waste
+
+
+Select SR_B4
+
+Message " Coupling SR-B4"
+
+   VacuumPump Off
+   Vacuumize_R3
+   CameraFilling Auto
+   VacuumPump Auto
+
+   MoveToPosition R3_1 , SR_B4
+
+     Valve +R3_1
+        Wait [0:0:200]
+     Valve -R3_1
+
+   MoveDevice SD,pos
+
+     Valve +R3_1
+        Wait [0:0:950]
+     Valve -R3_1
+
+   MoveDevice SD,zero
+
+     Valve +v4 +v6 +v12
+        Wait [0:6:0]
+
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+
+   MoveToPosition R3_1 , Waste
+              Wait [{sr_b4_m}:{sr_b4_s}:0]
+	      
+          Valve +v22 +v24 +v25
+	      Wait [0:0:600]
+	  Valve -v22 -v24 -v25
+          Valve +v23
+              Wait [0:4:0]
+          Valve -v23
+
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+
+   MoveToPosition R3_1 , Waste
+              Wait [{sr_b4_m}:{sr_b4_s}:0]
+
+          Valve +v22 +v24 +v25
+	      Wait [0:0:600]
+	  Valve -v22 -v24 -v25
+          Valve +v23
+              Wait [0:4:0]
+          Valve -v23
+        
+	  Valve +v19
+
+	RepeatBegin 3
+	   Valve +R3_1 +R3_2
+	      Wait [0:1:600]
+	   Valve -R3_2
+	      Wait [0:0:500]
+	   Valve -R3_1
+	      Wait [0:0:300]
+	RepeatEnd
+
+           Valve -v4 -v6 -v12 -v19
+
+	Dispense R3_1,z1,450
+
+     Valve +v22 +v24 +v25
+        Wait [0:0:600]
+     Valve -v22 -v24 -v25
+     Valve +v23
+        Wait [0:4:0]
+     Valve -v23
+
+   MoveToPosition R3_1 , Waste
+
+
+Select SR_B5
+
+Message " Coupling SR-B5"
+
+   VacuumPump Off
+   Vacuumize_R3
+   CameraFilling Auto
+   VacuumPump Auto
+
+   MoveToPosition R3_1 , SR_B5
+
+     Valve +R3_1
+        Wait [0:0:200]
+     Valve -R3_1
+
+   MoveDevice SD,pos
+
+     Valve +R3_1
+        Wait [0:0:950]
+     Valve -R3_1
+
+   MoveDevice SD,zero
+
+     Valve +v4 +v6 +v12
+        Wait [0:6:0]
+
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+
+   MoveToPosition R3_1 , Waste
+              Wait [{sr_b5_m}:{sr_b5_s}:0]
+	      
+          Valve +v22 +v24 +v25
+	      Wait [0:0:600]
+	  Valve -v22 -v24 -v25
+          Valve +v23
+              Wait [0:4:0]
+          Valve -v23
+
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+
+   MoveToPosition R3_1 , Waste
+             Wait [{sr_b5_m}:{sr_b5_s}:0]
+
+          Valve +v22 +v24 +v25
+	      Wait [0:0:600]
+	  Valve -v22 -v24 -v25
+          Valve +v23
+              Wait [0:4:0]
+          Valve -v23
+        
+	  Valve +v19
+
+	RepeatBegin 3
+	   Valve +R3_1 +R3_2
+	      Wait [0:1:600]
+	   Valve -R3_2
+	      Wait [0:0:500]
+	   Valve -R3_1
+	      Wait [0:0:300]
+	RepeatEnd
+
+           Valve -v4 -v6 -v12 -v19
+
+	Dispense R3_1,z1,450
+
+     Valve +v22 +v24 +v25
+        Wait [0:0:600]
+     Valve -v22 -v24 -v25
+     Valve +v23
+        Wait [0:4:0]
+     Valve -v23
+
+   MoveToPosition R3_1 , Waste
+
+
+Select SR_C1
+
+Message " Coupling SR-C1"
+
+   VacuumPump Off
+   Vacuumize_R3
+   CameraFilling Auto
+   VacuumPump Auto
+
+   MoveToPosition R3_1 , SR_C1
+
+
+     Valve +R3_1
+        Wait [0:0:200]
+     Valve -R3_1
+
+   MoveDevice SD,pos
+
+     Valve +R3_1
+        Wait [0:0:950]
+     Valve -R3_1
+
+   MoveDevice SD,zero
+
+     Valve +v4 +v6 +v12
+        Wait [0:6:0]
+
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+
+   MoveToPosition R3_1 , Waste
+              Wait [4:30:0]
+	      
+          Valve +v22 +v24 +v25
+	      Wait [0:0:600]
+	  Valve -v22 -v24 -v25
+          Valve +v23
+              Wait [0:4:0]
+          Valve -v23
+
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+
+   MoveToPosition R3_1 , Waste
+              Wait [4:30:0]
+
+          Valve +v22 +v24 +v25
+	      Wait [0:0:600]
+	  Valve -v22 -v24 -v25
+          Valve +v23
+              Wait [0:4:0]
+          Valve -v23
+        
+	  Valve +v19
+
+	RepeatBegin 3
+	   Valve +R3_1 +R3_2
+	      Wait [0:1:600]
+	   Valve -R3_2
+	      Wait [0:0:500]
+	   Valve -R3_1
+	      Wait [0:0:300]
+	RepeatEnd
+
+           Valve -v4 -v6 -v12 -v19
+
+	Dispense R3_1,z1,450
+
+     Valve +v22 +v24 +v25
+        Wait [0:0:600]
+     Valve -v22 -v24 -v25
+     Valve +v23
+        Wait [0:4:0]
+     Valve -v23
+
+   MoveToPosition R3_1 , Waste
+
+
+Select SR_C2
+
+Message " Coupling SR-C2"
+
+   VacuumPump Off
+   Vacuumize_R3
+   CameraFilling Auto
+   VacuumPump Auto
+
+   MoveToPosition R3_1 , SR_C2
+
+     Valve +R3_1
+        Wait [0:0:200]
+     Valve -R3_1
+
+   MoveDevice SD,pos
+
+     Valve +R3_1
+        Wait [0:0:950]
+     Valve -R3_1
+
+   MoveDevice SD,zero
+
+     Valve +v4 +v6 +v12
+        Wait [0:6:0]
+
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+
+   MoveToPosition R3_1 , Waste
+              Wait [4:30:0]
+	      
+          Valve +v22 +v24 +v25
+	      Wait [0:0:600]
+	  Valve -v22 -v24 -v25
+          Valve +v23
+              Wait [0:4:0]
+          Valve -v23
+
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+
+   MoveToPosition R3_1 , Waste
+              Wait [4:30:0]
+
+          Valve +v22 +v24 +v25
+	      Wait [0:0:600]
+	  Valve -v22 -v24 -v25
+          Valve +v23
+              Wait [0:4:0]
+          Valve -v23
+        
+	  Valve +v19
+
+	RepeatBegin 3
+	   Valve +R3_1 +R3_2
+	      Wait [0:1:600]
+	   Valve -R3_2
+	      Wait [0:0:500]
+	   Valve -R3_1
+	      Wait [0:0:300]
+	RepeatEnd
+
+           Valve -v4 -v6 -v12 -v19
+
+	Dispense R3_1,z1,450
+
+     Valve +v22 +v24 +v25
+        Wait [0:0:600]
+     Valve -v22 -v24 -v25
+     Valve +v23
+        Wait [0:4:0]
+     Valve -v23
+
+   MoveToPosition R3_1 , Waste
+
+
+Select SR_C3
+
+Message " Coupling SR-C3"
+
+   VacuumPump Off
+   Vacuumize_R3
+   CameraFilling Auto
+   VacuumPump Auto
+
+   MoveToPosition R3_1 , SR_C3
+
+     Valve +R3_1
+        Wait [0:0:200]
+     Valve -R3_1
+
+   MoveDevice SD,pos
+
+     Valve +R3_1
+        Wait [0:0:950]
+     Valve -R3_1
+
+   MoveDevice SD,zero
+
+     Valve +v4 +v6 +v12
+        Wait [0:6:0]
+
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+
+   MoveToPosition R3_1 , Waste
+              Wait [4:30:0]
+	      
+          Valve +v22 +v24 +v25
+	      Wait [0:0:600]
+	  Valve -v22 -v24 -v25
+          Valve +v23
+              Wait [0:4:0]
+          Valve -v23
+
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+
+   MoveToPosition R3_1 , Waste
+              Wait [4:30:0]
+
+          Valve +v22 +v24 +v25
+	      Wait [0:0:600]
+	  Valve -v22 -v24 -v25
+          Valve +v23
+              Wait [0:4:0]
+          Valve -v23
+        
+	  Valve +v19
+
+	RepeatBegin 3
+	   Valve +R3_1 +R3_2
+	      Wait [0:1:600]
+	   Valve -R3_2
+	      Wait [0:0:500]
+	   Valve -R3_1
+	      Wait [0:0:300]
+	RepeatEnd
+
+           Valve -v4 -v6 -v12 -v19
+
+	Dispense R3_1,z1,450
+
+     Valve +v22 +v24 +v25
+        Wait [0:0:600]
+     Valve -v22 -v24 -v25
+     Valve +v23
+        Wait [0:4:0]
+     Valve -v23
+
+   MoveToPosition R3_1 , Waste
+
+
+Select SR_C4
+
+Message " Coupling SR-C4"
+
+   VacuumPump Off
+   Vacuumize_R3
+   CameraFilling Auto
+   VacuumPump Auto
+
+   MoveToPosition R3_1 , SR_C4
+
+     Valve +R3_1
+        Wait [0:0:200]
+     Valve -R3_1
+
+   MoveDevice SD,pos
+
+     Valve +R3_1
+        Wait [0:0:950]
+     Valve -R3_1
+
+   MoveDevice SD,zero
+
+     Valve +v4 +v6 +v12
+        Wait [0:6:0]
+
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+
+   MoveToPosition R3_1 , Waste
+              Wait [4:30:0]
+	      
+          Valve +v22 +v24 +v25
+	      Wait [0:0:600]
+	  Valve -v22 -v24 -v25
+          Valve +v23
+              Wait [0:4:0]
+          Valve -v23
+
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+
+   MoveToPosition R3_1 , Waste
+              Wait [4:30:0]
+
+          Valve +v22 +v24 +v25
+	      Wait [0:0:600]
+	  Valve -v22 -v24 -v25
+          Valve +v23
+              Wait [0:4:0]
+          Valve -v23
+        
+	  Valve +v19
+
+	RepeatBegin 3
+	   Valve +R3_1 +R3_2
+	      Wait [0:1:600]
+	   Valve -R3_2
+	      Wait [0:0:500]
+	   Valve -R3_1
+	      Wait [0:0:300]
+	RepeatEnd
+
+           Valve -v4 -v6 -v12 -v19
+
+	Dispense R3_1,z1,450
+
+     Valve +v22 +v24 +v25
+        Wait [0:0:600]
+     Valve -v22 -v24 -v25
+     Valve +v23
+        Wait [0:4:0]
+     Valve -v23
+
+   MoveToPosition R3_1 , Waste
+
+
+Select SR_C5
+
+Message " Coupling SR-C5"
+
+   VacuumPump Off
+   Vacuumize_R3
+   CameraFilling Auto
+   VacuumPump Auto
+
+   MoveToPosition R3_1 , SR_C5
+
+     Valve +R3_1
+        Wait [0:0:200]
+     Valve -R3_1
+
+   MoveDevice SD,pos
+
+     Valve +R3_1
+        Wait [0:0:950]
+     Valve -R3_1
+
+   MoveDevice SD,zero
+
+     Valve +v4 +v6 +v12
+        Wait [0:6:0]
+
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+
+   MoveToPosition R3_1 , Waste
+              Wait [4:30:0]
+	      
+          Valve +v22 +v24 +v25
+	      Wait [0:0:600]
+	  Valve -v22 -v24 -v25
+          Valve +v23
+              Wait [0:4:0]
+          Valve -v23
+
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+
+   MoveToPosition R3_1 , Waste
+              Wait [4:30:0]
+
+          Valve +v22 +v24 +v25
+	      Wait [0:0:600]
+	  Valve -v22 -v24 -v25
+          Valve +v23
+              Wait [0:4:0]
+          Valve -v23
+        
+	  Valve +v19
+
+	RepeatBegin 3
+	   Valve +R3_1 +R3_2
+	      Wait [0:1:600]
+	   Valve -R3_2
+	      Wait [0:0:500]
+	   Valve -R3_1
+	      Wait [0:0:300]
+	RepeatEnd
+
+           Valve -v4 -v6 -v12 -v19
+
+	Dispense R3_1,z1,450
+
+     Valve +v22 +v24 +v25
+        Wait [0:0:600]
+     Valve -v22 -v24 -v25
+     Valve +v23
+        Wait [0:4:0]
+     Valve -v23
+
+   MoveToPosition R3_1 , Waste
+
+
+Select SR_D1
+
+Message " Coupling SR-D1"
+
+   VacuumPump Off
+   Vacuumize_R3
+   CameraFilling Auto
+   VacuumPump Auto
+
+   MoveToPosition R3_1 , SR_D1
+
+     Valve +R3_1
+        Wait [0:0:200]
+     Valve -R3_1
+
+   MoveDevice SD,pos
+
+     Valve +R3_1
+        Wait [0:0:950]
+     Valve -R3_1
+
+   MoveDevice SD,zero
+
+     Valve +v4 +v6 +v12
+        Wait [0:6:0]
+
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+
+   MoveToPosition R3_1 , Waste
+              Wait [4:30:0]
+	      
+          Valve +v22 +v24 +v25
+	      Wait [0:0:600]
+	  Valve -v22 -v24 -v25
+          Valve +v23
+              Wait [0:4:0]
+          Valve -v23
+
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+
+   MoveToPosition R3_1 , Waste
+              Wait [4:30:0]
+
+          Valve +v22 +v24 +v25
+	      Wait [0:0:600]
+	  Valve -v22 -v24 -v25
+          Valve +v23
+              Wait [0:4:0]
+          Valve -v23
+        
+	  Valve +v19
+
+	RepeatBegin 3
+	   Valve +R3_1 +R3_2
+	      Wait [0:1:600]
+	   Valve -R3_2
+	      Wait [0:0:500]
+	   Valve -R3_1
+	      Wait [0:0:300]
+	RepeatEnd
+
+           Valve -v4 -v6 -v12 -v19
+
+	Dispense R3_1,z1,450
+
+     Valve +v22 +v24 +v25
+        Wait [0:0:600]
+     Valve -v22 -v24 -v25
+     Valve +v23
+        Wait [0:4:0]
+     Valve -v23
+
+   MoveToPosition R3_1 , Waste
+
+
+Select SR_D2
+
+Message " Coupling SR-D2"
+
+   VacuumPump Off
+   Vacuumize_R3
+   CameraFilling Auto
+   VacuumPump Auto
+
+   MoveToPosition R3_1 , SR_D2
+
+     Valve +R3_1
+        Wait [0:0:200]
+     Valve -R3_1
+
+   MoveDevice SD,pos
+
+     Valve +R3_1
+        Wait [0:0:950]
+     Valve -R3_1
+
+   MoveDevice SD,zero
+
+     Valve +v4 +v6 +v12
+        Wait [0:6:0]
+
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+
+   MoveToPosition R3_1 , Waste
+              Wait [4:30:0]
+	      
+          Valve +v22 +v24 +v25
+	      Wait [0:0:600]
+	  Valve -v22 -v24 -v25
+          Valve +v23
+              Wait [0:4:0]
+          Valve -v23
+
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+
+   MoveToPosition R3_1 , Waste
+              Wait [4:30:0]
+
+          Valve +v22 +v24 +v25
+	      Wait [0:0:600]
+	  Valve -v22 -v24 -v25
+          Valve +v23
+              Wait [0:4:0]
+          Valve -v23
+        
+	  Valve +v19
+
+	RepeatBegin 3
+	   Valve +R3_1 +R3_2
+	      Wait [0:1:600]
+	   Valve -R3_2
+	      Wait [0:0:500]
+	   Valve -R3_1
+	      Wait [0:0:300]
+	RepeatEnd
+
+           Valve -v4 -v6 -v12 -v19
+
+	Dispense R3_1,z1,450
+
+     Valve +v22 +v24 +v25
+        Wait [0:0:600]
+     Valve -v22 -v24 -v25
+     Valve +v23
+        Wait [0:4:0]
+     Valve -v23
+
+   MoveToPosition R3_1 , Waste
+
+      
+Select SR_D3
+
+Message " Coupling SR-D3"
+
+   VacuumPump Off
+   Vacuumize_R3
+   CameraFilling Auto
+   VacuumPump Auto
+
+   MoveToPosition R3_1 , SR_D3
+
+     Valve +R3_1
+        Wait [0:0:200]
+     Valve -R3_1
+
+   MoveDevice SD,pos
+
+     Valve +R3_1
+        Wait [0:0:950]
+     Valve -R3_1
+
+   MoveDevice SD,zero
+
+     Valve +v4 +v6 +v12
+        Wait [0:6:0]
+
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+
+   MoveToPosition R3_1 , Waste
+              Wait [4:30:0]
+	      
+          Valve +v22 +v24 +v25
+	      Wait [0:0:600]
+	  Valve -v22 -v24 -v25
+          Valve +v23
+              Wait [0:4:0]
+          Valve -v23
+
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+
+   MoveToPosition R3_1 , Waste
+              Wait [4:30:0]
+
+          Valve +v22 +v24 +v25
+	      Wait [0:0:600]
+	  Valve -v22 -v24 -v25
+          Valve +v23
+              Wait [0:4:0]
+          Valve -v23
+        
+	  Valve +v19
+
+	RepeatBegin 3
+	   Valve +R3_1 +R3_2
+	      Wait [0:1:600]
+	   Valve -R3_2
+	      Wait [0:0:500]
+	   Valve -R3_1
+	      Wait [0:0:300]
+	RepeatEnd
+
+           Valve -v4 -v6 -v12 -v19
+
+	Dispense R3_1,z1,450
+
+     Valve +v22 +v24 +v25
+        Wait [0:0:600]
+     Valve -v22 -v24 -v25
+     Valve +v23
+        Wait [0:4:0]
+     Valve -v23
+
+   MoveToPosition R3_1 , Waste
+
+
+Select SR_D4
+
+Message " Coupling SR-D4"
+
+   VacuumPump Off
+   Vacuumize_R3
+   CameraFilling Auto
+   VacuumPump Auto
+
+   MoveToPosition R3_1 , SR_D4
+
+     Valve +R3_1
+        Wait [0:0:200]
+     Valve -R3_1
+
+   MoveDevice SD,pos
+
+     Valve +R3_1
+        Wait [0:0:950]
+     Valve -R3_1
+
+   MoveDevice SD,zero
+
+     Valve +v4 +v6 +v12
+        Wait [0:6:0]
+
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+
+   MoveToPosition R3_1 , Waste
+              Wait [4:30:0]
+	      
+          Valve +v22 +v24 +v25
+	      Wait [0:0:600]
+	  Valve -v22 -v24 -v25
+          Valve +v23
+              Wait [0:4:0]
+          Valve -v23
+
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+
+   MoveToPosition R3_1 , Waste
+              Wait [4:30:0]
+
+          Valve +v22 +v24 +v25
+	      Wait [0:0:600]
+	  Valve -v22 -v24 -v25
+          Valve +v23
+              Wait [0:4:0]
+          Valve -v23
+        
+	  Valve +v19
+
+	RepeatBegin 3
+	   Valve +R3_1 +R3_2
+	      Wait [0:1:600]
+	   Valve -R3_2
+	      Wait [0:0:500]
+	   Valve -R3_1
+	      Wait [0:0:300]
+	RepeatEnd
+
+           Valve -v4 -v6 -v12 -v19
+
+	Dispense R3_1,z1,450
+
+     Valve +v22 +v24 +v25
+        Wait [0:0:600]
+     Valve -v22 -v24 -v25
+     Valve +v23
+        Wait [0:4:0]
+     Valve -v23
+
+   MoveToPosition R3_1 , Waste
+
+
+Select SR_D5
+
+Message " Coupling SR-D5"
+
+   VacuumPump Off
+   Vacuumize_R3
+   CameraFilling Auto
+   VacuumPump Auto
+
+   MoveToPosition R3_1 , SR_D5
+
+     Valve +R3_1
+        Wait [0:0:200]
+     Valve -R3_1
+
+   MoveDevice SD,pos
+
+     Valve +R3_1
+        Wait [0:0:950]
+     Valve -R3_1
+
+   MoveDevice SD,zero
+
+     Valve +v4 +v6 +v12
+        Wait [0:6:0]
+
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+
+   MoveToPosition R3_1 , Waste
+              Wait [4:30:0]
+	      
+          Valve +v22 +v24 +v25
+	      Wait [0:0:600]
+	  Valve -v22 -v24 -v25
+          Valve +v23
+              Wait [0:4:0]
+          Valve -v23
+
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+
+   MoveToPosition R3_1 , Waste
+              Wait [4:30:0]
+
+          Valve +v22 +v24 +v25
+	      Wait [0:0:600]
+	  Valve -v22 -v24 -v25
+          Valve +v23
+              Wait [0:4:0]
+          Valve -v23
+        
+	  Valve +v19
+
+	RepeatBegin 3
+	   Valve +R3_1 +R3_2
+	      Wait [0:1:600]
+	   Valve -R3_2
+	      Wait [0:0:500]
+	   Valve -R3_1
+	      Wait [0:0:300]
+	RepeatEnd
+
+           Valve -v4 -v6 -v12 -v19
+
+	Dispense R3_1,z1,450
+
+     Valve +v22 +v24 +v25
+        Wait [0:0:600]
+     Valve -v22 -v24 -v25
+     Valve +v23
+        Wait [0:4:0]
+     Valve -v23
+
+   MoveToPosition R3_1 , Waste
+
+
+Select SR_E1
+
+Message " Coupling SR-E1"
+
+   VacuumPump Off
+   Vacuumize_R3
+   CameraFilling Auto
+   VacuumPump Auto
+
+   MoveToPosition R3_1 , SR_E1
+
+     Valve +R3_1
+        Wait [0:0:200]
+     Valve -R3_1
+
+   MoveDevice SD,pos
+
+     Valve +R3_1
+        Wait [0:0:950]
+     Valve -R3_1
+
+   MoveDevice SD,zero
+
+     Valve +v4 +v6 +v12
+        Wait [0:6:0]
+
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+
+   MoveToPosition R3_1 , Waste
+              Wait [4:30:0]
+	      
+          Valve +v22 +v24 +v25
+	      Wait [0:0:600]
+	  Valve -v22 -v24 -v25
+          Valve +v23
+              Wait [0:4:0]
+          Valve -v23
+
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+
+   MoveToPosition R3_1 , Waste
+              Wait [4:30:0]
+
+          Valve +v22 +v24 +v25
+	      Wait [0:0:600]
+	  Valve -v22 -v24 -v25
+          Valve +v23
+              Wait [0:4:0]
+          Valve -v23
+        
+	  Valve +v19
+
+	RepeatBegin 3
+	   Valve +R3_1 +R3_2
+	      Wait [0:1:600]
+	   Valve -R3_2
+	      Wait [0:0:500]
+	   Valve -R3_1
+	      Wait [0:0:300]
+	RepeatEnd
+
+           Valve -v4 -v6 -v12 -v19
+
+	Dispense R3_1,z1,450
+
+     Valve +v22 +v24 +v25
+        Wait [0:0:600]
+     Valve -v22 -v24 -v25
+     Valve +v23
+        Wait [0:4:0]
+     Valve -v23
+
+   MoveToPosition R3_1 , Waste
+
+Select SR_E2
+
+Message "Coupling SR-E2"
+
+   VacuumPump Off
+   Vacuumize_R3
+   CameraFilling Auto
+   VacuumPump Auto
+
+   MoveToPosition R3_1 , SR_E2
+
+     Valve +R3_1
+        Wait [0:0:200]
+     Valve -R3_1
+
+   MoveDevice SD,pos
+
+     Valve +R3_1
+        Wait [0:0:950]
+     Valve -R3_1
+
+   MoveDevice SD,zero
+
+     Valve +v4 +v6 +v12
+        Wait [0:6:0]
+
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+
+   MoveToPosition R3_1 , Waste
+              Wait [4:30:0]
+	      
+          Valve +v22 +v24 +v25
+	      Wait [0:0:600]
+	  Valve -v22 -v24 -v25
+          Valve +v23
+              Wait [0:4:0]
+          Valve -v23
+
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+
+   MoveToPosition R3_1 , Waste
+              Wait [4:30:0]
+
+          Valve +v22 +v24 +v25
+	      Wait [0:0:600]
+	  Valve -v22 -v24 -v25
+          Valve +v23
+              Wait [0:4:0]
+          Valve -v23
+        
+	  Valve +v19
+
+	RepeatBegin 3
+	   Valve +R3_1 +R3_2
+	      Wait [0:1:600]
+	   Valve -R3_2
+	      Wait [0:0:500]
+	   Valve -R3_1
+	      Wait [0:0:300]
+	RepeatEnd
+
+           Valve -v4 -v6 -v12 -v19
+
+	Dispense R3_1,z1,450
+
+     Valve +v22 +v24 +v25
+        Wait [0:0:600]
+     Valve -v22 -v24 -v25
+     Valve +v23
+        Wait [0:4:0]
+     Valve -v23
+
+   MoveToPosition R3_1 , Waste
+
+
+Select SR_E3
+
+Message " Coupling SR-E3"
+
+   VacuumPump Off
+   Vacuumize_R3
+   CameraFilling Auto
+   VacuumPump Auto
+
+   MoveToPosition R3_1 ,  SR_E3
+
+     Valve +R3_1
+        Wait [0:0:200]
+     Valve -R3_1
+
+   MoveDevice SD,pos
+
+     Valve +R3_1
+        Wait [0:0:950]
+     Valve -R3_1
+
+   MoveDevice SD,zero
+
+     Valve +v4 +v6 +v12
+        Wait [0:6:0]
+
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+
+   MoveToPosition R3_1 , Waste
+              Wait [4:30:0]
+	      
+          Valve +v22 +v24 +v25
+	      Wait [0:0:600]
+	  Valve -v22 -v24 -v25
+          Valve +v23
+              Wait [0:4:0]
+          Valve -v23
+
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+
+   MoveToPosition R3_1 , Waste
+              Wait [4:30:0]
+
+          Valve +v22 +v24 +v25
+	      Wait [0:0:600]
+	  Valve -v22 -v24 -v25
+          Valve +v23
+              Wait [0:4:0]
+          Valve -v23
+        
+	  Valve +v19
+
+	RepeatBegin 3
+	   Valve +R3_1 +R3_2
+	      Wait [0:1:600]
+	   Valve -R3_2
+	      Wait [0:0:500]
+	   Valve -R3_1
+	      Wait [0:0:300]
+	RepeatEnd
+
+           Valve -v4 -v6 -v12 -v19
+
+	Dispense R3_1,z1,450
+
+     Valve +v22 +v24 +v25
+        Wait [0:0:600]
+     Valve -v22 -v24 -v25
+     Valve +v23
+        Wait [0:4:0]
+     Valve -v23
+
+   MoveToPosition R3_1 , Waste
+
+
+Select SR_E4
+
+Message " Coupling SR-E4"
+
+   VacuumPump Off
+   Vacuumize_R3
+   CameraFilling Auto
+   VacuumPump Auto
+
+   MoveToPosition R3_1 , SR_E4
+
+        Valve +R3_1
+        Wait [0:0:200]
+     Valve -R3_1
+
+   MoveDevice SD,pos
+
+     Valve +R3_1
+        Wait [0:0:950]
+     Valve -R3_1
+
+   MoveDevice SD,zero
+
+     Valve +v4 +v6 +v12
+        Wait [0:6:0]
+
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+
+   MoveToPosition R3_1 , Waste
+              Wait [4:30:0]
+	      
+          Valve +v22 +v24 +v25
+	      Wait [0:0:600]
+	  Valve -v22 -v24 -v25
+          Valve +v23
+              Wait [0:4:0]
+          Valve -v23
+
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+
+   MoveToPosition R3_1 , Waste
+              Wait [4:30:0]
+
+          Valve +v22 +v24 +v25
+	      Wait [0:0:600]
+	  Valve -v22 -v24 -v25
+          Valve +v23
+              Wait [0:4:0]
+          Valve -v23
+        
+	  Valve +v19
+
+	RepeatBegin 3
+	   Valve +R3_1 +R3_2
+	      Wait [0:1:600]
+	   Valve -R3_2
+	      Wait [0:0:500]
+	   Valve -R3_1
+	      Wait [0:0:300]
+	RepeatEnd
+
+           Valve -v4 -v6 -v12 -v19
+
+	Dispense R3_1,z1,450
+
+     Valve +v22 +v24 +v25
+        Wait [0:0:600]
+     Valve -v22 -v24 -v25
+     Valve +v23
+        Wait [0:4:0]
+     Valve -v23
+
+   MoveToPosition R3_1 , Waste
+
+
+Select SR_E5
+
+Message " Coupling SR-E5"
+
+   VacuumPump Off
+   Vacuumize_R3
+   CameraFilling Auto
+   VacuumPump Auto
+
+   MoveToPosition R3_1 , SR_E5
+
+     Valve +R3_1
+        Wait [0:0:200]
+     Valve -R3_1
+
+   MoveDevice SD,pos
+
+     Valve +R3_1
+        Wait [0:0:950]
+     Valve -R3_1
+
+   MoveDevice SD,zero
+
+     Valve +v4 +v6 +v12
+        Wait [0:6:0]
+
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+
+   MoveToPosition R3_1 , Waste
+              Wait [4:30:0]
+	      
+          Valve +v22 +v24 +v25
+	      Wait [0:0:600]
+	  Valve -v22 -v24 -v25
+          Valve +v23
+              Wait [0:4:0]
+          Valve -v23
+
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+	Dispense Act1_4,z1,85
+	Dispense R3_1,z1,85
+
+   MoveToPosition R3_1 , Waste
+              Wait [4:30:0]
+
+          Valve +v22 +v24 +v25
+	      Wait [0:0:600]
+	  Valve -v22 -v24 -v25
+          Valve +v23
+              Wait [0:4:0]
+          Valve -v23
+        
+	  Valve +v19
+
+	RepeatBegin 3
+	   Valve +R3_1 +R3_2
+	      Wait [0:1:600]
+	   Valve -R3_2
+	      Wait [0:0:500]
+	   Valve -R3_1
+	      Wait [0:0:300]
+	RepeatEnd
+
+           Valve -v4 -v6 -v12 -v19
+
+	Dispense R3_1,z1,450
+
+     Valve +v22 +v24 +v25
+        Wait [0:0:600]
+     Valve -v22 -v24 -v25
+     Valve +v23
+        Wait [0:4:0]
+     Valve -v23
+
+   MoveToPosition R3_1 , Waste
+
+Select SR_A1,SR_A2,SR_A3,SR_A4,SR_A5,SR_B1,SR_B2,SR_B3,SR_B4,SR_B5,SR_C1,SR_C2,SR_C3,SR_C4,SR_C5,SR_D1,SR_D2,SR_D3,SR_D4,SR_D5,SR_E1,SR_E2,SR_E3,SR_E4,SR_E5
+
+     Valve +v22 +v24 +v25
+        Wait [0:0:600]
+     Valve -v22 -v24 -v25
+     Valve +v16 +v15 +v23
+        Wait [0:4:0]
+     Valve -v16 -v15 -v23
+
+//******************************************
+//************* Addition Bases *************
+//******************************************
+
+
+PB 1-500
+
+Select a,c,g,t,1,2,3,4,5,6,7,8,r,y,k,m,s,w,b,d,h,v,n,A,C,G,T,R,Y,K,M,S,W,B,D,H,V,N,As,Cs,Gs,Ts,1s,2s,3s,4s,5s,6s,7s,8s,FAM,BHQ_1,FdT,dI,HEX,6_FAM,6FAM,BHQ1,9,10,11,12,9s,10s,11s,12s
+
+   CameraFilling Auto
+   VacuumPump Auto
+
+Message " Refresh Amidities "
+   
+   Valve +v4 +v12 +v13
+ 
+MoveToPosition Head , Waste
+
+Select g,G,Gs
+	Valve +Act1_3 +g
+	   Wait [0:0:30]
+	Valve -Act1_3 -g
+
+Select a,A,As
+	Valve +Act1_1 +A
+	   Wait [0:0:30]
+	Valve -Act1_1 -A
+
+Select c,C,Cs
+	Valve +Act1_2 +C
+	   Wait [0:0:30]
+	Valve -Act1_2 -C
+
+Select t,T,Ts
+	Valve +Act1_4 +T
+	   Wait [0:0:30]
+	Valve -Act1_4 -T
+
+Select 5,5s,BHQ_1,BHQ1
+	Valve +m5 +Act2_1
+	   Wait [0:0:30]
+	Valve -m5 -Act2_1
+
+Select 6,6s,FdT
+	Valve +m6 +Act2_2
+	   Wait [0:0:30]
+	Valve -m6 -Act2_2
+
+Select 7,7s,HEX,6_FAM,6FAM,FAM
+	Valve +m7 +Act2_3 
+	   Wait [0:0:30]
+	Valve -m7 -Act2_3 
+
+Select 8,8s,dI
+	Valve +m8 +Act2_4
+	   Wait [0:0:30]
+	Valve -m8 -Act2_4
+
+Select 1,1s
+	Valve +m1
+	   Wait [0:0:30]
+	Valve -m1
+
+Select 2,2s
+	Valve +m2
+	   Wait [0:0:30]
+	Valve -m2
+
+Select 3,3s
+	Valve +m3
+	   Wait [0:0:30]
+	Valve -m3
+
+Select 4,4s
+	Valve +m4
+	   Wait [0:0:30]
+	Valve -m4
+
+Select 1,2,3,4,1s,2s,3s,4s
+
+	Valve +Act1_1 +Act1_2 +Act1_3 +Act1_4
+	   Wait [0:0:30]
+	Valve -Act1_1 -Act1_2 -Act1_3 -Act1_4
+
+Select 9,9s
+	Valve +m9
+	   Wait [0:0:30]
+	Valve -m9
+
+Select 10,10s
+	Valve +m10
+	   Wait [0:0:30]
+	Valve -m10
+
+Select 11,11s
+	Valve +m11
+	   Wait [0:0:30]
+	Valve -m11
+
+Select 12,12s
+	Valve +m12
+	   Wait [0:0:30]
+	Valve -m12
+
+Select 9,10,11,12,9s,10s,11s,12s
+
+	Valve +Act2_1 +Act2_2 +Act2_3 +Act2_4
+	   Wait [0:0:30]
+	Valve -Act2_1 -Act2_2 -Act2_3 -Act2_4
+
+
+Select a,c,g,t,1,2,3,4,5,6,7,8,r,y,k,m,s,w,b,d,h,v,n,A,C,G,T,R,Y,K,M,S,W,B,D,H,V,N,As,Cs,Gs,Ts,1s,2s,3s,4s,5s,6s,7s,8s,FAM,BHQ_1,FdT,dI,HEX,6_FAM,6FAM,BHQ1,9,10,11,12,9s,10s,11s,12s
+
+   Wait [0:0:500]
+
+Select g,G,Gs
+	Valve +Act1_3 +g
+	   Wait [0:0:30]
+	Valve -Act1_3 -g
+
+Select a,A,As
+	Valve +Act1_1 +A
+	   Wait [0:0:30]
+	Valve -Act1_1 -A
+
+Select c,C,Cs
+	Valve +Act1_2 +C
+	   Wait [0:0:30]
+	Valve -Act1_2 -C
+
+Select t,T,Ts
+	Valve +Act1_4 +T
+	   Wait [0:0:30]
+	Valve -Act1_4 -T
+
+Select 5,5s,BHQ_1,BHQ1
+	Valve +m5 +Act2_1
+	   Wait [0:0:30]
+	Valve -m5 -Act2_1
+
+Select 6,6s,FdT
+	Valve +m6 +Act2_2
+	   Wait [0:0:30]
+	Valve -m6 -Act2_2
+
+Select 7,7s,HEX,6_FAM,6FAM,FAM
+	Valve +m7 +Act2_3 
+	   Wait [0:0:30]
+	Valve -m7 -Act2_3 
+
+Select 8,8s,dI
+	Valve +m8 +Act2_4
+	   Wait [0:0:30]
+	Valve -m8 -Act2_4
+
+Select 1,1s
+	Valve +m1
+	   Wait [0:0:30]
+	Valve -m1
+
+Select 2,2s
+	Valve +m2
+	   Wait [0:0:30]
+	Valve -m2
+
+Select 3,3s
+	Valve +m3
+	   Wait [0:0:30]
+	Valve -m3
+
+Select 4,4s
+	Valve +m4
+	   Wait [0:0:30]
+	Valve -m4
+
+Select 1,2,3,4,1s,2s,3s,4s
+
+	Valve +Act1_1 +Act1_2 +Act1_3 +Act1_4
+	   Wait [0:0:30]
+	Valve -Act1_1 -Act1_2 -Act1_3 -Act1_4
+
+Select 9,9s
+	Valve +m9
+	   Wait [0:0:30]
+	Valve -m9
+
+Select 10,10s
+	Valve +m10
+	   Wait [0:0:30]
+	Valve -m10
+
+Select 11,11s
+	Valve +m11
+	   Wait [0:0:30]
+	Valve -m11
+
+Select 12,12s
+	Valve +m12
+	   Wait [0:0:30]
+	Valve -m12
+
+Select 9,10,11,12,9s,10s,11s,12s
+
+	Valve +Act2_1 +Act2_2 +Act2_3 +Act2_4
+	   Wait [0:0:30]
+	Valve -Act2_1 -Act2_2 -Act2_3 -Act2_4
+
+
+Select a,c,g,t,1,2,3,4,5,6,7,8,r,y,k,m,s,w,b,d,h,v,n,A,C,G,T,R,Y,K,M,S,W,B,D,H,V,N,As,Cs,Gs,Ts,1s,2s,3s,4s,5s,6s,7s,8s,FAM,BHQ_1,FdT,dI,HEX,6_FAM,6FAM,BHQ1,9,10,11,12,9s,10s,11s,12s
+
+   Wait [0:0:500]
+  
+   Valve -v4 -v11 -v12 -v13
+
+     Valve +v19
+        Wait [0:2:0]
+     Valve -v19
+
+PB 1-500
+
+Select a,c,g,t,1,2,3,4,5,6,7,8,r,y,k,m,s,w,b,d,h,v,n,A,C,G,T,R,Y,K,M,S,W,B,D,H,V,N,As,Cs,Gs,Ts,1s,2s,3s,4s,5s,6s,7s,8s,FAM,BHQ_1,FdT,dI,HEX,6_FAM,6FAM,BHQ1,9,10,11,12,9s,10s,11s,12s
+
+   Message " Coupling "
+   
+   CameraFilling Auto
+   VacuumPump Auto
+
+Select 1,2,3,4,1s,2s,3s,4s
+
+     Valve +v4 +v12   
+
+        Dispense Act1,z4,160
+   MoveAbsolute y = 520
+        Wait [0:1:200]
+     Valve -v4 -v12
+     
+     Valve +v22 +v24 +v25
+        Wait [0:0:600]
+     Valve -v22 -v24 -v25
+
+
+Select 5,6,7,8,5s,6s,7s,8s,9,10,11,12,9s,10s,11s,12s,BHQ_1,BHQ1,FdT,HEX,6_FAM,6FAM,FAM,dI
+
+     Valve +v4 +v13   
+
+        Dispense Act2,z4,160
+   MoveAbsolute y = 520
+        Wait [0:1:200]
+     Valve -v4 -v13 -v23
+     
+     Valve +v22 +v24 +v25
+        Wait [0:0:600]
+     Valve -v22 -v24 -v25
+
+
+Select a,c,g,t,1,2,3,4,5,6,7,8,r,y,k,m,s,w,b,d,h,v,n,A,C,G,T,R,Y,K,M,S,W,B,D,H,V,N,As,Cs,Gs,Ts,1s,2s,3s,4s,5s,6s,7s,8s,FAM,BHQ_1,FdT,dI,HEX,6_FAM,6FAM,BHQ1,9,10,11,12,9s,10s,11s,12s
+ 
+     Valve +v4 +v12 +v13 +v23
+
+Select 1,2,3,4,5,6,7,8,9,10,11,12,1s,2s,3s,4s,5s,6s,7s,8s,9s,10s,11s,12s,BHQ_1,BHQ1,FdT,HEX,6_FAM,6FAM,FAM,dI
+
+Message " Coupling Modified & Thio Amidites "
+
+Select 1,1s
+	Dispense m1,z1,160   
+Select 2,2s
+	Dispense m2,z1,160
+Select 3,3s
+	Dispense m3,z1,160 
+Select 4,4s
+	Dispense m4,z1,160
+
+Select 1,2,3,4,1s,2s,3s,4s
+	Dispense Act1,z4,160
+
+Select 5,5s,BHQ_1,BHQ1
+	Dispense m5xAct2,z1,160 
+Select 6,6s,FdT
+	Dispense m6xAct2,z1,160
+Select 7,7s,HEX,6_FAM,6FAM,FAM
+	Dispense m7xAct2,z1,160 
+Select 8,8s,dI
+	Dispense m8xAct2,z1,160 
+Select 9,9s
+	Dispense m9,z1,160  
+Select 10,10s
+	Dispense m10,z1,160 
+Select 11,11s
+	Dispense m11,z1,160 
+Select 12,12s
+	Dispense m12,z1,160
+
+Select 9,10,11,12,9s,10s,11s,12s
+	Dispense Act2,z4,160
+
+Select 1,2,3,4,5,6,7,8,9,10,11,12,1s,2s,3s,4s,5s,6s,7s,8s,9s,10s,11s,12s,BHQ_1,BHQ1,FdT,HEX,6_FAM,6FAM,FAM,dI
+  
+      MoveAbsolute y = 520
+    Wait [2:0:0]
+	MoveAbsolute y = 570
+	Wait [0:0:500]
+	MoveAbsolute y = 520 
+    Wait [3:0:0]
+	MoveAbsolute y = 570
+	Wait [0:0:500]
+	MoveAbsolute y = 520 
+    Wait [4:0:0]
+
+Select a,c,g,t,r,y,k,m,s,w,b,d,h,v,n,A,C,G,T,R,Y,K,M,S,W,B,D,H,V,N,As,Cs,Gs,Ts
+
+Message " Coupling Standard & Thio Amidites "
+
+Select g,G,Gs
+	Dispense GxAct1,z1,160
+
+Select a,A,As
+	Dispense AxAct1,z1,160 
+
+Select c,C,Cs
+	Dispense CxAct1,z1,160
+
+Select t,T,Ts
+	Dispense TxAct1,z1,160
+
+Select r,y,k,m,s,w,b,d,h,v,n,R,Y,K,M,S,W,B,D,H,V,N
+
+Message " Coupling Degenerate (Mix) Amidites "
+
+Select r,R
+	Dispense A,z1,85
+	Dispense g,z1,85
+
+Select y,Y
+	Dispense C,z1,85
+	Dispense T,z1,85
+
+Select k,K
+	Dispense g,z1,85
+	Dispense T,z1,85
+
+Select m,M
+	Dispense A,z1,85
+	Dispense C,z1,85
+
+Select s,S
+	Dispense g,z1,85
+	Dispense C,z1,85
+
+Select w,W
+	Dispense A,z1,85
+	Dispense T,z1,85
+
+Select b,B
+	Dispense C,z1,53
+	Dispense g,z1,53
+	Dispense T,z1,53
+
+Select d,D
+	Dispense A,z1,53
+	Dispense g,z1,53
+	Dispense T,z1,53
+
+Select h,H
+	Dispense A,z1,53
+	Dispense C,z1,53
+	Dispense T,z1,53
+
+Select v,V
+	Dispense A,z1,53
+	Dispense C,z1,53
+	Dispense g,z1,53
+
+Select n,N
+	Dispense A,z1,40
+	Dispense C,z1,40
+	Dispense g,z1,40
+	Dispense T,z1,40
+
+Select r,y,k,m,s,w,b,d,h,v,n,R,Y,K,M,S,W,B,D,H,V,N
+
+	Dispense Act1,z4,160
+
+Select a,c,g,t,r,y,k,m,s,w,b,d,h,v,n,A,C,G,T,R,Y,K,M,S,W,B,D,H,V,N,As,Cs,Gs,Ts
+
+        MoveAbsolute y = 520
+
+    Wait [0:6:0]
+	MoveAbsolute y = 570
+	Wait [0:0:500]
+	MoveAbsolute y = 520 
+    Wait [0:14:0]
+	MoveAbsolute y = 570
+	Wait [0:0:500]
+	MoveAbsolute y = 520 
+    Wait [0:15:0]
+
+Select a,c,g,t,1,2,3,4,5,6,7,8,r,y,k,m,s,w,b,d,h,v,n,A,C,G,T,R,Y,K,M,S,W,B,D,H,V,N,As,Cs,Gs,Ts,1s,2s,3s,4s,5s,6s,7s,8s,FAM,BHQ_1,FdT,dI,HEX,6_FAM,6FAM,BHQ1,9,10,11,12,9s,10s,11s,12s
+
+     Valve -v4 -v12 -v13 -v23
+     Valve +v22 +v24 +v25
+        Wait [0:0:600]
+     Valve -v22 -v24 -v25
+     
+    
+//******************************************
+//************* First Addition *************
+//******************************************
+
+
+PB 1-1
+
+Select a,c,g,t,1,2,3,4,5,6,7,8,r,y,k,m,s,w,b,d,h,v,n,A,C,G,T,R,Y,K,M,S,W,B,D,H,V,N,As,Cs,Gs,Ts,1s,2s,3s,4s,5s,6s,7s,8s,FAM,BHQ_1,FdT,dI,HEX,6_FAM,6FAM,BHQ1,9,10,11,12,9s,10s,11s,12s
+
+Message " Coupling First Base "
+   
+CameraFilling Auto
+   VacuumPump Auto
+
+Select All
+
+     Valve +v4 +v12 +v13 +v23
+
+Select 1,1s
+	Dispense m1,z1,140
+Select 2,2s
+	Dispense m2,z1,140
+Select 3,3s
+	Dispense m3,z1,140
+Select 4,4s
+	Dispense m4,z1,140
+
+Select 1,2,3,4,1s,2s,3s,4s
+	Dispense Act1,z4,120
+
+Select 5,5s,BHQ_1,BHQ1
+	Dispense m5xAct2,z1,140
+Select 6,6s,FdT
+	Dispense m6xAct2,z1,130
+Select 7,7s,HEX,6_FAM,6FAM,FAM
+	Dispense m7xAct2,z1,140
+Select 8,8s,dI
+	Dispense m8xAct2,z1,140
+
+Select 9,9s
+	Dispense m9,z1,140
+Select 10,10s
+	Dispense m10,z1,140
+Select 11,11s
+	Dispense m11,z1,140
+Select 12,12s
+	Dispense m12,z1,140
+
+Select 9,10,11,12,9s,10s,11s,12s
+	Dispense Act2,z4,120
+
+Select 1,2,3,4,5,6,7,8,9,10,11,12,1s,2s,3s,4s,5s,6s,7s,8s,9s,10s,11s,12s,BHQ_1,BHQ1,FdT,HEX,6_FAM,6FAM,FAM,dI
+
+        MoveAbsolute y = 520
+    Wait [2:0:0]
+	MoveAbsolute y = 570
+	Wait [0:0:500]
+	MoveAbsolute y = 520 
+    Wait [3:0:0]
+	MoveAbsolute y = 570
+	Wait [0:0:500]
+	MoveAbsolute y = 520 
+    Wait [4:0:0]
+
+Select r,R
+	Dispense A,z1,70
+	Dispense g,z1,70
+
+Select y,Y
+	Dispense C,z1,70
+	Dispense T,z1,70
+
+Select k,K
+	Dispense g,z1,70
+	Dispense T,z1,70
+
+Select m,M
+	Dispense A,z1,70
+	Dispense C,z1,70
+
+Select s,S
+	Dispense g,z1,70
+	Dispense C,z1,70
+
+Select w,W
+	Dispense A,z1,70
+	Dispense T,z1,70
+
+Select b,B
+	Dispense C,z1,47
+	Dispense g,z1,47
+	Dispense T,z1,47
+
+Select d,D
+	Dispense A,z1,47
+	Dispense g,z1,47
+	Dispense T,z1,47
+
+Select h,H
+	Dispense A,z1,47
+	Dispense C,z1,47
+	Dispense T,z1,47
+
+Select v,V
+	Dispense A,z1,47
+	Dispense C,z1,47
+	Dispense g,z1,47
+Select n,N
+	Dispense A,z1,35
+	Dispense C,z1,35
+	Dispense g,z1,35
+	Dispense T,z1,35
+Select r,y,k,m,s,w,b,d,h,v,n,R,Y,K,M,S,W,B,D,H,V,N
+
+	Dispense Act1,z4,140
+        Wait [0:5:0]
+
+Select a,c,g,t,r,y,k,m,s,w,b,d,h,v,n,A,C,G,T,R,Y,K,M,S,W,B,D,H,V,N,As,Cs,Gs,Ts
+
+        MoveAbsolute y = 520
+    Wait [0:6:0]
+	MoveAbsolute y = 570
+	Wait [0:0:500]
+	MoveAbsolute y = 520 
+    Wait [0:14:0]
+	MoveAbsolute y = 570
+	Wait [0:0:500]
+	MoveAbsolute y = 520 
+    Wait [0:15:0]
+
+Select a,c,g,t,1,2,3,4,5,6,7,8,r,y,k,m,s,w,b,d,h,v,n,A,C,G,T,R,Y,K,M,S,W,B,D,H,V,N,As,Cs,Gs,Ts,1s,2s,3s,4s,5s,6s,7s,8s,FAM,BHQ_1,FdT,dI,HEX,6_FAM,6FAM,BHQ1,9,10,11,12,9s,10s,11s,12s
+
+     Valve -v4 -v12 -v13 -v23
+     Valve +v22 +v24 +v25
+        Wait [0:0:600]
+     Valve -v22 -v24 -v25
+     
+     
+//******************************************
+//************* Addition Bases *************
+//******************************************
+
+
+PB 1-500
+
+Select a,c,g,t,1,2,3,4,5,6,7,8,r,y,k,m,s,w,b,d,h,v,n,A,C,G,T,R,Y,K,M,S,W,B,D,H,V,N,As,Cs,Gs,Ts,1s,2s,3s,4s,5s,6s,7s,8s,FAM,BHQ_1,FdT,dI,HEX,6_FAM,6FAM,BHQ1,9,10,11,12,9s,10s,11s,12s
+
+   CameraFilling Auto
+   VacuumPump Auto
+
+     Valve +v4 +v12 +v13 +v23
+
+Select 1,1s
+	Dispense m1,z1,140
+Select 2,2s
+	Dispense m2,z1,140
+Select 3,3s
+	Dispense m3,z1,140
+Select 4,4s
+	Dispense m4,z1,140
+
+Select 1,2,3,4,1s,2s,3s,4s
+	Dispense Act1,z4,120
+
+Select 5,5s,BHQ_1,BHQ1
+	Dispense m5xAct2,z1,140
+Select 6,6s,FdT
+	Dispense m6xAct2,z1,130
+Select 7,7s,HEX,6_FAM,6FAM,FAM
+	Dispense m7xAct2,z1,140
+Select 8,8s,dI
+	Dispense m8xAct2,z1,140
+
+Select 9,9s
+	Dispense m9,z1,140
+Select 10,10s
+	Dispense m10,z1,140
+Select 11,11s
+	Dispense m11,z1,140
+Select 12,12s
+	Dispense m12,z1,140
+
+Select 9,10,11,12,9s,10s,11s,12s
+	Dispense Act2,z4,120
+
+Select 1,2,3,4,5,6,7,8,9,10,11,12,1s,2s,3s,4s,5s,6s,7s,8s,9s,10s,11s,12s,BHQ_1,BHQ1,FdT,HEX,6_FAM,6FAM,FAM,dI
+
+        MoveAbsolute y = 520
+    Wait [2:0:0]
+	MoveAbsolute y = 570
+	Wait [0:0:500]
+	MoveAbsolute y = 520 
+    Wait [3:0:0]
+	MoveAbsolute y = 570
+	Wait [0:0:500]
+	MoveAbsolute y = 520 
+    Wait [4:0:0]
+
+
+Select r,R
+	Dispense A,z1,70
+	Dispense g,z1,70
+
+Select y,Y
+	Dispense C,z1,70
+	Dispense T,z1,70
+
+Select k,K
+	Dispense g,z1,70
+	Dispense T,z1,70
+
+Select m,M
+	Dispense A,z1,70
+	Dispense C,z1,70
+
+Select s,S
+	Dispense g,z1,70
+	Dispense C,z1,70
+
+Select w,W
+	Dispense A,z1,70
+	Dispense T,z1,70
+
+Select b,B
+	Dispense C,z1,47
+	Dispense g,z1,47
+	Dispense T,z1,47
+
+Select d,D
+	Dispense A,z1,47
+	Dispense g,z1,47
+	Dispense T,z1,47
+
+Select h,H
+	Dispense A,z1,47
+	Dispense C,z1,47
+	Dispense T,z1,47
+
+Select v,V
+	Dispense A,z1,47
+	Dispense C,z1,47
+	Dispense g,z1,47
+Select n,N
+	Dispense A,z1,35
+	Dispense C,z1,35
+	Dispense g,z1,35
+	Dispense T,z1,35
+
+Select r,y,k,m,s,w,b,d,h,v,n,R,Y,K,M,S,W,B,D,H,V,N
+
+	Dispense Act1,z4,140
+        Wait [0:5:0]
+
+Select a,c,g,t,r,y,k,m,s,w,b,d,h,v,n,A,C,G,T,R,Y,K,M,S,W,B,D,H,V,N,As,Cs,Gs,Ts
+
+        MoveAbsolute y = 520
+    Wait [0:6:0]
+	MoveAbsolute y = 570
+	Wait [0:0:500]
+	MoveAbsolute y = 520 
+    Wait [0:14:0]
+	MoveAbsolute y = 570
+	Wait [0:0:500]
+	MoveAbsolute y = 520 
+    Wait [0:15:0]
+
+Select a,c,g,t,1,2,3,4,5,6,7,8,r,y,k,m,s,w,b,d,h,v,n,A,C,G,T,R,Y,K,M,S,W,B,D,H,V,N,As,Cs,Gs,Ts,1s,2s,3s,4s,5s,6s,7s,8s,FAM,BHQ_1,FdT,dI,HEX,6_FAM,6FAM,BHQ1,9,10,11,12,9s,10s,11s,12s
+
+     Valve -v4 -v12 -v13 -v23
+     Valve +v22 +v24 +v25
+        Wait [0:0:600]
+     Valve -v22 -v24 -v25
+     
+    
+//******************************************
+//*************** Washing ******************
+//******************************************
+
+PB 1-500
+
+Select a,c,g,t,1,2,3,4,5,6,7,8,r,y,k,m,s,w,b,d,h,v,n,A,C,G,T,R,Y,K,M,S,W,B,D,H,V,N,As,Cs,Gs,Ts,1s,2s,3s,4s,5s,6s,7s,8s,FAM,BHQ_1,FdT,dI,HEX,6_FAM,6FAM,BHQ1,9,10,11,12,9s,10s,11s,12s
+
+   CameraFilling Auto
+   VacuumPump Auto
+
+Message " Washing wells >>>>> "
+
+     Valve +v4 +v11
+        Wait [0:2:0]
+	Dispense W2,z4,400
+     Valve -v11 -v4
+   MoveAbsolute y = 520
+
+     Valve +v22 +v24 +v25
+        Wait [0:1:0]
+     Valve -v22 -v24 -v25
+
+     Valve +v23 +v17
+        Wait [0:3:0]  
+     Valve -v17 -v23
+
+   Check He
+   Check Ar
+   Check Condenser
+   Check Waste
+   Check PS2_High
+   Check PS2_Low
+   Check Vacuum_Low
+
+   //-------------------------
+		SafePoint
+   //-------------------------
+
+
+//******************************************
+//*************** Capping ******************
+//******************************************
+
+PB 1-500
+
+Select a,A,c,C,g,G,t,T,r,y,k,m,s,w,b,d,h,v,n,R,Y,K,M,S,W,B,D,H,V,N,1,2,3,4,5,6,7,8,9,10,11,12,BHQ_1,BHQ1,FdT,HEX,6_FAM,6FAM,FAM,dI,R3_1,R3_2,SR_A1,SR_A2,SR_A3,SR_A4,SR_A5,SR_B1,SR_B2,SR_B3,SR_B4,SR_B5,SR_C1,SR_C2,SR_C3,SR_C4,SR_C5,SR_D1,SR_D2,SR_D3,SR_D4,SR_D5,SR_E1,SR_E2,SR_E3,SR_E4,SR_E5
+
+Message " Capping "
+
+     Valve +v4 +v10 +v23
+        Wait [0:1:0]
+	Dispense CpAxCpB,z2,150
+   MoveAbsolute y = 520
+        Wait [0:19:500]
+     Valve -v23
+        Wait [0:1:0]
+     Valve +v22 +v24 +v25 
+        Wait [0:0:600]
+     Valve -v22 -v24 -v25 
+
+RepeatBegin 2
+     Valve +v23 +v15 +v16
+        Wait [0:2:0]
+     Valve -v15 -v16
+        Wait [0:1:0]
+     Dispense CpAxCpB,z2,120 
+   MoveAbsolute y = 520
+        Wait [0:19:500]
+     Valve -v23
+        Wait [0:1:0]
+     Valve +v22 +v24 +v25 
+        Wait [0:0:600]
+     Valve -v22 -v24 -v25 
+RepeatEnd
+
+     Valve -v4 -v10
+
+//******************************************
+//************ First Capping ***************
+//******************************************
+
+PB 1-1
+
+Select a,A,c,C,g,G,t,T,r,y,k,m,s,w,b,d,h,v,n,R,Y,K,M,S,W,B,D,H,V,N,1,2,3,4,5,6,7,8,9,10,11,12,BHQ_1,BHQ1,FdT,HEX,6_FAM,6FAM,FAM,dI,R3_1,R3_2,SR_A1,SR_A2,SR_A3,SR_A4,SR_A5,SR_B1,SR_B2,SR_B3,SR_B4,SR_B5,SR_C1,SR_C2,SR_C3,SR_C4,SR_C5,SR_D1,SR_D2,SR_D3,SR_D4,SR_D5,SR_E1,SR_E2,SR_E3,SR_E4,SR_E5
+
+   CameraFilling Auto
+   VacuumPump Auto
+
+     Valve +v4 +v10 +v23 +v15 +v16
+        Wait [0:2:0]
+     Valve -v15 -v16
+        Wait [0:1:0]
+     Dispense CpAxCpB,z2,120
+     Valve -v4 -v10  
+   MoveAbsolute y = 520
+        Wait [0:19:500]
+     Valve -v23
+        Wait [0:1:0]
+     Valve +v22 +v24 +v25 
+        Wait [0:0:600]
+     Valve -v22 -v24 -v25 
+
+
+PB 1-500
+
+   CameraFilling Auto
+   VacuumPump Auto
+
+
+//******************************************
+//*************** Washing ******************
+//******************************************
+
+PB 1-500
+
+Select a,A,c,C,g,G,t,T,r,y,k,m,s,w,b,d,h,v,n,R,Y,K,M,S,W,B,D,H,V,N,1,2,3,4,5,6,7,8,9,10,11,12,BHQ_1,BHQ1,FdT,HEX,6_FAM,6FAM,FAM,dI,R3_1,R3_2,SR_A1,SR_A2,SR_A3,SR_A4,SR_A5,SR_B1,SR_B2,SR_B3,SR_B4,SR_B5,SR_C1,SR_C2,SR_C3,SR_C4,SR_C5,SR_D1,SR_D2,SR_D3,SR_D4,SR_D5,SR_E1,SR_E2,SR_E3,SR_E4,SR_E5
+
+Message " Washing after Capping >>>>>>"
+
+     Valve +v4 +v11
+        Wait [0:0:500]
+	Dispense W2,z4,400
+    Valve -v11
+   MoveAbsolute y = 520
+
+     Valve +v22 +v24 +v25 
+        Wait [0:1:0]
+     Valve -v22 -v24 -v25 
+
+     Valve +v23 +v17 +v2
+        Wait [0:3:0]
+     Valve -v4 -v23 -v17 -v2
+
+   Check He
+   Check Ar
+   Check Condenser
+   Check Waste
+   Check PS1_High
+   Check PS1_Low
+   Check PS2_High
+   Check PS2_Low
+   Check Vacuum_Low
+
+   //-------------------------
+		SafePoint
+   //-------------------------
+
+
+//******************************************
+//************** Oxidation *****************
+//******************************************
+
+PB 1-500
+
+Select As,Cs,Gs,Ts,1s,2s,3s,4s,5s,6s,7s,8s,9s,10s,11s,12s
+
+Message " R1 Oxidation Thio Bases "
+
+Valve +v4 +v14 +v23
+Wait [0:1:0]
+Dispense R1,z1,260
+MoveAbsolute y = 520
+Wait [1:0:0]
+Valve -v23  
+Valve +v22 +v24 +v25
+Wait [0:0:600]
+Valve -v22 -v24 -v25
+Valve +v16 +v15 +v23
+Wait [0:3:0]
+Valve -v16 -v15 -v23
+
+RepeatBegin 2
+Valve +v23
+Dispense R1,z1,230
+Valve -v4 -v14
+MoveAbsolute y = 520
+Wait [1:0:0]
+Valve -v23  
+Valve +v22 +v24 +v25
+Wait [0:0:600]
+Valve -v22 -v24 -v25
+Valve +v16 +v15 +v23
+Wait [0:3:0]
+Valve -v16 -v15 -v23
+RepeatEnd
+
+Valve -v4 -v14
+ 
+Message " Washing Thio bases >>>>>>"
+
+Valve +v4 +v11
+     Wait [0:2:0]
+
+StartTimer 1,[0:5:0]
+    Dispense W2,z4,500
+MoveAbsolute y = 520
+Valve +v22 +v24 +v25
+Wait [0:0:850]
+Valve -v22 -v24 -v25
+WaitTimer 1
+
+StartTimer 1,[0:7:0]
+Dispense W2,z4,1100
+MoveAbsolute y = 520
+Valve +v22 +v24 +v25
+Wait [0:2:0]
+Valve -v22 -v24 -v25
+WaitTimer 1
+
+StartTimer 1,[0:6:0]
+Dispense W2,z4,800
+MoveAbsolute y = 520
+Valve +v22 +v24 +v25
+Wait [0:1:600]
+Valve -v22 -v24 -v25
+WaitTimer 1
+
+     Valve -v11
+     Valve +v22 +v24 +v25
+        Wait [0:2:0]
+     Valve -v22 -v24 -v25 
+     Valve +v23
+        Wait [0:4:0]
+     Valve -v23
+       
+Message " Capping Thio bases"
+
+     Valve +v10 +v23
+        Wait [0:1:0]
+	Dispense CpAxCpB,z2,150
+   MoveAbsolute y = 520
+        Wait [0:18:0]
+     Valve +v15 +v16
+        Wait [0:5:0]
+     Valve -v15 -v16 -v23
+     Valve +v22 +v24 +v25
+        Wait [0:0:600]
+     Valve -v22 -v24 -v25
+
+RepeatBegin 2
+     Valve +v23
+        Wait [0:4:0]
+    Dispense CpAxCpB,z2,120
+     Valve -v4 -v10
+   MoveAbsolute y = 520
+        Wait [0:18:0]
+     Valve +v15 +v16
+        Wait [0:5:0]
+     Valve -v15 -v16 -v23
+     Valve +v22 +v24 +v25
+        Wait [0:0:600]
+     Valve -v22 -v24 -v25
+RepeatEnd
+
+     Valve +v23
+        Wait [0:3:0]
+     Valve -v23
+   
+
+PB 1-500 
+   
+Select a,A,c,C,g,G,t,T,r,y,k,m,s,w,b,d,h,v,n,R,Y,K,M,S,W,B,D,H,V,N,1,2,3,4,5,6,7,8,9,10,11,12,BHQ_1,BHQ1,FdT,HEX,6_FAM,6FAM,FAM,dI,R3_1,R3_2,SR_A1,SR_A2,SR_A3,SR_A4,SR_A5,SR_B1,SR_B2,SR_B3,SR_B4,SR_B5,SR_C1,SR_C2,SR_C3,SR_C4,SR_C5,SR_D1,SR_D2,SR_D3,SR_D4,SR_D5,SR_E1,SR_E2,SR_E3,SR_E4,SR_E5
+
+Message " Oxidation Base wells "
+
+     Valve +v2 +v9 +v23
+        Wait [0:0:500]
+	 Dispense Oxd,z4,260
+   MoveAbsolute y = 520
+        Wait [0:22:0]
+     Valve -v23
+        Wait [0:1:0]
+     Valve +v22 +v24 +v25 
+        Wait [0:0:600]
+     Valve -v22 -v24 -v25 
+
+RepeatBegin 2
+     Valve +v23 +v15 +v16
+        Wait [0:2:0]
+     Valve -v15 -v16
+        Wait [0:1:0]
+        Dispense Oxd,z4,230
+     Valve -v2 -v9
+   MoveAbsolute y = 520
+        Wait [0:22:0]
+     Valve -v23
+        Wait [0:1:0]     
+     Valve +v22 +v24 +v25
+        Wait [0:0:600]
+     Valve -v22 -v24 -v25
+RepeatEnd
+
+//******************************************
+//*************** Washing ******************
+//******************************************
+
+PB 1-500
+
+   CameraFilling Auto
+   VacuumPump Auto
+
+Select a,A,c,C,g,G,t,T,r,y,k,m,s,w,b,d,h,v,n,R,Y,K,M,S,W,B,D,H,V,N,1,2,3,4,5,6,7,8,9,10,11,12,BHQ_1,BHQ1,FdT,HEX,6_FAM,6FAM,FAM,dI,R3_1,R3_2,SR_A1,SR_A2,SR_A3,SR_A4,SR_A5,SR_B1,SR_B2,SR_B3,SR_B4,SR_B5,SR_C1,SR_C2,SR_C3,SR_C4,SR_C5,SR_D1,SR_D2,SR_D3,SR_D4,SR_D5,SR_E1,SR_E2,SR_E3,SR_E4,SR_E5
+
+Message " Washing after Oxidation >>>>>"
+
+Select As,Cs,Gs,Ts,1s,2s,3s,4s,5s,6s,7s,8s,9s,10s,11s,12s
+
+Message " Washing after Capping of Thio Bases>>>>>"
+
+Select a,A,c,C,g,G,t,T,r,y,k,m,s,w,b,d,h,v,n,R,Y,K,M,S,W,B,D,H,V,N,1,2,3,4,5,6,7,8,9,10,11,12,BHQ_1,BHQ1,FdT,HEX,6_FAM,6FAM,FAM,dI,R3_1,R3_2,SR_A1,SR_A2,SR_A3,SR_A4,SR_A5,SR_B1,SR_B2,SR_B3,SR_B4,SR_B5,SR_C1,SR_C2,SR_C3,SR_C4,SR_C5,SR_D1,SR_D2,SR_D3,SR_D4,SR_D5,SR_E1,SR_E2,SR_E3,SR_E4,SR_E5,As,Cs,Gs,Ts,1s,2s,3s,4s,5s,6s,7s,8s,9s,10s,11s,12s
+
+        Valve +v4 +v11
+          Wait [0:2:0]
+
+   StartTimer 1,[0:5:0]
+	Dispense W2,z4,600
+	MoveAbsolute y = 520
+        Valve +v22 +v24 +v25
+           Wait [0:1:100]
+        Valve -v22 -v24 -v25
+   WaitTimer 1
+
+   StartTimer 1,[0:7:0]
+	Dispense W2,z4,1100
+	MoveAbsolute y = 520
+        Valve +v22 +v24 +v25
+           Wait [0:2:0]
+        Valve -v22 -v24 -v25
+   WaitTimer 1
+
+   StartTimer 1,[0:6:0]
+	Dispense W2,z4,500
+	MoveAbsolute y = 520
+        Valve +v22 +v24 +v25
+           Wait [0:1:0]
+        Valve -v22 -v24 -v25
+   WaitTimer 1
+
+     Valve -v4 -v11
+     Valve +v22 +v24 +v25
+        Wait [0:1:500]
+     Valve -v22 -v24 -v25 
+     Valve +v23
+        Wait [0:1:0]
+     Valve +v3 +v5 +v17
+        Wait [0:1:0]
+     Valve -v3 -v5 +v21
+        Wait [0:1:0]
+     Valve -v17 -v21 -v23
+   //-------------------------
+		SafePoint
+   //-------------------------
+
+//******************************************
+//*********** System Shut Down *************
+//******************************************
+
+		  					
+PB 1-500, Final
+
+   MoveToPosition Head , Waste
+   SwitchOffAllValves 
+   CameraFilling Off
+   VacuumPump Off
+
+PB 1-500
+
+   SwitchOffAllValves 
+   MoveToPosition Head , Waste
+   CameraFilling Off
+   VacuumPump Off
+
+Beep
+Beep
+
+End 
