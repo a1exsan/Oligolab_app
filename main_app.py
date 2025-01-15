@@ -118,7 +118,6 @@ def update_orders_db_tab(pincode, orders_db_data, orders_sel_rowdata, invoces_ro
     Input(component_id='asm2000-delete-map', component_property='n_clicks'),
     Input(component_id='asm2000-search-maps-btn', component_property='n_clicks'),
     Input(component_id='asm2000-search-field', component_property='value'),
-    Input(component_id='asm2000-print_pass-btn', component_property='n_clicks'),
     Input(component_id='asm2000-update-actual-map', component_property='n_clicks'),
     prevent_initial_call=True
 )
@@ -126,7 +125,7 @@ def update_asm2000_map(pincode, map_rowdata, sel_map_rowdata, accord_rowdata, ma
                        update_map_btn, rename_pos_btn, change_alk_btn,
                        gen_map_to_csv_btn, update_maps_btn, load_map_btn,
                        man_name_input, synth_number_input, start_date_select, save_map_btn, delete_map_btn,
-                       search_map_btn, search_map_input, print_passport_btn, update_actual_map_btn):
+                       search_map_btn, search_map_input, update_actual_map_btn):
 
     triggered_id = ctx.triggered_id
 
@@ -178,10 +177,6 @@ def update_asm2000_map(pincode, map_rowdata, sel_map_rowdata, accord_rowdata, ma
             return map_rowdata, accord_rowdata, search_map_list, man_name_input, synth_number_input
         else:
             return map_rowdata, accord_rowdata, map_list_rowdata, man_name_input, synth_number_input
-
-    if triggered_id == 'asm2000-print_pass-btn' and print_passport_btn is not None:
-        orders_data.print_pass(map_rowdata, 'map_passport.csv')
-        return map_rowdata, accord_rowdata, map_list_rowdata, man_name_input, synth_number_input
 
     raise PreventUpdate
 
@@ -441,6 +436,31 @@ def update_stock_tab(pincode, stock_rowdata, sel_stock_rowdata, input_rowdata, o
         out_stock_rowdata, out_output_rowdata, out_input_rowdata, out_users_rowdata = (
             stock_data.substruct_from_stock('1848570232', 'input_tab', stock_rowdata))
         return out_stock_rowdata, out_output_rowdata, out_input_rowdata, out_users_rowdata
+
+    raise PreventUpdate
+
+@callback(
+    Output(component_id='passport-view-tab', component_property='data', allow_duplicate=True),
+    Output(component_id='invoce-name-text', component_property='value', allow_duplicate=True),
+
+    Input(component_id='pincode-input', component_property='value'),
+    Input(component_id='asm2000-print_pass-btn', component_property='n_clicks'),
+    Input(component_id='passport-view-tab', component_property='data'),
+    Input(component_id='asm2000-map-tab', component_property='rowData'),
+    Input(component_id='asm2000-map-name', component_property='value'),
+    prevent_initial_call=True
+)
+def show_print_pass_tab(pincode, print_pass_btn, pass_data, rowdata, map_name_input):
+    triggered_id = ctx.triggered_id
+
+    orders_data.pincode = pincode
+
+    if triggered_id == 'asm2000-print_pass-btn' and print_pass_btn is not None:
+        if orders_data.check_pincode():
+            data_tab = orders_data.print_pass(rowdata, 'map_passport.csv')
+        else:
+            data_tab = pass_data
+        return data_tab, map_name_input
 
     raise PreventUpdate
 

@@ -5,6 +5,7 @@ import frontend_input_invoce
 import frontend_orders_tabs
 import frontend_asm2000
 import frontend_stock
+import frontend_view_passport
 
 class oligo_syn_form_layout():
 
@@ -22,12 +23,14 @@ class oligo_syn_form_layout():
         self.frontend_orders_tabs = frontend_orders_tabs.oligo_orders_database_layout()
         self.frontend_asm2000 = frontend_asm2000.asm2000_layout()
         self.frontend_stock = frontend_stock.oligo_stock_database_layout()
+        self.frontend_passport = frontend_view_passport.passport_tab_view_layout()
 
         layout_dict = {
             'Input invoces': self.frontend_input_invoce.layout,
             'Orders base': self.frontend_orders_tabs.layout,
             'Oligomap builder': self.frontend_asm2000.layout,
             'Stock': self.frontend_stock.layout,
+            'Passport': self.frontend_passport.layout,
         }
 
         layout_list = []
