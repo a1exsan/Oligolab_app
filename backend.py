@@ -73,7 +73,7 @@ class orders_db(api_db_interface):
         self.db_name = 'scheduler_oligolab_2.db'
         self.maps_db_name = 'asm2000_map_1.db'
         self.hist_db_name = 'request_history_1.db'
-        self.hist_data_db_name = 'oligomap_history_1.db'
+        self.hist_data_db_name = 'oligomap_history_2.db'
         self.selected_status = 'finished'
         self.strftime_format = "%Y-%m-%d"
         self.oligo_map_id = -1
@@ -817,7 +817,8 @@ class orders_db(api_db_interface):
             d['User'] = row[1]
             d['Date'] = row[2]
             d['Time'] = row[3]
-            d['Data json'] = row[4]
+            d['URL'] = row[4]
+            d['Data json'] = row[5]
             hist_data.append(d)
 
         return hist, hist_data
@@ -831,6 +832,16 @@ class orders_db(api_db_interface):
                 ret += f" keys: {data.keys()}"
             return ret
         return ret
+
+    def show_map_tab_data_info(self, selrowdata):
+        out = []
+        if len(selrowdata) > 0:
+            url = selrowdata[0]['URL']
+            data = json.loads(selrowdata[0]['Data json'])
+            if url.find('update_data/asm2000_map') > -1 and type(data) == dict:
+                out = json.loads(data['value_list'][0])
+            return out
+        return out
 
 
 

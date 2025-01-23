@@ -17,11 +17,11 @@ frontend_obj.IP_addres = backend.get_IP_addr()
 frontend_obj.make_layout()
 
 
-orders_data = backend.orders_db(db_IP='192.168.17.250', db_port='8012')
-stock_data = backend_stock.stock_manager(db_IP='192.168.17.250', db_port='8012')
+#orders_data = backend.orders_db(db_IP='192.168.17.250', db_port='8012')
+#stock_data = backend_stock.stock_manager(db_IP='192.168.17.250', db_port='8012')
 
-#orders_data = backend.orders_db(db_IP='127.0.0.1', db_port='8012')
-#stock_data = backend_stock.stock_manager(db_IP='127.0.0.1', db_port='8012')
+orders_data = backend.orders_db(db_IP='127.0.0.1', db_port='8012')
+stock_data = backend_stock.stock_manager(db_IP='127.0.0.1', db_port='8012')
 
 app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP], suppress_callback_exceptions=True)
 
@@ -469,6 +469,7 @@ def show_print_pass_tab(pincode, print_pass_btn, pass_data, rowdata, map_name_in
     Output(component_id='history-tab', component_property='rowData', allow_duplicate=True),
     Output(component_id='history-data-tab', component_property='rowData', allow_duplicate=True),
     Output(component_id='hist-data-info-input', component_property='value', allow_duplicate=True),
+    Output(component_id='history-map-tab-show', component_property='rowData', allow_duplicate=True),
 
     Input(component_id='pincode-input', component_property='value'),
     Input(component_id='history-tab', component_property='rowData'),
@@ -478,22 +479,28 @@ def show_print_pass_tab(pincode, print_pass_btn, pass_data, rowdata, map_name_in
     Input(component_id='show-history-data-btn', component_property='n_clicks'),
     Input(component_id='show-row-data-info-btn', component_property='n_clicks'),
     Input(component_id='hist-data-info-input', component_property='value'),
+    Input(component_id='history-map-tab-show', component_property='rowData'),
+    Input(component_id='show-map-tab-data-btn', component_property='n_clicks'),
     prevent_initial_call=True
 )
 def show_print_pass_tab(pincode, hist_rowdata, hist_data_rowdata, hist_sel_rowdata, show_h_btn, show_hd_btn,
                         show_row_data_info_btn,
-                        row_data_info):
+                        row_data_info, hist_map_tab_rowdata, show_map_tab_hist_btn):
     triggered_id = ctx.triggered_id
 
     orders_data.pincode = pincode
 
     if triggered_id == 'show-history-btn' or triggered_id == 'show-history-data-btn':
         hist, hist_data = orders_data.show_history_data()
-        return hist, hist_data, row_data_info
+        return hist, hist_data, row_data_info, hist_map_tab_rowdata
 
     if triggered_id == 'show-row-data-info-btn' and show_row_data_info_btn is not None:
         data_info = orders_data.show_row_data_info(hist_sel_rowdata)
-        return hist_rowdata, hist_data_rowdata, data_info
+        return hist_rowdata, hist_data_rowdata, data_info, hist_map_tab_rowdata
+
+    if triggered_id == 'show-map-tab-data-btn' and show_map_tab_hist_btn is not None:
+        map_tab_rowdata = orders_data.show_map_tab_data_info(hist_sel_rowdata)
+        return hist_rowdata, hist_data_rowdata, row_data_info, map_tab_rowdata
 
     raise PreventUpdate
 
