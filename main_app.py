@@ -465,5 +465,39 @@ def show_print_pass_tab(pincode, print_pass_btn, pass_data, rowdata, map_name_in
     raise PreventUpdate
 
 
+@callback(
+    Output(component_id='history-tab', component_property='rowData', allow_duplicate=True),
+    Output(component_id='history-data-tab', component_property='rowData', allow_duplicate=True),
+    Output(component_id='hist-data-info-input', component_property='value', allow_duplicate=True),
+
+    Input(component_id='pincode-input', component_property='value'),
+    Input(component_id='history-tab', component_property='rowData'),
+    Input(component_id='history-data-tab', component_property='rowData'),
+    Input(component_id='history-data-tab', component_property='selectedRows'),
+    Input(component_id='show-history-btn', component_property='n_clicks'),
+    Input(component_id='show-history-data-btn', component_property='n_clicks'),
+    Input(component_id='show-row-data-info-btn', component_property='n_clicks'),
+    Input(component_id='hist-data-info-input', component_property='value'),
+    prevent_initial_call=True
+)
+def show_print_pass_tab(pincode, hist_rowdata, hist_data_rowdata, hist_sel_rowdata, show_h_btn, show_hd_btn,
+                        show_row_data_info_btn,
+                        row_data_info):
+    triggered_id = ctx.triggered_id
+
+    orders_data.pincode = pincode
+
+    if triggered_id == 'show-history-btn' or triggered_id == 'show-history-data-btn':
+        hist, hist_data = orders_data.show_history_data()
+        return hist, hist_data, row_data_info
+
+    if triggered_id == 'show-row-data-info-btn' and show_row_data_info_btn is not None:
+        data_info = orders_data.show_row_data_info(hist_sel_rowdata)
+        return hist_rowdata, hist_data_rowdata, data_info
+
+    raise PreventUpdate
+
+
+
 if __name__ == '__main__':
     app.run_server(debug=True, port=8800, host='0.0.0.0')

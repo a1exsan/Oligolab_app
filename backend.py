@@ -72,6 +72,8 @@ class orders_db(api_db_interface):
 
         self.db_name = 'scheduler_oligolab_2.db'
         self.maps_db_name = 'asm2000_map_1.db'
+        self.hist_db_name = 'request_history_1.db'
+        self.hist_data_db_name = 'oligomap_history_1.db'
         self.selected_status = 'finished'
         self.strftime_format = "%Y-%m-%d"
         self.oligo_map_id = -1
@@ -440,7 +442,7 @@ class orders_db(api_db_interface):
             return 100
 
     def get_oligomaps(self):
-
+        self.oligo_map_id = -1
         url = f'{self.api_db_url}/get_all_tab_data/{self.maps_db_name}/main_map'
         ret = requests.get(url, headers=self.headers())
 
@@ -459,6 +461,7 @@ class orders_db(api_db_interface):
             return []
 
     def get_actual_maps(self):
+        self.oligo_map_id = -1
         total_maps = self.get_oligomaps_data()
         if len(total_maps) > 0:
             out = []
@@ -478,6 +481,7 @@ class orders_db(api_db_interface):
             return []
 
     def get_oligomaps_data(self):
+        self.oligo_map_id = -1
         url = f'{self.api_db_url}/get_all_tab_data/{self.maps_db_name}/main_map'
         ret = requests.get(url, headers=self.headers())
         if ret.status_code == 200:
@@ -496,6 +500,7 @@ class orders_db(api_db_interface):
             return []
 
     def load_oligomap(self, seldata):
+        self.oligo_map_id = -1
         if len(seldata) > 0:
             url = f"{self.api_db_url}/get_keys_data/{self.maps_db_name}/main_map/id/{seldata[0]['#']}"
             ret = requests.get(url, headers=self.headers())
@@ -598,7 +603,6 @@ class orders_db(api_db_interface):
 
 
     def update_map_flags(self, type_flags, rowData, selrowData):
-
         if len(selrowData) == 0:
             index_list = list(pd.DataFrame(rowData)['#'])
         else:
@@ -788,6 +792,47 @@ class orders_db(api_db_interface):
         tab = price_data.get_price_tab(scale)
         return tab.to_dict('records')
 
+    def show_history_data(self):
+        hist, hist_data = [], []
+
+        url = f"{self.api_db_url}/get_all_tab_data/{self.hist_db_name}/main_tab"
+        r = requests.get(url, headers=self.headers())
+
+        for row in r.json():
+            d = {}
+            d['#'] = row[0]
+            d['User'] = row[1]
+            d['Date'] = row[2]
+            d['Time'] = row[3]
+            d['URL'] = row[4]
+            d['Remote addr'] = row[5]
+            hist.append(d)
+
+        url = f"{self.api_db_url}/get_all_tab_data/{self.hist_data_db_name}/main_tab"
+        r = requests.get(url, headers=self.headers())
+
+        for row in r.json():
+            d = {}
+            d['#'] = row[0]
+            d['User'] = row[1]
+            d['Date'] = row[2]
+            d['Time'] = row[3]
+            d['Data json'] = row[4]
+            hist_data.append(d)
+
+        return hist, hist_data
+
+    def show_row_data_info(self, selrowdata):
+        ret = ''
+        if len(selrowdata) > 0:
+            data = json.loads(selrowdata[0]['Data json'])
+            ret = f"data type: {type(data)} "
+            if type(data) == dict:
+                ret += f" keys: {data.keys()}"
+            return ret
+        return ret
+
+
 
 
 def test1():
@@ -814,6 +859,7 @@ def test1():
                              ]
                          })
                          , headers={'Authorization': f'Pincode {orders_data.pincode}'})
+
 
 
 
