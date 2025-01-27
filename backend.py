@@ -843,6 +843,18 @@ class orders_db(api_db_interface):
             return out
         return out
 
+    def backup_map_data(self, selrowdata):
+        out = []
+        if len(selrowdata) > 0:
+            url = selrowdata[0]['URL']
+            data = json.loads(selrowdata[0]['Data json'])
+            if url.find('update_data/asm2000_map') > -1 and type(data) == dict:
+                out = json.loads(data['value_list'][0])
+                url = selrowdata[0]['URL']
+                r = requests.put(url, json=selrowdata[0]['Data json'], headers=self.headers())
+            return out
+        return out
+
 
 
 

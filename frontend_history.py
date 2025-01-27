@@ -205,7 +205,9 @@ class oligo_history_layout():
                     dbc.Button("Show map tab", outline=False, color="success",
                                id='show-map-tab-data-btn', className="me-1", size='lg'),
                     self.data_tab,
-                    dbc.Input(placeholder='Info', id='hist-data-info-input', type="text", debounce=True)
+                    dbc.Input(placeholder='Info', id='hist-data-info-input', type="text", debounce=True),
+                    dbc.Button("Backup map", outline=True, color="success",
+                               id='backup-map-btn', className="me-1", size='lg'),
                 ]),
                 dbc.Row([
                     self.map_tab_show
