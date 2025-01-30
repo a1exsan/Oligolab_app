@@ -80,9 +80,17 @@ class orders_db(api_db_interface):
 
     def get_orders_by_status(self, status):
         self.selected_status = status
-        url = f'{self.api_db_url}/get_orders_by_status/{self.db_name}/{status}'
-        ret = requests.get(url, headers=self.headers())
-        return ret.json()
+        out = []
+        if status == 'in progress':
+            for st in ['synthesis', 'purification', 'formulation']:
+                url = f'{self.api_db_url}/get_orders_by_status/{self.db_name}/{st}'
+                ret = requests.get(url, headers=self.headers())
+                out.extend(ret.json())
+        else:
+            url = f'{self.api_db_url}/get_orders_by_status/{self.db_name}/{status}'
+            ret = requests.get(url, headers=self.headers())
+            out.extend(ret.json())
+        return out
 
     def get_all_invoces(self):
         url = f'{self.api_db_url}/get_all_invoces/{self.db_name}'

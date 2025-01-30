@@ -72,12 +72,12 @@ class oligo_orders_database_layout():
             'input date': [''],
             'out date': [''],
             'number': [0],
-            'in queue%': [0.],
-            'synth%': [0.],
-            'purif%': [0.],
-            'formul%': [0.],
-            'fin%': [0.],
-            'archived%': [0.],
+            'in queue%': [''],
+            'synth%': [''],
+            'purif%': [''],
+            'formul%': [''],
+            'fin%': [''],
+            'archived%': [''],
             'status': ['']
         })
 
@@ -150,7 +150,7 @@ class oligo_orders_database_layout():
                 #]),
                     dbc.Row([
                         dbc.Col(
-                            dcc.Dropdown(['in queue', 'synthesis', 'purification',
+                            dcc.Dropdown(['in queue', 'in progress', 'synthesis', 'purification',
                                           'formulation', 'finished', 'arhive'], 'in queue',
                                          id='status-order-selector')
                         ),
