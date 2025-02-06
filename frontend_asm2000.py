@@ -275,7 +275,8 @@ class asm2000_layout():
                 'Map name': [''],
                 'Synth number': [''],
                 'Date': [''],
-                'in progress': [0]
+                'in progress': [0],
+                'Wasted': [0]
             }
         )
 
@@ -285,6 +286,7 @@ class asm2000_layout():
             {"field": "Synth number"},
             {"field": "Date"},
             {"field": "in progress"},
+            {"field": "Wasted"},
         ]
 
         self.map_db_tab = dag.AgGrid(

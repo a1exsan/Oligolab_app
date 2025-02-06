@@ -463,6 +463,13 @@ class orders_db(api_db_interface):
                 d['Synth number'] = r[3]
                 d['Date'] = r[1]
                 d['in progress'] = self.map_in_progress(r[4])
+                #d['map data'] = pd.DataFrame(json.loads(r[4]))
+                df = pd.DataFrame(json.loads(r[4]))
+                if 'Wasted' in list(df.keys()):
+                    d['Wasted'] = df[df['Wasted'] == True].shape[0]
+                    # print(d['Wasted'])
+                else:
+                    d['Wasted'] = 0
                 out.append(d)
             return out
         else:
@@ -483,6 +490,7 @@ class orders_db(api_db_interface):
                         d['Synth number'] = row['Synth number']
                         d['Date'] = row['Date']
                         d['in progress'] = row['in progress']
+                        d['Wasted'] = row['Wasted']
                         out.append(d)
             return out
         else:
@@ -502,6 +510,12 @@ class orders_db(api_db_interface):
                 d['Date'] = r[1]
                 d['in progress'] = self.map_in_progress(r[4])
                 d['map data'] = pd.DataFrame(json.loads(r[4]))
+                df = pd.DataFrame(d['map data'])
+                if 'Wasted' in list(df.keys()):
+                    d['Wasted'] = df[df['Wasted'] == True].shape[0]
+                    #print(d['Wasted'])
+                else:
+                    d['Wasted'] = 0
                 out.append(d)
             return out
         else:
@@ -571,6 +585,26 @@ class orders_db(api_db_interface):
 
         return out
 
+    def print_invoce_passport(self, selrowdata):
+        out_tab = self.get_invoce_content(selrowdata)
+        pass_tab = []
+        for row in out_tab:
+            sequence = '[' + row["5'-end"] + ']' + row['Sequence'] + '[' + row["3'-end"] + ']'
+            o = mmo.oligoNASequence(sequence)
+            maps = self.search_maps_by_text(str(row['#']))
+            if len(maps) > 0:
+                df = pd.DataFrame(maps)
+                df = df.sort_values(by='#', ascending=False)
+                map_id = list(df['#'])[0]
+                map = self.load_oligomap([{'#': map_id}])
+                #print(map)
+                df = pd.DataFrame(map[0])
+                df = df[df['Order id'] == row['#']]
+                df = df.sort_values(by='Dens, oe/ml', ascending=False)
+                pass_tab.append(df.to_dict('records')[0])
+        pass_tab = self.print_pass(pass_tab, 'invoce_pass.csv')
+        return pass_tab, out_tab
+
     def  print_pass(self, rowData, filename):
         out_tab = []
         index_ = 1
@@ -591,6 +625,7 @@ class orders_db(api_db_interface):
 
             d['Purification'] = row['Purif type']
             d['order_ID'] = row['Order id']
+            d['Status'] = row['Status']
             try:
                 d['Mass,_Da'] = round(o.getAvgMass(), 2)
             except:
@@ -646,6 +681,10 @@ class orders_db(api_db_interface):
                 if i == 7:
                     status = 'finished'
                     return status
+        #print(row.keys())
+        #if 'Wasted' in list(row.keys()):
+        #    if row['Wasted']:
+        #        status = 'in queue'
         return status
 
 

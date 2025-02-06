@@ -16,6 +16,7 @@ class passport_tab_view_layout():
                            'order_ID': ['' for i in range(N)],
                            'Mass,_Da': [0 for i in range(N)],
                            'Extinction': [0 for i in range(N)],
+                           'Status': ['' for i in range(N)],
                            })
 
         self.tab = dash_table.DataTable(df.to_dict('records'), [{"name": i, "id": i} for i in df.columns],
