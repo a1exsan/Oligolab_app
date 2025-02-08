@@ -969,10 +969,11 @@ class orders_db(api_db_interface):
 
     def filtrate_oligomap_history_of_day(self, hist_of_day_tab, date):
         hist_dict = self.generate_history_dict()
+        print(hist_dict[2685])
         out = []
         for row in hist_of_day_tab:
             df = pd.DataFrame(hist_dict[row['Order id']])
-            df = df[df['Date'] != date]
+            df = df[df['Date'] < date]
             if df.shape[0] > 0:
                 df.sort_values(by='Date', ascending=False, inplace=True)
                 last_status = list(df['Status'])[0]
@@ -981,10 +982,12 @@ class orders_db(api_db_interface):
             else:
                 out.append(row)
 
-        df = pd.DataFrame(out)
-        df_g = df.groupby('Order id').agg('max').reset_index()
-
-        return df_g.to_dict('records')
+        if len(out) > 0:
+            df = pd.DataFrame(out)
+            df_g = df.groupby('Order id').agg('max').reset_index()
+            return df_g.to_dict('records')
+        else:
+            return out
 
 
 

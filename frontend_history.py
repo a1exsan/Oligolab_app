@@ -251,8 +251,6 @@ class oligo_history_layout():
                                id='show-row-data-info-btn', className="me-1", size='lg'),
                     dbc.Button("Show map tab", outline=False, color="success",
                                id='show-map-tab-data-btn', className="me-1", size='lg'),
-                    dbc.Button("Show today tab", outline=False, color="warning",
-                               id='show-today-results-btn', className="me-1", size='lg'),
                     self.data_tab,
                     dbc.Input(placeholder='Info', id='hist-data-info-input', type="text", debounce=True),
                     dbc.Button("Backup map", outline=True, color="success",
@@ -260,6 +258,17 @@ class oligo_history_layout():
                 ]),
                 dbc.Row([
                     self.map_tab_show,
+                    dbc.Col(
+                        dcc.DatePickerSingle(
+                            id='date-picker-single',
+                            min_date_allowed=date(2025, 1, 1),
+                            max_date_allowed=date(2099, 1, 1),
+                            #initial_visible_month=date(2017, 8, 5),
+                            date=datetime.now().date()
+                        ),
+                    ),
+                    dbc.Col(dbc.Button("Show dayly tab", outline=False, color="warning",
+                               id='show-today-results-btn', className="me-1", size='lg')),
                     self.day_result_tab
                 ])
             ])
