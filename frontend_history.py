@@ -188,6 +188,53 @@ class oligo_history_layout():
             style={"height": 800, "width": '100%'},
         )
 
+        day_result_tab = pd.DataFrame(
+            {
+                'Date': [''],
+                'Time': [''],
+                'User': [''],
+                'Name': [''],
+                'Order id': [''],
+                'Synt number': [''],
+                'Position': [''],
+                'Sequence': [''],
+                'Status': [''],
+                'Wasted': [False],
+                'client': [''],
+                'invoce': [''],
+            }
+        )
+
+        columnDefs = [
+            {"field": "Date"},
+            {"field": "Time", 'editable':False},
+            {"field": "User", 'editable':False},
+            {"field": "Name", 'editable': False},
+            {"field": "Order id", 'editable': False},
+            {"field": "Synt number", 'editable': False},
+            {"field": "Position", 'editable': False},
+            {"field": "Sequence", 'editable': False},
+            {"field": "Status", 'editable': False},
+            {"field": "Wasted", 'editable': False},
+            {"field": "client", 'editable': False},
+            {"field": "invoce", 'editable': False},
+        ]
+
+        self.day_result_tab = dag.AgGrid(
+            id="history-map-day-result-show",
+            columnDefs=columnDefs,
+            rowData=day_result_tab.to_dict("records"),
+            columnSize="sizeToFit",
+            defaultColDef={"filter": True},
+            dashGridOptions={"rowSelection": "multiple", "animateRows": False,
+                             "pagination": True,
+                             "enterNavigatesVertically": True,
+                             "enterNavigatesVerticallyAfterEdit": True,
+                             "singleClickEdit": True
+                             },
+            style={"height": 800, "width": '100%'},
+        )
+
         self.layout = html.Div([
             dbc.Row([
                 dbc.Col([
@@ -204,13 +251,16 @@ class oligo_history_layout():
                                id='show-row-data-info-btn', className="me-1", size='lg'),
                     dbc.Button("Show map tab", outline=False, color="success",
                                id='show-map-tab-data-btn', className="me-1", size='lg'),
+                    dbc.Button("Show today tab", outline=False, color="warning",
+                               id='show-today-results-btn', className="me-1", size='lg'),
                     self.data_tab,
                     dbc.Input(placeholder='Info', id='hist-data-info-input', type="text", debounce=True),
                     dbc.Button("Backup map", outline=True, color="success",
                                id='backup-map-btn', className="me-1", size='lg'),
                 ]),
                 dbc.Row([
-                    self.map_tab_show
+                    self.map_tab_show,
+                    self.day_result_tab
                 ])
             ])
         ])

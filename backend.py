@@ -902,6 +902,91 @@ class orders_db(api_db_interface):
             return out
         return out
 
+    def generate_history_dict(self):
+        history_dict = {}
+        hist, hist_data = self.show_history_data()
+        data = pd.DataFrame(hist_data)
+        data = data[data['URL'].str.contains("update_data/asm2000_map")]
+        date_list = list(data['Date'].unique())
+        for date in date_list:
+            df = data[data['Date'] == date]
+            map_list = list(df['URL'].unique())
+            for url in map_list:
+                map_df = df[df['URL'] == url]
+                map_df.sort_values(by='Time', ascending=False, inplace=True)
+                map_data = json.loads(json.loads(list(map_df['Data json'])[0])['value_list'][0])
+                #print(map_data)
+                for row in map_data:
+                    if row['Order id'] in list(history_dict.keys()):
+                        history_dict[row['Order id']].append({'Date': date, 'Status': row['Status']})
+                    else:
+                        history_dict[row['Order id']] = []
+                        history_dict[row['Order id']].append({'Date': date, 'Status': row['Status']})
+        return history_dict
+
+    def oligomap_history_to_date(self, date):
+        hist, hist_data = self.show_history_data()
+        data = pd.DataFrame(hist_data)
+        data = data[data['Date'] == date]
+        data = data[data['URL'].str.contains("update_data/asm2000_map")]
+        urls = list(data['URL'].unique())
+        hist_ids = []
+        for url in urls:
+            p_data = data[data['URL'] == url]
+            p_data.sort_values(by='Time', ascending=False, inplace=True)
+            hist_ids.append(list(p_data['#'])[0])
+        out_tab = []
+        order_list = []
+        for id in hist_ids:
+            df = data[data['#'] == id]
+            time = df['Time'].max()
+            map = json.loads(df['Data json'].max())
+            for row in json.loads(map['value_list'][0]):
+                d = {}
+                d['Date'] = date
+                d['Time'] = time
+                d['User'] = df['User'].max()
+                d['Name'] = row['Name']
+                d['Order id'] = row['Order id']
+                d['Synt number'] = row['Synt number']
+                d['Position'] = row['Position']
+                d['Sequence'] = row['Sequence']
+                d['Status'] = row['Status']
+                d['Wasted'] = row['Wasted']
+                order_list.append(row['Order id'])
+                out_tab.append(d)
+
+        url = f"{self.api_db_url}/get_all_invoces_by_orders/{self.db_name}"
+        r = requests.get(url, json=json.dumps(order_list), headers=self.headers())
+
+        out_data_list = []
+        for row, invoce in zip(out_tab, r.json()):
+            d = row.copy()
+            d['client'] = invoce['client']
+            d['invoce'] = invoce['invoce']
+            out_data_list.append(d)
+        return self.filtrate_oligomap_history_of_day(out_data_list, date)
+
+    def filtrate_oligomap_history_of_day(self, hist_of_day_tab, date):
+        hist_dict = self.generate_history_dict()
+        out = []
+        for row in hist_of_day_tab:
+            df = pd.DataFrame(hist_dict[row['Order id']])
+            df = df[df['Date'] != date]
+            if df.shape[0] > 0:
+                df.sort_values(by='Date', ascending=False, inplace=True)
+                last_status = list(df['Status'])[0]
+                if last_status != row['Status']:
+                    out.append(row)
+            else:
+                out.append(row)
+
+        df = pd.DataFrame(out)
+        df_g = df.groupby('Order id').agg('max').reset_index()
+
+        return df_g.to_dict('records')
+
+
 
 
 
