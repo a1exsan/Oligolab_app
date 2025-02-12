@@ -17,11 +17,11 @@ frontend_obj.IP_addres = backend.get_IP_addr()
 frontend_obj.make_layout()
 
 
-#orders_data = backend.orders_db(db_IP='192.168.17.250', db_port='8012')
-#stock_data = backend_stock.stock_manager(db_IP='192.168.17.250', db_port='8012')
+orders_data = backend.orders_db(db_IP='192.168.17.250', db_port='8012')
+stock_data = backend_stock.stock_manager(db_IP='192.168.17.250', db_port='8012')
 
-orders_data = backend.orders_db(db_IP='127.0.0.1', db_port='8012')
-stock_data = backend_stock.stock_manager(db_IP='127.0.0.1', db_port='8012')
+#orders_data = backend.orders_db(db_IP='127.0.0.1', db_port='8012')
+#stock_data = backend_stock.stock_manager(db_IP='127.0.0.1', db_port='8012')
 
 app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP], suppress_callback_exceptions=True)
 

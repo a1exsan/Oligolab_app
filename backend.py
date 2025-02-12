@@ -930,6 +930,7 @@ class orders_db(api_db_interface):
         data = data[data['Date'] == date]
         data = data[data['URL'].str.contains("update_data/asm2000_map")]
         urls = list(data['URL'].unique())
+        #print(urls)
         hist_ids = []
         for url in urls:
             p_data = data[data['URL'] == url]
@@ -941,6 +942,8 @@ class orders_db(api_db_interface):
             df = data[data['#'] == id]
             time = df['Time'].max()
             map = json.loads(df['Data json'].max())
+            #print(id)
+            #print(json.loads(map['value_list'][0]))
             for row in json.loads(map['value_list'][0]):
                 d = {}
                 d['Date'] = date
@@ -958,6 +961,8 @@ class orders_db(api_db_interface):
 
         url = f"{self.api_db_url}/get_all_invoces_by_orders/{self.db_name}"
         r = requests.get(url, json=json.dumps(order_list), headers=self.headers())
+
+        #print(r.json())
 
         out_data_list = []
         for row, invoce in zip(out_tab, r.json()):
