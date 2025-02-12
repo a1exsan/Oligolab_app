@@ -106,7 +106,7 @@ class orders_db(api_db_interface):
         data = self.get_all_invoces()
         out = []
         for row in data:
-            if row['status'] == 'in progress':
+            if row['status'] == 'in progress' or not row['send']:
                 out.append(row)
         return out
 
@@ -605,6 +605,15 @@ class orders_db(api_db_interface):
         pass_tab = self.print_pass(pass_tab, 'invoce_pass.csv')
         return pass_tab, out_tab
 
+    def update_send_invoce_data(self, rowdata):
+        param_list = []
+        for row in rowdata:
+            param_list.append({'id': row['#'], 'send_param': json.dumps({'send': row['send']})})
+        if len(param_list) > 0:
+            url = f"{self.api_db_url}/send_invoces_update/{self.db_name}"
+            #print(json.dumps(param_list))
+            ret = requests.put(url, json=json.dumps(param_list), headers=self.headers())
+
     def  print_pass(self, rowData, filename):
         out_tab = []
         index_ = 1
@@ -974,7 +983,7 @@ class orders_db(api_db_interface):
 
     def filtrate_oligomap_history_of_day(self, hist_of_day_tab, date):
         hist_dict = self.generate_history_dict()
-        print(hist_dict[2685])
+        #print(hist_dict[2685])
         out = []
         for row in hist_of_day_tab:
             df = pd.DataFrame(hist_dict[row['Order id']])

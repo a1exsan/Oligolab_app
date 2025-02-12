@@ -78,7 +78,8 @@ class oligo_orders_database_layout():
             'formul%': [''],
             'fin%': [''],
             'archived%': [''],
-            'status': ['']
+            'status': [''],
+            'send': [True]
         })
 
         columnDefs = [
@@ -95,6 +96,7 @@ class oligo_orders_database_layout():
             {"field": "fin%"},
             {"field": "archived%"},
             {"field": "status"},
+            {"field": "send", 'editable': True},
         ]
 
         self.invoce_tab = dag.AgGrid(
@@ -175,6 +177,8 @@ class oligo_orders_database_layout():
                            id='show-invoce-content-btn'),
                 dbc.Button("Print passport", outline=False, color="secondary",
                            id='print-invoce-pass-btn'),
+                dbc.Button("Send update", outline=False, color="warning",
+                           id='send-update-invoce-btn'),
             ]),
             dbc.Row(self.invoce_tab),
         ])
