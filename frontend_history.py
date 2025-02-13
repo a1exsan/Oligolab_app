@@ -127,6 +127,7 @@ class oligo_history_layout():
                 'Done subl': [False],
                 'DONE': [False],
                 'Wasted': [False],
+                'Send': [False],
             }
         )
 
@@ -170,7 +171,8 @@ class oligo_history_layout():
             {"field": "Do subl", 'editable': False},
             {"field": "Done subl", 'editable': False},
             {"field": "DONE", 'editable': False},
-            {"field": "Wasted", 'editable': False}
+            {"field": "Wasted", 'editable': False},
+            {"field": "Send", 'editable': False}
         ]
 
         self.map_tab_show = dag.AgGrid(

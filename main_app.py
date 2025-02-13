@@ -17,11 +17,11 @@ frontend_obj.IP_addres = backend.get_IP_addr()
 frontend_obj.make_layout()
 
 
-#orders_data = backend.orders_db(db_IP='192.168.17.250', db_port='8012')
-#stock_data = backend_stock.stock_manager(db_IP='192.168.17.250', db_port='8012')
+orders_data = backend.orders_db(db_IP='192.168.17.250', db_port='8012')
+stock_data = backend_stock.stock_manager(db_IP='192.168.17.250', db_port='8012')
 
-orders_data = backend.orders_db(db_IP='127.0.0.1', db_port='8012')
-stock_data = backend_stock.stock_manager(db_IP='127.0.0.1', db_port='8012')
+#orders_data = backend.orders_db(db_IP='127.0.0.1', db_port='8012')
+#stock_data = backend_stock.stock_manager(db_IP='127.0.0.1', db_port='8012')
 
 app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP], suppress_callback_exceptions=True)
 
@@ -76,6 +76,7 @@ def update_orders_db_tab(pincode, orders_db_data, orders_sel_rowdata, invoces_ro
 
     if triggered_id == 'show-in-progress-btn' and show_in_progress_btn is not None:
         progress_invoces = orders_data.get_in_progress_invoces()
+        orders_data.get_invoce_history(250)
         return orders_db_data, progress_invoces, asm2000_map_rowdata, pass_tab
 
     if triggered_id == 'show-invoce-content-btn' and shoe_invoce_content_btn is not None:

@@ -799,7 +799,8 @@ class orders_db(api_db_interface):
 
     def add_invoce_to_base(self, invoce, client, data):
         url = f"{self.api_db_url}/insert_data/{self.db_name}/invoice_tab"
-        r = requests.post(url, json=json.dumps([invoce, client]), headers=self.headers())
+        params = json.dumps({'send': False})
+        r = requests.post(url, json=json.dumps([invoce, client, params]), headers=self.headers())
 
         url = f"{self.api_db_url}/get_all_tab_data/{self.db_name}/invoice_tab"
         r = requests.get(url, headers=self.headers())
@@ -933,6 +934,18 @@ class orders_db(api_db_interface):
                         history_dict[row['Order id']].append({'Date': date, 'Status': row['Status']})
         return history_dict
 
+    def get_invoce_history(self, invoce_id):
+        tab = pd.DataFrame(self.get_all_invoces())
+        tab = tab[tab['#'] == invoce_id]
+        data = self.get_invoce_content(tab.to_dict('records'))
+        #hist_dict = self.generate_history_dict()
+        #print(hist_dict.keys())
+        #hist_data = []
+        #for row in data:
+        #    hist_data.append(hist_dict[row['#']])
+        #    print(hist_data[-1])
+
+
     def oligomap_history_to_date(self, date):
         hist, hist_data = self.show_history_data()
         data = pd.DataFrame(hist_data)
@@ -1031,9 +1044,6 @@ def test1():
                              ]
                          })
                          , headers={'Authorization': f'Pincode {orders_data.pincode}'})
-
-
-
 
 
 if __name__ == '__main__':

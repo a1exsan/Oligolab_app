@@ -47,6 +47,7 @@ class asm2000_layout():
                 'Done subl': [False],
                 'DONE': [False],
                 'Wasted': [False],
+                'Send': [False],
             }
         )
 
@@ -90,7 +91,8 @@ class asm2000_layout():
             {"field": "Do subl", 'editable': True},
             {"field": "Done subl", 'editable': True},
             {"field": "DONE", 'editable': False},
-            {"field": "Wasted", 'editable': True}
+            {"field": "Wasted", 'editable': True},
+            {"field": "Send", 'editable': True},
         ]
 
         self.map_tab_ = dag.AgGrid(
