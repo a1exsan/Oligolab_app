@@ -6,6 +6,7 @@ import json
 from oligoMass import molmassOligo as mmo
 from collections import Counter
 import price_data
+from datetime import datetime
 
 class click_azide():
 
@@ -696,12 +697,12 @@ class orders_db(api_db_interface):
         #        status = 'in queue'
         return status
 
-
     def update_oligomap_status(self, rowData, accordrowdata):
         if self.oligo_map_id > -1:
             out = []
             for row in rowData:
                 out.append(row)
+                out[-1]['Date'] = datetime.now().date().strftime('%d.%m.%Y')
                 out[-1]['Status'] = self.get_order_status(row)
                 if out[-1]['Status'] == 'finished':
                     out[-1]['DONE'] = True
@@ -938,13 +939,37 @@ class orders_db(api_db_interface):
         tab = pd.DataFrame(self.get_all_invoces())
         tab = tab[tab['#'] == invoce_id]
         data = self.get_invoce_content(tab.to_dict('records'))
-        #hist_dict = self.generate_history_dict()
+        #self.hist_dict = self.generate_history_dict()
         #print(hist_dict.keys())
-        #hist_data = []
-        #for row in data:
-        #    hist_data.append(hist_dict[row['#']])
-        #    print(hist_data[-1])
+        hist_data = []
+        for row in data:
+            if row['#'] in list(self.hist_dict.keys()):
+                for i in self.hist_dict[row['#']]:
+                    hist_data.append(i)
+        df = pd.DataFrame(hist_data)
+        if df.shape[0] > 0:
+            min_date = df['Date'].min()
+            max_date = df['Date'].max()
+        else:
+            min_date = datetime.now().date().strftime('%d.%m.%Y')
+            max_date = datetime.now().date().strftime('%d.%m.%Y')
+        return min_date, max_date
 
+    def set_invoce_real_timing(self, rowdata, selrows):
+        out = []
+        selections = [int(i) for i in list(pd.DataFrame(selrows)['#'].unique())]
+        if len(selrows) > 0:
+            self.hist_dict = self.generate_history_dict()
+        for row in rowdata:
+            if row['#'] in selections:
+                d = row.copy()
+                min_date, max_date = self.get_invoce_history(row['#'])
+                d['input date'] = min_date
+                d['out date'] = max_date
+                out.append(d)
+            else:
+                out.append(row)
+        return out
 
     def oligomap_history_to_date(self, date):
         hist, hist_data = self.show_history_data()

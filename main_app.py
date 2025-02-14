@@ -53,6 +53,7 @@ app.layout = frontend_obj.layout
     Input(component_id='update-outdate-btn', component_property='n_clicks'),
     Input(component_id='print-invoce-pass-btn', component_property='n_clicks'),
     Input(component_id='send-update-invoce-btn', component_property='n_clicks'),
+    Input(component_id='show-history-invoce-timing-btn', component_property='n_clicks'),
     prevent_initial_call=True
 )
 def update_orders_db_tab(pincode, orders_db_data, orders_sel_rowdata, invoces_rowdata, invoces_selRows, asm2000_map_rowdata,
@@ -60,7 +61,7 @@ def update_orders_db_tab(pincode, orders_db_data, orders_sel_rowdata, invoces_ro
                          status_selector, show_by_status_btn,
                          show_all_invoces_btn, show_in_progress_btn, shoe_invoce_content_btn, sel_to_asm_2000_btn,
                          numper_of_copies, show_in_queue_btn, update_orders_tab_btn, print_pass_invoce_btn,
-                         send_update_invoce_btn):
+                         send_update_invoce_btn, show_hist_invoce_timing_btn):
 
     triggered_id = ctx.triggered_id
 
@@ -76,7 +77,6 @@ def update_orders_db_tab(pincode, orders_db_data, orders_sel_rowdata, invoces_ro
 
     if triggered_id == 'show-in-progress-btn' and show_in_progress_btn is not None:
         progress_invoces = orders_data.get_in_progress_invoces()
-        orders_data.get_invoce_history(250)
         return orders_db_data, progress_invoces, asm2000_map_rowdata, pass_tab
 
     if triggered_id == 'show-invoce-content-btn' and shoe_invoce_content_btn is not None:
@@ -103,6 +103,10 @@ def update_orders_db_tab(pincode, orders_db_data, orders_sel_rowdata, invoces_ro
     if triggered_id == 'send-update-invoce-btn' and send_update_invoce_btn is not None:
         orders_data.update_send_invoce_data(invoces_rowdata)
         return orders_db_data, invoces_rowdata, asm2000_map_rowdata, pass_tab
+
+    if triggered_id == 'show-history-invoce-timing-btn' and show_hist_invoce_timing_btn is not None:
+        updated_invoces = orders_data.set_invoce_real_timing(invoces_rowdata, invoces_selRows)
+        return orders_db_data, updated_invoces, asm2000_map_rowdata, pass_tab
 
     raise PreventUpdate
 

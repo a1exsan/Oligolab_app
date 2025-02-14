@@ -181,4 +181,8 @@ class oligo_orders_database_layout():
                            id='send-update-invoce-btn'),
             ]),
             dbc.Row(self.invoce_tab),
+            dbc.Col([
+                dbc.Button("Show history timing", outline=False, color="info",
+                           id='show-history-invoce-timing-btn'),
+            ]),
         ])
