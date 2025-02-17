@@ -540,11 +540,35 @@ class orders_db(api_db_interface):
 
     def insert_map_to_base(self, name, synth_number, synth_date, rowData, accordData):
         if len(rowData) > 0:
+
             url = f"{self.api_db_url}/insert_data/{self.maps_db_name}/main_map"
             r = requests.post(url,
                               json=json.dumps([synth_date, name, synth_number,
                                                json.dumps(rowData),
                                                json.dumps(accordData)]), headers=self.headers())
+
+            url = f'{self.api_db_url}/get_all_tab_data/{self.maps_db_name}/main_map'
+            ret = requests.get(url, headers=self.headers())
+            indexs = [r[0] for r in ret.json()]
+
+            self.oligo_map_id = max(indexs)
+
+            data = []
+            for row in rowData:
+                d = row.copy()
+                d['map #'] = self.oligo_map_id
+                data.append(d)
+
+            url = f"{self.api_db_url}/update_data/{self.maps_db_name}/main_map/{self.oligo_map_id}"
+            r = requests.put(url,
+                             json=json.dumps({
+                                 'name_list': ['map_tab'],
+                                 'value_list': [
+                                     json.dumps(data)
+                                 ]
+                             })
+                             , headers=self.headers())
+
             return r.status_code
         else:
             return 404

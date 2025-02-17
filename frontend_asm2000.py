@@ -13,6 +13,7 @@ class asm2000_layout():
         map_tab = pd.DataFrame(
             {
                 '#': [0],
+                'invoce #': [0],
                 'Order id': [0],
                 'Position': [''],
                 'Name': [''],
@@ -58,6 +59,7 @@ class asm2000_layout():
                 "headerCheckboxSelection": True,
                 "headerCheckboxSelectionFilteredOnly": True,
             },
+            {"field": "map #"},
             {"field": "Order id"},
             {"field": "Position", 'editable': True},
             {"field": "Name"},
