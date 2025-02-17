@@ -624,7 +624,7 @@ class orders_db(api_db_interface):
             d['#'] = index_
             index_ += 1
             d['Position'] = row['Position']
-            d['Name'] = row['Name'] + f"  ({row['Position']})"
+            d['Name'] = row['Name'] + f"  ({row['Synt number']}_{row['Position']})"
             d['Sequence'] = row['Sequence']
             d['Amount,_oe'] = int(round(row['Dens, oe/ml'] * row['Vol, ml'], 0))
             if o.getExtinction() > 0:
