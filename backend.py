@@ -1059,7 +1059,7 @@ class orders_db(api_db_interface):
 
         if len(out) > 0:
             df = pd.DataFrame(out)
-            df_g = df.groupby('Order id').agg('max').reset_index()
+            df_g = df.groupby('Order id').agg('first').reset_index()
             return df_g.to_dict('records')
         else:
             return out
