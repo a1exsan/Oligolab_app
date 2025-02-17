@@ -614,8 +614,7 @@ class orders_db(api_db_interface):
         out_tab = self.get_invoce_content(selrowdata)
         pass_tab = []
         for row in out_tab:
-            sequence = '[' + row["5'-end"] + ']' + row['Sequence'] + '[' + row["3'-end"] + ']'
-            o = mmo.oligoNASequence(sequence)
+            #sequence = '[' + row["5'-end"] + ']' + row['Sequence'] + '[' + row["3'-end"] + ']'
             maps = self.search_maps_by_text(str(row['#']))
             if len(maps) > 0:
                 df = pd.DataFrame(maps)
