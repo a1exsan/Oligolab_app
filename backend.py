@@ -721,6 +721,13 @@ class orders_db(api_db_interface):
         return status
 
     def update_oligomap_status(self, rowData, accordrowdata):
+        if len(rowData) > 0:
+            if 'map #' in list(rowData[0].keys()):
+                for row in rowData:
+                    if row['map #'] != '':
+                        self.oligo_map_id = int(row['map #'])
+                        print(f'MAP ID: {self.oligo_map_id}')
+                        break
         if self.oligo_map_id > -1:
             out = []
             for row in rowData:

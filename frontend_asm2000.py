@@ -13,7 +13,7 @@ class asm2000_layout():
         map_tab = pd.DataFrame(
             {
                 '#': [0],
-                'invoce #': [0],
+                'map #': [0],
                 'Order id': [0],
                 'Position': [''],
                 'Name': [''],
