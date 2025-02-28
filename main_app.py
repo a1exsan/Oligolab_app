@@ -431,7 +431,7 @@ def update_stock_tab(pincode, stock_rowdata, sel_stock_rowdata, input_rowdata, o
 
     stock_data.pincode = pincode
 
-    if triggered_id == 'show-stock-data-btn' and show_stock_btn is not None:
+    if (triggered_id == 'show-stock-data-btn' and show_stock_btn is not None):
         out_stock_rowdata, out_output_rowdata, out_input_rowdata, out_users_rowdata = stock_data.show_main_tab_data()
         return out_stock_rowdata, out_output_rowdata, out_input_rowdata, out_users_rowdata
 
@@ -454,7 +454,7 @@ def update_stock_tab(pincode, stock_rowdata, sel_stock_rowdata, input_rowdata, o
             stock_data.substruct_from_stock('1848570232', 'output_tab', stock_rowdata))
         return out_stock_rowdata, out_output_rowdata, out_input_rowdata, out_users_rowdata
 
-    if triggered_id == 'add-to-stock-data-btn' and substruct_btn is not None:
+    if triggered_id == 'add-to-stock-data-btn' and adjust_btn is not None:
         out_stock_rowdata, out_output_rowdata, out_input_rowdata, out_users_rowdata = (
             stock_data.substruct_from_stock('1848570232', 'input_tab', stock_rowdata))
         return out_stock_rowdata, out_output_rowdata, out_input_rowdata, out_users_rowdata
