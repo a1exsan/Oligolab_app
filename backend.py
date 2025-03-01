@@ -790,17 +790,27 @@ class orders_db(api_db_interface):
         df = self.df_tab[self.df_tab['Sequence'] != '']
 
         len_list = []
+        lna_count = 0
         for seq in df['Sequence']:
-            len_list.append(mmo.oligoNASequence(seq).size())
+            oligo = mmo.oligoNASequence(seq)
+            oligo_len = oligo.size()
+            oligo_tab = oligo.getSeqTabDF()
+            oligo_df = oligo_tab[oligo_tab['prefix'] == '+']
+            lna_count += oligo_df.shape[0]
+            len_list.append(oligo_len - oligo_df.shape[0])
         df['Lenght'] = len_list
 
         self.df_tab.loc[self.df_tab['Sequence'] != '', 'Lenght'] = len_list
 
         sum_ = df['Lenght'].sum()
         price_ = self.price_tab[self.price_tab['Unit'] == 'simple N']['Price, RUB'].max()
+        lna_price_ = self.price_tab[self.price_tab['Unit'] == 'LNA']['Price, RUB'].max()
 
         self.price_tab.loc[self.price_tab['Unit'] == 'simple N', 'Number'] = sum_
         self.price_tab.loc[self.price_tab['Unit'] == 'simple N', 'Sum, RUB'] = sum_ * float(price_)
+
+        self.price_tab.loc[self.price_tab['Unit'] == 'LNA', 'Number'] = lna_count
+        self.price_tab.loc[self.price_tab['Unit'] == 'LNA', 'Sum, RUB'] = lna_count * float(lna_price_)
 
         lbl_list = list(self.price_tab[self.price_tab['Unit'] != 'simple N']['Unit'])
         for lbl in lbl_list:
