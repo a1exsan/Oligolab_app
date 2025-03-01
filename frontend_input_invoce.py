@@ -109,7 +109,7 @@ class oligo_orders_form_layout():
 
         self.layout = html.Div([
             dbc.Row([
-                dbc.Col(dbc.Container(self.tab)),
+
                 dbc.Col(dbc.Container(
                     dbc.Row([
                         dbc.Toast(
@@ -138,6 +138,10 @@ class oligo_orders_form_layout():
                     html.Br(),
                     dbc.Container(self.price_tab)
                 ]))
-                ])
-            ])
+                ]),
+
+            ]),
+            html.Br(),
+            html.Br(),
+            dbc.Col(self.tab)
             ])
