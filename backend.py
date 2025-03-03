@@ -1082,6 +1082,7 @@ class orders_db(api_db_interface):
             return out
 
     def return_scale_accord_tab(self, rowdata, scale):
+
         self.scale_dict = {'1 mg': 34., '3 mg': 40., '5 mg': 54.}
         out = []
         if self.check_pincode():
