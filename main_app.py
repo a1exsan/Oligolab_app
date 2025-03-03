@@ -550,7 +550,6 @@ def show_print_pass_tab(pincode, hist_rowdata, hist_data_rowdata, hist_sel_rowda
     prevent_initial_call=True
 )
 def select_scale_update(pincode, rowdata, scale_value):
-
     triggered_id = ctx.triggered_id
 
     orders_data.pincode = pincode
