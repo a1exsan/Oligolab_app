@@ -555,7 +555,7 @@ def select_scale_update(pincode, rowdata, scale_value):
 
     orders_data.pincode = pincode
 
-    if triggered_id == 'synt-scale-selector' and scale_value is not None:
+    if  triggered_id == 'synt-scale-selector':
         out_rowdata = orders_data.return_scale_accord_tab(rowdata, scale_value)
         return out_rowdata
 
