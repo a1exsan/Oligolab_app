@@ -264,8 +264,8 @@ class asm2000_layout():
             [
                     dbc.Row([
                         dbc.Col([
-                            dbc.Button("Select", outline=True, color="secondary",
-                                       id='asm2000-scale-select-btn'),
+                            #dbc.Button("Select", outline=True, color="secondary",
+                            #           id='asm2000-scale-select-btn'),
                             dcc.Dropdown(['1 mg', '3 mg', '5 mg'], '5 mg',
                                          id='synt-scale-selector')
                         ]),
