@@ -392,14 +392,27 @@ class orders_db(api_db_interface):
                 pos_list.append(f'{i}{j}')
         return pos_list[pos_list.index(start):]
 
-    def rename_pos(self, selrowData, rowData):
+    def get_pos_list_transposed(self, start):
+        pos_list = []
+        for i in 'A B C D E F G H'.split(' '):
+            for j in range(1, 13):
+                pos_list.append(f'{i}{j}')
+        return pos_list[pos_list.index(start):]
+
+    def rename_pos(self, selrowData, rowData, transposed=False):
         first = selrowData[0]
         selDF = pd.DataFrame(selrowData)
         DF = pd.DataFrame(rowData)
 
         synth_number = first['Synt number']
         name = first['Position']
-        pos_list = self.get_pos_list(name)
+
+        if transposed:
+            pos_list = self.get_pos_list_transposed(name)
+        else:
+            pos_list = self.get_pos_list(name)
+
+        #print(pos_list, len(pos_list), selDF.shape[0])
 
         selDF['Position'] = pos_list[: selDF.shape[0]]
 

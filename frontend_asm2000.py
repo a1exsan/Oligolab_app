@@ -153,6 +153,10 @@ class asm2000_layout():
                         date=datetime.now().date()
                     )
                 ]),
+                dbc.Col([
+                    dcc.Dropdown(['transposed: A1-A12', 'normal: A1-B1'], 'normal: A1-B1',
+                                 id='position-transpose-selector')
+                ]),
                 dbc.Row([
                     dbc.Container(dbc.Row([
                                       dbc.Col([

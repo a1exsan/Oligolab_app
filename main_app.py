@@ -141,13 +141,14 @@ def update_orders_db_tab(pincode, orders_db_data, orders_sel_rowdata, invoces_ro
     Input(component_id='asm2000-search-maps-btn', component_property='n_clicks'),
     Input(component_id='asm2000-search-field', component_property='value'),
     Input(component_id='asm2000-update-actual-map', component_property='n_clicks'),
+    Input(component_id='position-transpose-selector', component_property='value'),
     prevent_initial_call=True
 )
 def update_asm2000_map(pincode, map_rowdata, sel_map_rowdata, accord_rowdata, map_list_rowdata, sel_map_list_rowdata,
                        update_map_btn, rename_pos_btn, change_alk_btn,
                        gen_map_to_csv_btn, update_maps_btn, load_map_btn,
                        man_name_input, synth_number_input, start_date_select, save_map_btn, delete_map_btn,
-                       search_map_btn, search_map_input, update_actual_map_btn):
+                       search_map_btn, search_map_input, update_actual_map_btn, transpose_selector):
 
     triggered_id = ctx.triggered_id
 
@@ -159,7 +160,7 @@ def update_asm2000_map(pincode, map_rowdata, sel_map_rowdata, accord_rowdata, ma
         return map_out_tab, accord_out_tab, map_list_rowdata, man_name_input, synth_number_input
 
     if triggered_id == 'asm2000-rename-pos-btn' and rename_pos_btn is not None:
-        map_out_tab = orders_data.rename_pos(sel_map_rowdata, map_rowdata)
+        map_out_tab = orders_data.rename_pos(sel_map_rowdata, map_rowdata, transpose_selector=='transposed: A1-A12')
         return map_out_tab, accord_rowdata, map_list_rowdata, man_name_input, synth_number_input
 
     if triggered_id == 'asm2000-change-alk-btn' and change_alk_btn is not None:
