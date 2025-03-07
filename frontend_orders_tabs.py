@@ -179,6 +179,8 @@ class oligo_orders_database_layout():
                            id='print-invoce-pass-btn'),
                 dbc.Button("Send update", outline=False, color="warning",
                            id='send-update-invoce-btn'),
+                dbc.Button("Recent status update", outline=False, color="info",
+                           id='all-status-update-btn'),
             ]),
             dbc.Row(self.invoce_tab),
             dbc.Col([

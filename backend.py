@@ -510,6 +510,17 @@ class orders_db(api_db_interface):
         else:
             return []
 
+    def update_all_actual_status(self):
+        maps = self.get_oligomaps()
+        df = pd.DataFrame(maps)
+        df.sort_values('#', ascending=False, inplace=True)
+        df.reset_index(inplace=True)
+        df = df.loc[:4]
+        maps = df.to_dict('records')
+        for row in maps:
+            map, acc_tab, m1, m2  = self.load_oligomap([row])
+            self.update_order_status(map)
+
     def get_oligomaps_data(self):
         self.oligo_map_id = -1
         url = f'{self.api_db_url}/get_all_tab_data/{self.maps_db_name}/main_map'
