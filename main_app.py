@@ -554,7 +554,7 @@ def show_print_pass_tab(pincode, hist_rowdata, hist_data_rowdata, hist_sel_rowda
 
     Input(component_id='pincode-input', component_property='value'),
     Input(component_id='asm2000-accord-tab', component_property='rowData'),
-    Input(component_id='synt-scale-selector', component_property='value'),
+    Input(component_id='synt-scale-accord-selector', component_property='value'),
     prevent_initial_call=True
 )
 def select_scale_update(pincode, rowdata, scale_value):
@@ -562,7 +562,7 @@ def select_scale_update(pincode, rowdata, scale_value):
 
     orders_data.pincode = pincode
 
-    if  triggered_id == 'synt-scale-selector':
+    if  triggered_id == 'synt-scale-accord-selector':
         out_rowdata = orders_data.return_scale_accord_tab(rowdata, scale_value)
         return out_rowdata
 

@@ -223,6 +223,7 @@ class asm2000_layout():
         ])
 
         #modifier TAB
+        """
         accord_tab = pd.DataFrame(
             {
                 'Modification': ['A', 'C', 'G', 'T', '+A', '+C', '+G', '+T', '6FAM', 'Alk', 'R6G', 'HEX'],
@@ -236,17 +237,36 @@ class asm2000_layout():
                 'Amount 10mg, ml': [0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.]
             }
         )
+        """
+
+        accord_tab = pd.DataFrame(
+            {
+                'Modification': ['A', 'C', 'G', 'T', '+A', '+C', '+G', '+T', '6FAM', 'Alk', 'R6G', 'HEX',
+                                 'DEBL', 'ACTIV', 'CAPA', 'CAPB', 'OXID', 'R2', 'W1', 'W2'],
+                'asm2000 position': ['A', 'C', 'G', 'T', '5', '6', '7', '8', '9', '[10]', '[11]', '[12]',
+                                     'DEBL', 'ACTIV', 'CAPA', 'CAPB', 'OXID', 'R2', 'W1', 'W2'],
+                'Conc, g/ml': [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1,
+                               1, 1, 1, 1, 1, 1, 1, 1],
+                'ul on step': [54., 54., 54., 54., 75., 75., 75., 75., 75., 75., 75., 75.,
+                               240., 54., 45., 45., 110., 91., 110., 650.],
+                'Amount 5mg, g': [0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+                                    0., 0., 0., 0., 0., 0., 0., 0.],
+                'Amount 5mg, ml': [0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+                                    0., 0., 0., 0., 0., 0., 0., 0.]
+            }
+        )
 
         columnDefs = [
             {"field": "Modification", 'editable': True},
             {"field": "asm2000 position", 'editable': True},
             {"field": "Conc, g/ml", 'editable': True},
-            {"field": "ul on step, 5mg", 'editable': True},
-            {"field": "ul on step, 10mg", 'editable': True},
-            {"field": "Amount 5mg, g"},
+            {"field": "ul on step", 'editable': True},
+            {"field": "Amount 5mg, g", 'editable': True},
+            #{"field": "ul on step, 10mg", 'editable': True},
+            #{"field": "Amount 5mg, g"},
             {"field": "Amount 5mg, ml"},
-            {"field": "Amount 10mg, g"},
-            {"field": "Amount 10mg, ml"}
+            #{"field": "Amount 10mg, g"},
+            #{"field": "Amount 10mg, ml"}
         ]
 
         self.accord_tab = dag.AgGrid(
@@ -272,7 +292,7 @@ class asm2000_layout():
                             #           id='asm2000-scale-select-btn'),
 
                             dcc.Dropdown(['1 mg', '3 mg', '5 mg'], '5 mg',
-                                         id='synt-scale-selector')
+                                         id='synt-scale-accord-selector')
                         ]),
                         self.accord_tab
                     ])

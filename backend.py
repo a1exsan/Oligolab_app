@@ -337,13 +337,14 @@ class orders_db(api_db_interface):
         constant_vol = 0.10
 
         self.get_all_amidites_types(list(tab['Sequence']))
+
         for mod, count in zip(self.amidites_count.keys(), self.amidites_count.values()):
             #print(mod, count)
             if '[' in mod and ']' in mod:
                 m = mod.replace('[', '')
                 m = m.replace(']', '')
-                r5 = accord[accord['Modification'] == m]['ul on step, 5mg'].max()
-                r10 = accord[accord['Modification'] == m]['ul on step, 10mg'].max()
+                r5 = accord[accord['Modification'] == m]['ul on step'].max()
+                r10 = 1#accord[accord['Modification'] == m]['ul on step, 10mg'].max()
                 conc = accord[accord['Modification'] == m]['Conc, g/ml'].max()
 
                 vol5 = r5 * count / 1000
@@ -358,13 +359,13 @@ class orders_db(api_db_interface):
                     vol10 = 1.5
 
                 accord.loc[accord['Modification'] == m, 'Amount 5mg, ml'] = round(vol5, round_n)
-                accord.loc[accord['Modification'] == m, 'Amount 10mg, ml'] = round(vol10, round_n)
+                #accord.loc[accord['Modification'] == m, 'Amount 10mg, ml'] = round(vol10, round_n)
                 accord.loc[accord['Modification'] == m, 'Amount 5mg, g'] = round(conc * vol5, round_n)
-                accord.loc[accord['Modification'] == m, 'Amount 10mg, g'] = round(conc * vol10, round_n)
+                #accord.loc[accord['Modification'] == m, 'Amount 10mg, g'] = round(conc * vol10, round_n)
             else:
 
-                r5 = accord[accord['Modification'] == mod]['ul on step, 5mg'].max()
-                r10 = accord[accord['Modification'] == mod]['ul on step, 10mg'].max()
+                r5 = accord[accord['Modification'] == mod]['ul on step'].max()
+                r10 = 1#accord[accord['Modification'] == mod]['ul on step, 10mg'].max()
                 conc = accord[accord['Modification'] == mod]['Conc, g/ml'].max()
 
                 vol5 = r5 * count / 1000
@@ -379,9 +380,14 @@ class orders_db(api_db_interface):
                     vol10 = 1.5
 
                 accord.loc[accord['Modification'] == mod, 'Amount 5mg, ml'] = round(vol5, round_n)
-                accord.loc[accord['Modification'] == mod, 'Amount 10mg, ml'] = round(vol10, round_n)
+                #accord.loc[accord['Modification'] == mod, 'Amount 10mg, ml'] = round(vol10, round_n)
                 accord.loc[accord['Modification'] == mod, 'Amount 5mg, g'] = round(conc * vol5, round_n)
-                accord.loc[accord['Modification'] == mod, 'Amount 10mg, g'] = round(conc * vol10, round_n)
+                #accord.loc[accord['Modification'] == mod, 'Amount 10mg, g'] = round(conc * vol10, round_n)
+
+        total_count = sum(self.amidites_count.values())
+        for mod, data in zip(accord['Modification'], accord['ul on step']):
+            if mod in ['DEBL', 'ACTIV', 'CAPA', 'CAPB', 'OXID', 'R2', 'W1', 'W2']:
+                accord.loc[accord['Modification'] == mod, 'Amount 5mg, ml'] = total_count * data / 1000
 
         return accord.to_dict('records')
 
@@ -1106,14 +1112,14 @@ class orders_db(api_db_interface):
             return out
 
     def return_scale_accord_tab(self, rowdata, scale):
-
         self.scale_dict = {'1 mg': 34., '3 mg': 40., '5 mg': 54.}
         out = []
         if self.check_pincode():
             for row in rowdata:
                 d = row.copy()
                 if row['Modification'] in 'A C G T'.split(' '):
-                    d['ul on step, 5mg'] = self.scale_dict[scale]
+                    #d['ul on step, 5mg'] = self.scale_dict[scale]
+                    d['ul on step'] = self.scale_dict[scale]
                 out.append(d)
             return out
         return rowdata
