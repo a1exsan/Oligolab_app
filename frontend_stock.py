@@ -23,7 +23,8 @@ class oligo_stock_database_layout():
                 'E-L': [0],
                 'SUB': [0],
                 'last rate': [0],
-                'Exist/rate': [1]
+                'Exist/rate': [1],
+                'actual': [False]
             }
         )
 
@@ -44,6 +45,7 @@ class oligo_stock_database_layout():
             {"field": "SUB", 'editable': True},
             {"field": "last rate", 'editable': False},
             {"field": "Exist/rate", 'editable': False},
+            {"field": "actual", 'editable': True},
         ]
 
         self.tab = dag.AgGrid(

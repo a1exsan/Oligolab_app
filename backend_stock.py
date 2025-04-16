@@ -43,7 +43,8 @@ class stock_manager(backend.api_db_interface):
                 'E-L': [],
                 'SUB': [],
                 'last rate': [],
-                'Exist/rate': []
+                'Exist/rate': [],
+                'actual': []
             }
 
         #print(rowData)
@@ -62,11 +63,12 @@ class stock_manager(backend.api_db_interface):
 
             main_tab['SUB'].append(0.)
             main_tab['#'].append(row[0])
-            main_tab['Name'].append(row[1])
+            main_tab['Name'].append(row[6])
             main_tab['units'].append(row[3])
             main_tab['Unicode'].append(row[2])
             main_tab['Description'].append(row[4])
             main_tab['low limit'].append(row[5])
+            main_tab['actual'].append(bool(row[6]))
 
             exist = self.get_remaining_stock(row[2])['exist']
             main_tab['Exist on stock'].append(exist)
@@ -154,10 +156,10 @@ class stock_manager(backend.api_db_interface):
             url = f"{self.api_db_url}/update_data/{self.db_name}/total_tab/{row['#']}"
             ret = requests.put(url, json=json.dumps(
                 {
-                    'name_list': ['pos_name', 'unicode', 'units', 'description', 'lower_limit'],
+                    'name_list': ['pos_name', 'unicode', 'units', 'description', 'lower_limit', 'actual'],
                     'value_list': [row['Name'], row['Unicode'],
                                            row['units'], row['Description'],
-                                           row['low limit']]
+                                           row['low limit'], row['actual']]
                 }
             ), headers=self.headers())
         return self.show_main_tab_data()
@@ -167,7 +169,7 @@ class stock_manager(backend.api_db_interface):
         r = requests.post(url,
                           json=json.dumps(
                               [
-                                  'new', 'default', 'шт', 'default', '1'
+                                  'new', 'default', 'шт', 'default', '1', False
                               ]
                           )
                           , headers=self.headers())
