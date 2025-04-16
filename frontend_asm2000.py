@@ -155,7 +155,13 @@ class asm2000_layout():
                 ]),
                 dbc.Col([
                     dcc.Dropdown(['transposed: A1-A12', 'normal: A1-B1'], 'normal: A1-B1',
-                                 id='position-transpose-selector')
+                                 id='position-transpose-selector'),
+                    dcc.Dropdown(['1 mg', '2 mg', '3 mg', '4 mg', '5 mg', '6 mg', '7 mg', '8 mg'], '5 mg',
+                                 id='support_amount_selector'),
+                    dcc.Dropdown(['biocomma_500', 'biocomma_1000', 'biocomma_2000', 'biocomma_3000',
+                                  'bhq1_1000_hg', 'bhq2_1000_hg', 'bhq1_1000', 'bhq2_1000',
+                                  'bhq3_500', 'PO3_500'], 'biocomma_1000',
+                                 id='support_type_selector'),
                 ]),
                 dbc.Row([
                     dbc.Container(dbc.Row([

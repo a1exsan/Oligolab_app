@@ -725,6 +725,19 @@ class orders_db(api_db_interface):
                 out.append(d)
         return out
 
+    def update_support_type_ampunt(self, rowdata, sel_rowdata, supp_type='', supp_amount=''):
+        sel_id_list = list(pd.DataFrame(sel_rowdata)['#'])
+        out = []
+        for row in rowdata:
+            d = row.copy()
+            if row['#'] in sel_id_list:
+                if supp_type != '':
+                    d['Support type'] = supp_type
+                if supp_amount != '':
+                    d['CPG, mg'] = supp_amount
+            out.append(d)
+        return out
+
     def get_order_status(self, row):
         state_list = ['synth', 'sed', 'click', 'cart', 'hplc', 'paag', 'LCMS', 'subl']
         flag_list = []

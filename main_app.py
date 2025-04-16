@@ -258,6 +258,8 @@ def download_sequences_file(pincode, rowdata, map_name, download_btn):
     Input(component_id='asm2000-update-oligomap-status-btn', component_property='n_clicks'),
     Input(component_id='asm2000-update-order-status-btn', component_property='n_clicks'),
     Input(component_id='asm2000-wasted-status-btn', component_property='n_clicks'),
+    Input(component_id='support_amount_selector', component_property='value'),
+    Input(component_id='support_type_selector', component_property='value'),
     prevent_initial_call=True
 )
 def update_flags_tab(pincode, map_rowdata, sel_map_rowdata, accord_rowdata,
@@ -265,7 +267,7 @@ def update_flags_tab(pincode, map_rowdata, sel_map_rowdata, accord_rowdata,
                      do_subl_btn,
                      done_lcms_btn, done_synth_btn, done_cart_btn, done_hplc_btn, done_paag_btn, done_sed_btn,
                      done_click_btn, done_subl_btn, update_omap_status_btn, update_order_status_btn,
-                     wasted_sel_btn):
+                     wasted_sel_btn, support_amount, support_type):
     triggered_id = ctx.triggered_id
 
     orders_data.pincode = pincode
@@ -344,6 +346,14 @@ def update_flags_tab(pincode, map_rowdata, sel_map_rowdata, accord_rowdata,
 
     if triggered_id == 'asm2000-wasted-status-btn' and wasted_sel_btn is not None:
         out_map_data = orders_data.update_map_flags('Wasted', map_rowdata, sel_map_rowdata)
+        return out_map_data
+
+    if triggered_id == 'support_amount_selector' and support_amount is not None:
+        out_map_data = orders_data.update_support_type_ampunt(map_rowdata, sel_map_rowdata, supp_amount=support_amount)
+        return out_map_data
+
+    if triggered_id == 'support_type_selector' and support_type is not None:
+        out_map_data = orders_data.update_support_type_ampunt(map_rowdata, sel_map_rowdata, supp_type=support_type)
         return out_map_data
 
     raise PreventUpdate
