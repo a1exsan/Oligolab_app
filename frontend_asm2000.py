@@ -313,7 +313,9 @@ class asm2000_layout():
                 'Synth number': [''],
                 'Date': [''],
                 'in progress': [0],
-                'Wasted': [0]
+                'Wasted': [0],
+                'Finished': [0],
+                'Total': [0]
             }
         )
 
@@ -324,6 +326,8 @@ class asm2000_layout():
             {"field": "Date"},
             {"field": "in progress"},
             {"field": "Wasted"},
+            {"field": "Finished"},
+            {"field": "Total"},
         ]
 
         self.map_db_tab = dag.AgGrid(
@@ -405,6 +409,12 @@ class asm2000_layout():
                 ]),
                 dbc.Col([
                     self.map_db_tab,
+                    html.Div([
+                        dbc.Row([
+                            dbc.Col(html.H6("Wasted %: 0", id='maps_syn_stat_wasted_pers')),
+                            dbc.Col(html.H6("Total number: 0", id='maps_syn_stat_total_number_pers')),
+                        ]),
+                    ]),
                     self.click_tab
                 ]),
                 dbc.Button("Delete row", outline=True, color="secondary",

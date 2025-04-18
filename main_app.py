@@ -126,6 +126,8 @@ def update_orders_db_tab(pincode, orders_db_data, orders_sel_rowdata, invoces_ro
     Output(component_id='asm2000-map-list-tab', component_property='rowData', allow_duplicate=True),
     Output(component_id='asm2000-map-name', component_property='value', allow_duplicate=True),
     Output(component_id='asm2000-map-synt_number', component_property='value', allow_duplicate=True),
+    Output(component_id='maps_syn_stat_wasted_pers', component_property='children', allow_duplicate=True),
+    Output(component_id='maps_syn_stat_total_number_pers', component_property='children', allow_duplicate=True),
 
     Input(component_id='pincode-input', component_property='value'),
     Input(component_id='asm2000-map-tab', component_property='rowData'),
@@ -148,13 +150,16 @@ def update_orders_db_tab(pincode, orders_db_data, orders_sel_rowdata, invoces_ro
     Input(component_id='asm2000-search-field', component_property='value'),
     Input(component_id='asm2000-update-actual-map', component_property='n_clicks'),
     Input(component_id='position-transpose-selector', component_property='value'),
+    Input(component_id='maps_syn_stat_wasted_pers', component_property='children'),
+    Input(component_id='maps_syn_stat_total_number_pers', component_property='children'),
     prevent_initial_call=True
 )
 def update_asm2000_map(pincode, map_rowdata, sel_map_rowdata, accord_rowdata, map_list_rowdata, sel_map_list_rowdata,
                        update_map_btn, rename_pos_btn, change_alk_btn,
                        gen_map_to_csv_btn, update_maps_btn, load_map_btn,
                        man_name_input, synth_number_input, start_date_select, save_map_btn, delete_map_btn,
-                       search_map_btn, search_map_input, update_actual_map_btn, transpose_selector):
+                       search_map_btn, search_map_input, update_actual_map_btn, transpose_selector,
+                       stat_wasted, stat_total_wells):
 
     triggered_id = ctx.triggered_id
 
@@ -163,49 +168,50 @@ def update_asm2000_map(pincode, map_rowdata, sel_map_rowdata, accord_rowdata, ma
     if triggered_id == 'asm2000-update-tab-btn' and update_map_btn is not None:
         map_out_tab = orders_data.seq_to_asm_seq(accord_rowdata, map_rowdata)
         accord_out_tab = orders_data.update_accord_tab(accord_rowdata, map_out_tab)
-        return map_out_tab, accord_out_tab, map_list_rowdata, man_name_input, synth_number_input
+        return map_out_tab, accord_out_tab, map_list_rowdata, man_name_input, synth_number_input, stat_wasted, stat_total_wells
 
     if triggered_id == 'asm2000-rename-pos-btn' and rename_pos_btn is not None:
         map_out_tab = orders_data.rename_pos(sel_map_rowdata, map_rowdata, transpose_selector=='transposed: A1-A12')
-        return map_out_tab, accord_rowdata, map_list_rowdata, man_name_input, synth_number_input
+        return map_out_tab, accord_rowdata, map_list_rowdata, man_name_input, synth_number_input, stat_wasted, stat_total_wells
 
     if triggered_id == 'asm2000-change-alk-btn' and change_alk_btn is not None:
         map_out_tab = orders_data.change_alk(map_rowdata)
-        return map_out_tab, accord_rowdata, map_list_rowdata, man_name_input, synth_number_input
+        return map_out_tab, accord_rowdata, map_list_rowdata, man_name_input, synth_number_input, stat_wasted, stat_total_wells
 
     if triggered_id == 'asm2000-gen-map-btn' and gen_map_to_csv_btn is not None:
         orders_data.generate_map_to_file('oligo_map.csv',map_rowdata, accord_rowdata)
-        return map_rowdata, accord_rowdata, map_list_rowdata, man_name_input, synth_number_input
+        return map_rowdata, accord_rowdata, map_list_rowdata, man_name_input, synth_number_input, stat_wasted, stat_total_wells
 
     if triggered_id == 'asm2000-update-map' and update_maps_btn is not None:
         map_list = orders_data.get_oligomaps()
-        return map_rowdata, accord_rowdata, map_list, man_name_input, synth_number_input
+        stat_data = orders_data.get_actual_stat_maps()
+        return map_rowdata, accord_rowdata, map_list, man_name_input, synth_number_input, stat_data['wasted %'], stat_data['total wells']
 
     if triggered_id == 'asm2000-update-actual-map' and update_actual_map_btn is not None:
         map_list = orders_data.get_actual_maps()
-        return map_rowdata, accord_rowdata, map_list, man_name_input, synth_number_input
+        return map_rowdata, accord_rowdata, map_list, man_name_input, synth_number_input, stat_wasted, stat_total_wells
 
     if triggered_id == 'asm2000-load-map' and load_map_btn is not None:
         map_out_tab, accord_out_tab, map_name, map_syn_num = orders_data.load_oligomap(sel_map_list_rowdata)
-        return map_out_tab, accord_out_tab, map_list_rowdata, map_name, map_syn_num
+        return map_out_tab, accord_out_tab, map_list_rowdata, map_name, map_syn_num, stat_wasted, stat_total_wells
 
     if triggered_id == 'asm2000-save-map-btn' and save_map_btn is not None:
         status_code = orders_data.insert_map_to_base(man_name_input, synth_number_input, start_date_select,
                                                      map_rowdata, accord_rowdata)
         #print(f'save map {man_name_input} status code: ', status_code)
-        return map_rowdata, accord_rowdata, map_list_rowdata, man_name_input, synth_number_input
+        return map_rowdata, accord_rowdata, map_list_rowdata, man_name_input, synth_number_input, stat_wasted, stat_total_wells
 
     if triggered_id == 'asm2000-delete-map' and delete_map_btn is not None:
         status_code = orders_data.delete_map_from_base(sel_map_list_rowdata)
         #print(f'delete map {man_name_input} status code: ', status_code)
-        return map_rowdata, accord_rowdata, map_list_rowdata, man_name_input, synth_number_input
+        return map_rowdata, accord_rowdata, map_list_rowdata, man_name_input, synth_number_input, stat_wasted, stat_total_wells
 
     if triggered_id == 'asm2000-search-maps-btn' and search_map_btn is not None:
         search_map_list = orders_data.search_maps_by_text(search_map_input)
         if len(search_map_list) > 0:
-            return map_rowdata, accord_rowdata, search_map_list, man_name_input, synth_number_input
+            return map_rowdata, accord_rowdata, search_map_list, man_name_input, synth_number_input, stat_wasted, stat_total_wells
         else:
-            return map_rowdata, accord_rowdata, map_list_rowdata, man_name_input, synth_number_input
+            return map_rowdata, accord_rowdata, map_list_rowdata, man_name_input, synth_number_input, stat_wasted, stat_total_wells
 
     raise PreventUpdate
 

@@ -485,6 +485,11 @@ class orders_db(api_db_interface):
                 d['in progress'] = self.map_in_progress(r[4])
                 #d['map data'] = pd.DataFrame(json.loads(r[4]))
                 df = pd.DataFrame(json.loads(r[4]))
+                if 'Status' in list(df.keys()):
+                    d['Finished'] = df[df['Status'] == 'finished'].shape[0]
+                else:
+                    d['Finished'] = df.shape[0]
+                d['Total'] = df.shape[0]
                 if 'Wasted' in list(df.keys()):
                     d['Wasted'] = df[df['Wasted'] == True].shape[0]
                     # print(d['Wasted'])
@@ -510,11 +515,25 @@ class orders_db(api_db_interface):
                         d['Synth number'] = row['Synth number']
                         d['Date'] = row['Date']
                         d['in progress'] = row['in progress']
+                        d['Finished'] = row['Finished']
+                        d['Total'] = row['Total']
                         d['Wasted'] = row['Wasted']
                         out.append(d)
             return out
         else:
             return []
+
+    def get_actual_stat_maps(self):
+        ret = {'wasted %': 0., 'total wells': 0}
+        tab = self.get_oligomaps()
+        orders = pd.DataFrame(self.get_orders_by_status('finished'))
+        if len(tab) > 0:
+            df = pd.DataFrame(tab)
+            ret['wasted %'] = f"Wasted %: {round(df['Wasted'].sum() * 100/ df['Total'].sum(), 0)}"
+            ret['total wells'] = f"Total wells: {df['Total'].sum()} / Total oligos: {orders.shape[0]}"
+        return ret
+
+
 
     def update_all_actual_status(self):
         maps = self.get_oligomaps()
@@ -542,6 +561,11 @@ class orders_db(api_db_interface):
                 d['in progress'] = self.map_in_progress(r[4])
                 d['map data'] = pd.DataFrame(json.loads(r[4]))
                 df = pd.DataFrame(d['map data'])
+                if 'Status' in list(df.keys()):
+                    d['Finished'] = df[df['Status'] == 'finished'].shape[0]
+                else:
+                    d['Finished'] = df.shape[0]
+                d['Total'] = df.shape[0]
                 if 'Wasted' in list(df.keys()):
                     d['Wasted'] = df[df['Wasted'] == True].shape[0]
                     #print(d['Wasted'])
