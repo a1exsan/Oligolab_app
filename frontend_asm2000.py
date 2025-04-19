@@ -162,6 +162,13 @@ class asm2000_layout():
                                   'bhq1_1000_hg', 'bhq2_1000_hg', 'bhq1_1000', 'bhq2_1000',
                                   'bhq3_500', 'PO3_500'], 'biocomma_1000',
                                  id='support_type_selector'),
+                    dbc.Col([
+                        dcc.Input(placeholder='Enter sample volume, ml', id='asm2000-sample-volume-input', type="text",
+                                  debounce=True, value=0.1),
+                        dbc.Button("Set sample volume", outline=False, color="success",
+                                   id='asm2000-set-sample-volume-btn', className="me-1", size='md'),
+                    ])
+
                 ]),
                 dbc.Row([
                     dbc.Container(dbc.Row([

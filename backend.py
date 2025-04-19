@@ -856,7 +856,7 @@ class orders_db(api_db_interface):
                 out.append(d)
         return out
 
-    def update_support_type_ampunt(self, rowdata, sel_rowdata, supp_type='', supp_amount=''):
+    def update_support_type_amount(self, rowdata, sel_rowdata, supp_type='', supp_amount=''):
         sel_id_list = list(pd.DataFrame(sel_rowdata)['#'])
         out = []
         for row in rowdata:
@@ -866,6 +866,19 @@ class orders_db(api_db_interface):
                     d['Support type'] = supp_type
                 if supp_amount != '':
                     d['CPG, mg'] = supp_amount
+            out.append(d)
+        return out
+
+    def set_sample_volume(self, rowdata, sel_rowdata, volume):
+        sel_id_list = list(pd.DataFrame(sel_rowdata)['#'])
+        out = []
+        for row in rowdata:
+            d = row.copy()
+            if row['#'] in sel_id_list:
+                try:
+                    d['Vol, ml'] = float(volume)
+                except:
+                    d['Vol, ml'] = 1.
             out.append(d)
         return out
 
