@@ -73,8 +73,10 @@ class orders_db(api_db_interface):
 
         self.db_name = 'scheduler_oligolab_2.db'
         self.maps_db_name = 'asm2000_map_1.db'
+        self.solutions_db_name = 'solutions_oligolab_1.db'
         self.hist_db_name = 'request_history_1.db'
         self.hist_data_db_name = 'oligomap_history_2.db'
+        self.stock_db_name = 'stock_oligolab_5.db'
         self.selected_status = 'finished'
         self.strftime_format = "%Y-%m-%d"
         self.oligo_map_id = -1
@@ -533,8 +535,6 @@ class orders_db(api_db_interface):
             ret['total wells'] = f"Total wells: {df['Total'].sum()} / Total oligos: {orders.shape[0]}"
         return ret
 
-
-
     def update_all_actual_status(self):
         maps = self.get_oligomaps()
         df = pd.DataFrame(maps)
@@ -575,6 +575,113 @@ class orders_db(api_db_interface):
             return out
         else:
             return []
+
+    def get_solutions_history(self):
+
+        url = f'{self.api_db_url}/get_all_tab_data/{self.solutions_db_name}/preparation_history'
+        ret = requests.get(url, headers=self.headers())
+
+        url = f'{self.api_db_url}/get_all_tab_data/{self.solutions_db_name}/compounds'
+        comp = requests.get(url, headers=self.headers())
+
+        url = f'{self.api_db_url}/get_all_tab_data/{self.stock_db_name}/users'
+        users = requests.get(url, headers=self.headers())
+
+        comp_list = []
+        if comp.status_code == 200:
+            for r in comp.json():
+                d = {}
+                d['#'] = r[0]
+                d['Name'] = r[1]
+                d['unicode'] = r[2]
+                d['Composition_'] = r[3]#str(json.loads(r[3]))
+                d['Composition'] = str(json.loads(r[3]))
+                d['Description'] = r[5]
+                comp_list.append(d)
+
+        comp_df = pd.DataFrame(comp_list)
+
+        self.user_list = []
+        if users.status_code == 200:
+            for r in users.json():
+                d = {}
+                d['name'] = r[1]
+                d['telegram_id'] = r[2]
+                d['pin'] = r[4]
+                self.user_list.append(d)
+        user_df = pd.DataFrame(self.user_list)
+
+        out = []
+        if ret.status_code == 200:
+            for r in ret.json():
+                d = {}
+                d['#'] = r[0]
+                d['unicode'] = r[1]
+                d['Name'] = comp_df[comp_df['unicode'] == d['unicode']]['Name']
+                d['Volume, ml'] = r[2]
+                d['Date'] = r[5]
+                d['User'] = user_df[user_df['telegram_id'] == r[6]]['name']
+                d['Description'] = comp_df[comp_df['unicode'] == d['unicode']]['Description']
+                out.append(d)
+
+        return out, comp_list
+
+    def culc_solution_compose(self, rowdata, sel_rowdata, volume):
+        out = []
+
+        vol = 500
+        if volume != '':
+            vol = int(volume)
+
+        for row in rowdata:
+            if len(sel_rowdata) > 0:
+                d = row.copy()
+                if sel_rowdata[0]['#'] == row['#']:
+
+                    comp = json.loads(row['Composition_'])
+                    res = {}
+                    for k in comp.keys():
+                        kk = list(comp[k].keys())[0]
+                        if kk == '%':
+                            res[k] = f"{vol * comp[k][kk] / 100} ml"
+                        else:
+                            res[k] = f"{vol * comp[k][kk]} g"
+
+                    d['Culculation'] = str(res)
+
+                    out.append(d)
+                else:
+                    d['Culculation'] = ''
+                    out.append(d)
+            else:
+                out.append(row)
+        return out
+
+    #def get_tg_id(self, pin):
+
+    def prepare_solution(self, sel_rowdata, volume):
+        for row in sel_rowdata:
+            if row['Culculation'] != '':
+                df = pd.DataFrame(self.user_list)
+                tg_id = df[df['pin'] == self.pincode]['telegram_id'].max()
+
+                url = f'{self.api_db_url}/insert_data/{self.solutions_db_name}/preparation_history'
+                ret = requests.post(url,
+                                    json=json.dumps([
+                                        row['unicode'],
+                                        volume,
+                                        'ml',
+                                        1,
+                                        str(datetime.now()),
+                                        tg_id
+                                    ]),
+                                    headers=self.headers())
+
+    def delete_preparation(self, selrows):
+        for row in selrows:
+            url = f"{self.api_db_url}/delete_data/{self.solutions_db_name}/preparation_history/{row['#']}"
+            ret = requests.delete(url=url, headers=self.headers())
+
 
     def load_oligomap(self, seldata):
         self.oligo_map_id = -1

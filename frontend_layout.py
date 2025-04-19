@@ -7,6 +7,7 @@ import frontend_asm2000
 import frontend_stock
 import frontend_view_passport
 import frontend_history
+import solution_frontend
 
 class oligo_syn_form_layout():
 
@@ -26,6 +27,7 @@ class oligo_syn_form_layout():
         self.frontend_stock = frontend_stock.oligo_stock_database_layout()
         self.frontend_passport = frontend_view_passport.passport_tab_view_layout()
         self.frontend_history = frontend_history.oligo_history_layout()
+        self.frontend_solutions = solution_frontend.oligo_solutions_layout()
 
         layout_dict = {
             'Input invoces': self.frontend_input_invoce.layout,
@@ -34,6 +36,7 @@ class oligo_syn_form_layout():
             'Stock': self.frontend_stock.layout,
             'Passport': self.frontend_passport.layout,
             'Operations history': self.frontend_history.layout,
+            'Solutions history': self.frontend_solutions.layout,
         }
 
         layout_list = []

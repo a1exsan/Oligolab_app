@@ -168,50 +168,61 @@ def update_asm2000_map(pincode, map_rowdata, sel_map_rowdata, accord_rowdata, ma
     if triggered_id == 'asm2000-update-tab-btn' and update_map_btn is not None:
         map_out_tab = orders_data.seq_to_asm_seq(accord_rowdata, map_rowdata)
         accord_out_tab = orders_data.update_accord_tab(accord_rowdata, map_out_tab)
-        return map_out_tab, accord_out_tab, map_list_rowdata, man_name_input, synth_number_input, stat_wasted, stat_total_wells
+        return (map_out_tab, accord_out_tab, map_list_rowdata, man_name_input, synth_number_input,
+                stat_wasted, stat_total_wells)
 
     if triggered_id == 'asm2000-rename-pos-btn' and rename_pos_btn is not None:
         map_out_tab = orders_data.rename_pos(sel_map_rowdata, map_rowdata, transpose_selector=='transposed: A1-A12')
-        return map_out_tab, accord_rowdata, map_list_rowdata, man_name_input, synth_number_input, stat_wasted, stat_total_wells
+        return (map_out_tab, accord_rowdata, map_list_rowdata, man_name_input, synth_number_input,
+                stat_wasted, stat_total_wells)
 
     if triggered_id == 'asm2000-change-alk-btn' and change_alk_btn is not None:
         map_out_tab = orders_data.change_alk(map_rowdata)
-        return map_out_tab, accord_rowdata, map_list_rowdata, man_name_input, synth_number_input, stat_wasted, stat_total_wells
+        return (map_out_tab, accord_rowdata, map_list_rowdata, man_name_input, synth_number_input,
+                stat_wasted, stat_total_wells)
 
     if triggered_id == 'asm2000-gen-map-btn' and gen_map_to_csv_btn is not None:
         orders_data.generate_map_to_file('oligo_map.csv',map_rowdata, accord_rowdata)
-        return map_rowdata, accord_rowdata, map_list_rowdata, man_name_input, synth_number_input, stat_wasted, stat_total_wells
+        return (map_rowdata, accord_rowdata, map_list_rowdata, man_name_input, synth_number_input,
+                stat_wasted, stat_total_wells)
 
     if triggered_id == 'asm2000-update-map' and update_maps_btn is not None:
         map_list = orders_data.get_oligomaps()
         stat_data = orders_data.get_actual_stat_maps()
-        return map_rowdata, accord_rowdata, map_list, man_name_input, synth_number_input, stat_data['wasted %'], stat_data['total wells']
+        return (map_rowdata, accord_rowdata, map_list, man_name_input, synth_number_input,
+                stat_data['wasted %'], stat_data['total wells'])
 
     if triggered_id == 'asm2000-update-actual-map' and update_actual_map_btn is not None:
         map_list = orders_data.get_actual_maps()
-        return map_rowdata, accord_rowdata, map_list, man_name_input, synth_number_input, stat_wasted, stat_total_wells
+        return (map_rowdata, accord_rowdata, map_list, man_name_input, synth_number_input,
+                stat_wasted, stat_total_wells)
 
     if triggered_id == 'asm2000-load-map' and load_map_btn is not None:
         map_out_tab, accord_out_tab, map_name, map_syn_num = orders_data.load_oligomap(sel_map_list_rowdata)
-        return map_out_tab, accord_out_tab, map_list_rowdata, map_name, map_syn_num, stat_wasted, stat_total_wells
+        return (map_out_tab, accord_out_tab, map_list_rowdata, map_name, map_syn_num,
+                stat_wasted, stat_total_wells)
 
     if triggered_id == 'asm2000-save-map-btn' and save_map_btn is not None:
         status_code = orders_data.insert_map_to_base(man_name_input, synth_number_input, start_date_select,
                                                      map_rowdata, accord_rowdata)
         #print(f'save map {man_name_input} status code: ', status_code)
-        return map_rowdata, accord_rowdata, map_list_rowdata, man_name_input, synth_number_input, stat_wasted, stat_total_wells
+        return (map_rowdata, accord_rowdata, map_list_rowdata, man_name_input, synth_number_input,
+                stat_wasted, stat_total_wells)
 
     if triggered_id == 'asm2000-delete-map' and delete_map_btn is not None:
         status_code = orders_data.delete_map_from_base(sel_map_list_rowdata)
         #print(f'delete map {man_name_input} status code: ', status_code)
-        return map_rowdata, accord_rowdata, map_list_rowdata, man_name_input, synth_number_input, stat_wasted, stat_total_wells
+        return (map_rowdata, accord_rowdata, map_list_rowdata, man_name_input, synth_number_input,
+                stat_wasted, stat_total_wells)
 
     if triggered_id == 'asm2000-search-maps-btn' and search_map_btn is not None:
         search_map_list = orders_data.search_maps_by_text(search_map_input)
         if len(search_map_list) > 0:
-            return map_rowdata, accord_rowdata, search_map_list, man_name_input, synth_number_input, stat_wasted, stat_total_wells
+            return (map_rowdata, accord_rowdata, search_map_list, man_name_input, synth_number_input,
+                    stat_wasted, stat_total_wells)
         else:
-            return map_rowdata, accord_rowdata, map_list_rowdata, man_name_input, synth_number_input, stat_wasted, stat_total_wells
+            return (map_rowdata, accord_rowdata, map_list_rowdata, man_name_input, synth_number_input,
+                    stat_wasted, stat_total_wells)
 
     raise PreventUpdate
 
@@ -581,6 +592,48 @@ def select_scale_update(pincode, rowdata, scale_value):
     if  triggered_id == 'synt-scale-accord-selector':
         out_rowdata = orders_data.return_scale_accord_tab(rowdata, scale_value)
         return out_rowdata
+
+    raise PreventUpdate
+
+@callback(
+    Output(component_id='solutions-history-tab', component_property='rowData', allow_duplicate=True),
+    Output(component_id='solutions-composition-tab', component_property='rowData', allow_duplicate=True),
+
+    Input(component_id='pincode-input', component_property='value'),
+    Input(component_id='solutions-history-tab', component_property='rowData'),
+    Input(component_id='solutions-history-tab', component_property='selectedRows'),
+    Input(component_id='solutions-composition-tab', component_property='rowData'),
+    Input(component_id='solutions-composition-tab', component_property='selectedRows'),
+    Input(component_id='show-history-solutions-btn', component_property='n_clicks'),
+    Input(component_id='solution-vol-prepare-input', component_property='value'),
+    Input(component_id='calc-prepare-solutions-btn', component_property='n_clicks'),
+    Input(component_id='prepare-solutions-btn', component_property='n_clicks'),
+    Input(component_id='delete-solutions-prep-btn', component_property='n_clicks'),
+    prevent_initial_call=True
+)
+def select_scale_update(pincode, rowdata, selected_histdata, compos_rowdata, sel_rowdata, show_data_btn, volume_value, calc_btn, prep_btn,
+                        del_btn):
+    triggered_id = ctx.triggered_id
+
+    orders_data.pincode = pincode
+
+    if  triggered_id == 'show-history-solutions-btn':
+        out_rowdata, compose_list = orders_data.get_solutions_history()
+        return out_rowdata, compose_list
+
+    if  triggered_id == 'calc-prepare-solutions-btn':
+        compose_list = orders_data.culc_solution_compose(compos_rowdata, sel_rowdata, volume_value)
+        return rowdata, compose_list
+
+    if  triggered_id == 'prepare-solutions-btn':
+        orders_data.prepare_solution(sel_rowdata, volume_value)
+        out_rowdata, compose_list = orders_data.get_solutions_history()
+        return out_rowdata, compose_list
+
+    if  triggered_id == 'delete-solutions-prep-btn':
+        orders_data.delete_preparation(selected_histdata)
+        out_rowdata, compose_list = orders_data.get_solutions_history()
+        return out_rowdata, compose_list
 
     raise PreventUpdate
 
