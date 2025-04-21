@@ -7,6 +7,7 @@ from oligoMass import molmassOligo as mmo
 from collections import Counter
 import price_data
 from datetime import datetime
+from datetime import timedelta
 
 class click_azide():
 
@@ -1200,6 +1201,7 @@ class orders_db(api_db_interface):
 
     def oligomap_history_to_date(self, date):
         hist, hist_data = self.show_history_data()
+        print(date)
         data = pd.DataFrame(hist_data)
         data = data[data['Date'] == date]
         data = data[data['URL'].str.contains("update_data/asm2000_map")]
@@ -1308,7 +1310,30 @@ def test1():
                          })
                          , headers={'Authorization': f'Pincode {orders_data.pincode}'})
 
+def extract_history_tab(from_date, to_date):
+    orders_data = orders_db(db_IP='127.0.0.1', db_port='8012')
+    orders_data.pincode = '1880'
+    date = datetime.strptime(from_date, "%d.%m.%Y")
+    date_end = datetime.strptime(to_date, "%d.%m.%Y")
+    count = 0
+    out = []
+    while date_end >= date:
+        count += 1
+        print(count, date.date().strftime("%d.%m.%Y"), date_end.date().strftime("%d.%m.%Y"))
+        #str_date = datetime.datetime.strptime(selected_date, "%Y-%m-%d").date().strftime("%d.%m.%Y")
+        try:
+            out.extend(orders_data.oligomap_history_to_date(date.date().strftime("%d.%m.%Y")))
+        except:
+            pass
+        date += timedelta(days=1)
+
+    df = pd.DataFrame(out)
+    df.to_csv('hestory_extract_1.csv', sep='\t')
+
+    for row in out:
+        print(row)
+
 
 if __name__ == '__main__':
-    #test1()
+    extract_history_tab('23.01.2025', '21.04.2025')
     pass
