@@ -77,7 +77,7 @@ class oligo_orders_database_layout():
             'purif%': [''],
             'formul%': [''],
             'fin%': [''],
-            'archived%': [''],
+            'product days': ['3'],
             'status': [''],
             'send': [True]
         })
@@ -94,13 +94,28 @@ class oligo_orders_database_layout():
             {"field": "purif%"},
             {"field": "formul%"},
             {"field": "fin%"},
-            {"field": "archived%"},
+            {"field": "product days"},
             {"field": "status"},
             {"field": "send", 'editable': True},
         ]
 
+        getRowStyle_invoce_product = {
+            "styleConditions": [
+                {
+                    "condition": "params.data.days_left == '0'",
+                    "style": {"backgroundColor": "#FFAAAA", "color": "#0D2A63", 'fontWeight': 'bold'},
+                },
+                {
+                    "condition": "params.data.days_left == '1'",
+                    "style": {"backgroundColor": "#FFEEEE", "color": "#0D2A63", 'fontWeight': 'bold'},
+                }
+            ],
+            "defaultStyle": {"backgroundColor": "lightgrey", "color": "black"},
+        }
+
         self.invoce_tab = dag.AgGrid(
             id="invoce-tab-database",
+            getRowStyle=getRowStyle_invoce_product,
             columnDefs=columnDefs,
             rowData=order_tab.to_dict("records"),
             columnSize="sizeToFit",

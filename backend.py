@@ -112,6 +112,41 @@ class orders_db(api_db_interface):
         for row in data:
             if row['status'] == 'in progress' or not row['send']:
                 out.append(row)
+        out = self.set_invoces_timing_prognosis(out)
+        return out
+
+    def  get_oligo_prep_prognosis(self, d, cc = 1):
+        data = self.get_invoce_content([d])
+        df = pd.DataFrame(data)
+        fam_count = df[df["5'-end"].str.contains('FAM')].shape[0]
+        primer_count = df[df["5'-end"] == 'none'].shape[0]
+        alk_count = df.shape[0] - fam_count - primer_count
+        if primer_count == df.shape[0]:
+            return 3 + cc
+        elif primer_count <  df.shape[0] and alk_count == 0:
+            return 5 + cc
+        elif primer_count <  df.shape[0] and alk_count > 0:
+            return 7 + cc
+
+    def set_invoces_timing_prognosis(self, tab):
+        out = []
+        for row in tab:
+            d = row.copy()
+            n_days = self.get_oligo_prep_prognosis(d, cc=2)
+            out_date = datetime.strptime(d['input date'], '%m.%d.%Y') + timedelta(days=n_days)
+            d['out date'] = out_date.strftime('%d.%m.%Y')
+            start_date = datetime.strptime(d['input date'], '%m.%d.%Y')
+            now_date = datetime.now()
+            delta_days = (out_date - now_date).days
+            prod_days = (now_date - start_date).days
+            if delta_days > 0:
+                d['days_left'] = str(delta_days)
+            elif delta_days == 0:
+                d['days_left'] = '0+'
+            else:
+                d['days_left'] = '0'
+            d['product days'] = f"{prod_days}/{n_days}"
+            out.append(d)
         return out
 
     def get_invoce_content(self, selRows):
@@ -158,19 +193,63 @@ class orders_db(api_db_interface):
         return out
 
     def get_suport_amount(self, amount):
-        if amount in ['1-3', '1-5', '3-5']:
+        if amount in ['1-3', '1-5', '3-5', '5-10', '3-10']:
+            return '3'
+        elif amount in ['10-15']:
             return '5'
-        elif amount == '5-10':
-            return '5'
-        elif amount in ['10-15', '15-20', '10-20']:
-            return '10'
+        elif amount in ['15-20', '10-20']:
+            return '8'
         else:
             return '10'
+
+    def get_support_type(self, sequence):
+        oligo = mmo.oligoNASequence(sequence)
+        if sequence.find('BHQ1') > -1:
+            return 'bhq1_1000_hg'
+        elif sequence.find('BHQ2') > -1:
+            return 'bhq2_1000_hg'
+        elif sequence.find('BHQ3') > -1:
+            return 'bhq3_500'
+
+        if oligo.size() <= 30:
+            return 'biocomma_500'
+        elif oligo.size() > 30 and oligo.size() <= 65:
+            return 'biocomma_1000'
+        elif oligo.size() > 65 and oligo.size() <= 110:
+            return 'biocomma_2000'
+        elif oligo.size() > 110 and oligo.size() <= 500:
+            return 'biocomma_3000'
+        else:
+            return 'biocomma_3000'
+
+    def get_purif_click_type(self, sequence):
+        if sequence.find('FAM]') > -1:
+            return {'cart': False, 'hplc': True, 'lcms': True, 'click': False}
+        elif sequence.find('[HEX') > -1:
+            return {'cart': False, 'hplc': True, 'lcms': True, 'click': True}
+        elif sequence.find('[R6G') > -1:
+            return {'cart': False, 'hplc': True, 'lcms': True, 'click': True}
+        elif sequence.find('[SIMA') > -1:
+            return {'cart': False, 'hplc': True, 'lcms': True, 'click': True}
+        elif sequence.find('[ROX') > -1:
+            return {'cart': False, 'hplc': True, 'lcms': True, 'click': True}
+        elif sequence.find('[Cy') > -1:
+            return {'cart': False, 'hplc': True, 'lcms': True, 'click': True}
+        elif sequence.find('[TAMR') > -1:
+            return {'cart': False, 'hplc': True, 'lcms': True, 'click': True}
+        elif sequence.find('[Alk') > -1:
+            return {'cart': False, 'hplc': True, 'lcms': True, 'click': True}
+        else:
+            return {'cart': True, 'hplc': False, 'lcms': False, 'click': False}
+
 
     def add_selected_order_to_asm2000(self, copies_number, rowData, selRowData):
 
         seq_list, names_list, amount_list, cpg_list, pos_list, order_id_list, purif_type \
             = [], [], [], [], [], [], []
+
+        support_type_list = []
+        purif_click_type_list = {'cart': [], 'hplc': [], 'lcms': [], 'click': []}
 
         out_sel = []
         if copies_number not in [None, '']:
@@ -197,6 +276,11 @@ class orders_db(api_db_interface):
                 s = f'{s}[{end3}]'
             seq_list.append(s)
 
+            support_type_list.append(self.get_support_type(s))
+            purif_type_click = self.get_purif_click_type(s)
+            for key in purif_type_click.keys():
+                purif_click_type_list[key].append(purif_type_click[key])
+
             names_list.append(name)
             cpg_list.append(self.get_suport_amount(amount))
             amount_list.append(amount)
@@ -209,7 +293,7 @@ class orders_db(api_db_interface):
             'Name': names_list,
             'Sequence': seq_list,
             'Purif type': purif_type,
-            'Support type': ['biocomma_1000' for i in range(1, len(names_list) + 1)],
+            'Support type': support_type_list,#['biocomma_1000' for i in range(1, len(names_list) + 1)],
             'Date': [datetime.now().date().strftime(self.strftime_format) for i in range(len(names_list))],
             'Synt number': list([1 for i in range(1, len(names_list) + 1)]),
             'Position': pos_list,
@@ -221,14 +305,14 @@ class orders_db(api_db_interface):
             'Vol, ml': [0.3 for i in range(1, len(names_list) + 1)],
             'Purity, %': [50. for i in range(1, len(names_list) + 1)],
 
-            'Do LCMS': [False for i in range(1, len(names_list) + 1)],
-            'Do synth': [False for i in range(1, len(names_list) + 1)],
-            'Do cart': [False for i in range(1, len(names_list) + 1)],
-            'Do hplc': [False for i in range(1, len(names_list) + 1)],
+            'Do LCMS': purif_click_type_list['lcms'],#[False for i in range(1, len(names_list) + 1)],
+            'Do synth': [True for i in range(1, len(names_list) + 1)],
+            'Do cart': purif_click_type_list['cart'],#[False for i in range(1, len(names_list) + 1)],
+            'Do hplc': purif_click_type_list['hplc'],#[False for i in range(1, len(names_list) + 1)],
             'Do paag': [False for i in range(1, len(names_list) + 1)],
             'Do sed': [False for i in range(1, len(names_list) + 1)],
-            'Do click': [False for i in range(1, len(names_list) + 1)],
-            'Do subl': [False for i in range(1, len(names_list) + 1)],
+            'Do click': purif_click_type_list['click'],#[False for i in range(1, len(names_list) + 1)],
+            'Do subl': [True for i in range(1, len(names_list) + 1)],
             'Done LCMS': [False for i in range(1, len(names_list) + 1)],
             'Done synth': [False for i in range(1, len(names_list) + 1)],
             'Done cart': [False for i in range(1, len(names_list) + 1)],
@@ -1328,12 +1412,15 @@ def extract_history_tab(from_date, to_date):
         date += timedelta(days=1)
 
     df = pd.DataFrame(out)
-    df.to_csv('hestory_extract_1.csv', sep='\t')
+    df.to_csv('history_extract_1.csv', sep='\t')
 
     for row in out:
         print(row)
 
+def hist_tab_stat():
+    pass
+
 
 if __name__ == '__main__':
-    extract_history_tab('23.01.2025', '21.04.2025')
+    #extract_history_tab('23.01.2025', '21.04.2025')
     pass
