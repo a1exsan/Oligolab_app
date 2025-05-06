@@ -167,7 +167,7 @@ class oligo_orders_database_layout():
                 #]),
                     dbc.Row([
                         dbc.Col(
-                            dcc.Dropdown(['in queue', 'in progress', 'synthesis', 'purification',
+                            dcc.Dropdown(['in queue', 'in progress', 'wasted-in progress', 'synthesis', 'purification',
                                           'formulation', 'finished', 'arhive'], 'in queue',
                                          id='status-order-selector')
                         ),
