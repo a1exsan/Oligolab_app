@@ -134,11 +134,15 @@ class orders_db(api_db_interface):
             d = row.copy()
             n_days = self.get_oligo_prep_prognosis(d, cc=2)
             out_date = datetime.strptime(d['input date'], '%m.%d.%Y') + timedelta(days=n_days)
-            d['out date'] = out_date.strftime('%d.%m.%Y')
+
             start_date = datetime.strptime(d['input date'], '%m.%d.%Y')
             now_date = datetime.now()
             delta_days = (out_date - now_date).days
             prod_days = (now_date - start_date).days
+
+            #if delta_days > 0:
+            d['out date'] = out_date.strftime('%d.%m.%Y')
+
             if delta_days > 0:
                 d['days_left'] = str(delta_days)
             elif delta_days == 0:
@@ -1026,15 +1030,25 @@ class orders_db(api_db_interface):
         else:
             return rowData
 
-    def update_order_status(self, rowData):
+    def update_order_status(self, rowData, selRowdata):
+        df = pd.DataFrame(selRowdata)
         if len(rowData) > 0:
             for row in rowData:
-                order_id = row['Order id']
-                order_date = row['Date']
-                order_status = row['Status']
+                if df.shape[0] > 0:
+                    if row['#'] in list(df['#']):
+                        order_id = row['Order id']
+                        order_date = row['Date']
+                        order_status = row['Status']
+                    else:
+                        order_id = '###'
+                else:
+                    order_id = row['Order id']
+                    order_date = row['Date']
+                    order_status = row['Status']
 
-                url = f"{self.api_db_url}/update_data/{self.db_name}/orders_tab/{order_id}"
-                r = requests.put(url,
+                if order_id != '###':
+                    url = f"{self.api_db_url}/update_data/{self.db_name}/orders_tab/{order_id}"
+                    r = requests.put(url,
                     json=json.dumps({
                         'name_list': ['output_date', 'status'],
                         'value_list': [order_date, order_status]

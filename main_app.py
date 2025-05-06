@@ -356,7 +356,7 @@ def update_flags_tab(pincode, map_rowdata, sel_map_rowdata, accord_rowdata,
         return out_map_data
 
     if triggered_id == 'asm2000-update-order-status-btn' and update_order_status_btn is not None:
-        orders_data.update_order_status(map_rowdata)
+        orders_data.update_order_status(map_rowdata, sel_map_rowdata)
         return map_rowdata
 
     if triggered_id == 'asm2000-update-oligomap-status-btn' and update_omap_status_btn is not None:
