@@ -877,10 +877,18 @@ class orders_db(api_db_interface):
 
         return out
 
+    def get_low_amount_limit(self, amount):
+        if amount.find('-')>-1:
+            return float(amount[:amount.find('-')])
+        else:
+            return float(amount)
+
     def print_invoce_passport(self, selrowdata):
         out_tab = self.get_invoce_content(selrowdata)
         pass_tab = []
+        out = []
         for row in out_tab:
+            d = row.copy()
             #sequence = '[' + row["5'-end"] + ']' + row['Sequence'] + '[' + row["3'-end"] + ']'
             maps = self.search_maps_by_text(str(row['#']))
             if len(maps) > 0:
@@ -893,8 +901,14 @@ class orders_db(api_db_interface):
                 df = df[df['Order id'] == row['#']]
                 df = df.sort_values(by='Dens, oe/ml', ascending=False)
                 pass_tab.append(df.to_dict('records')[0])
+                d['Exist, oe'] = round(pass_tab[-1]['Dens, oe/ml'] * pass_tab[-1]['Vol, ml'], 0)
+            else:
+                d['Exist, oe'] = 0.
+            limit = self.get_low_amount_limit(d['Amount, oe'])
+            d['sufficiency'] = d['Exist, oe'] - limit
+            out.append(d)
         pass_tab = self.print_pass(pass_tab, 'invoce_pass.csv')
-        return pass_tab, out_tab
+        return pass_tab, out
 
     def update_send_invoce_data(self, rowdata):
         param_list = []

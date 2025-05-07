@@ -19,13 +19,15 @@ class oligo_orders_database_layout():
                 'Sequence': [''],
                 "3'-end": [''],
                 'Amount, oe': ['5-10'],
+                'Exist, oe': [0.],
                 'Purification': ['Cart'],
                 'Lenght': [''],
                 'status': ['in queue'],
                 'input date': [''],
                 'output date': [''],
                 'client id': [''],
-                'order id': ['']
+                'order id': [''],
+                'sufficiency': [0.]
             }
         )
 
@@ -41,17 +43,30 @@ class oligo_orders_database_layout():
             {"field": "Sequence", 'editable': True},
             {"field": "3'-end", 'editable': True},
             {"field": "Amount, oe", 'editable': True},
+            {"field": "Exist, oe", 'editable': True},
             {"field": "Purification", 'editable': True},
             {"field": "Lenght"},
             {"field": "status", 'editable': True},
             {"field": "input date", 'editable': True},
             {"field": "output date", 'editable': True},
             {"field": "order id"},
-            {"field": "client id"}
+            {"field": "client id"},
+            {"field": "sufficiency"}
         ]
+
+        getRowStyle_orders = {
+            "styleConditions": [
+                {
+                    "condition": "params.data.sufficiency < 0",
+                    "style": {"backgroundColor": "#FFAAAA", "color": "#0D2A63", 'fontWeight': 'bold'},
+                }
+            ],
+            "defaultStyle": {"backgroundColor": "lightgreen", "color": "black"},
+        }
 
         self.tab = dag.AgGrid(
             id="orders-tab-database",
+            getRowStyle=getRowStyle_orders,
             columnDefs=columnDefs,
             rowData=main_tab.to_dict("records"),
             columnSize="sizeToFit",
