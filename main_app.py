@@ -150,6 +150,7 @@ def update_orders_db_tab(pincode, orders_db_data, orders_sel_rowdata, invoces_ro
     Input(component_id='asm2000-change-alk-btn', component_property='n_clicks'),
     Input(component_id='asm2000-gen-map-btn', component_property='n_clicks'),
     Input(component_id='asm2000-update-map', component_property='n_clicks'),
+    Input(component_id='asm2000-yield-analysis-map', component_property='n_clicks'),
     Input(component_id='asm2000-load-map', component_property='n_clicks'),
     Input(component_id='asm2000-map-name', component_property='value'),
     Input(component_id='asm2000-map-synt_number', component_property='value'),
@@ -166,7 +167,7 @@ def update_orders_db_tab(pincode, orders_db_data, orders_sel_rowdata, invoces_ro
 )
 def update_asm2000_map(pincode, map_rowdata, sel_map_rowdata, accord_rowdata, map_list_rowdata, sel_map_list_rowdata,
                        update_map_btn, rename_pos_btn, change_alk_btn,
-                       gen_map_to_csv_btn, update_maps_btn, load_map_btn,
+                       gen_map_to_csv_btn, update_maps_btn, map_yield_analysis_btn, load_map_btn,
                        man_name_input, synth_number_input, start_date_select, save_map_btn, delete_map_btn,
                        search_map_btn, search_map_input, update_actual_map_btn, transpose_selector,
                        stat_wasted, stat_total_wells):
@@ -198,6 +199,12 @@ def update_asm2000_map(pincode, map_rowdata, sel_map_rowdata, accord_rowdata, ma
 
     if triggered_id == 'asm2000-update-map' and update_maps_btn is not None:
         map_list = orders_data.get_oligomaps()
+        stat_data = orders_data.get_actual_stat_maps()
+        return (map_rowdata, accord_rowdata, map_list, man_name_input, synth_number_input,
+                stat_data['wasted %'], stat_data['total wells'])
+
+    if triggered_id == 'asm2000-yield-analysis-map':
+        map_list = orders_data.get_oligomaps(map_yield=True)
         stat_data = orders_data.get_actual_stat_maps()
         return (map_rowdata, accord_rowdata, map_list, man_name_input, synth_number_input,
                 stat_data['wasted %'], stat_data['total wells'])

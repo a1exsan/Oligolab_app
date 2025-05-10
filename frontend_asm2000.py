@@ -322,7 +322,9 @@ class asm2000_layout():
                 'in progress': [0],
                 'Wasted': [0],
                 'Finished': [0],
-                'Total': [0]
+                'Total': [0],
+                'avg yield, %': [0],
+                'avg stage yield, %': [0]
             }
         )
 
@@ -335,6 +337,8 @@ class asm2000_layout():
             {"field": "Wasted"},
             {"field": "Finished"},
             {"field": "Total"},
+            {"field": "avg yield, %"},
+            {"field": "avg stage yield, %"},
         ]
 
         self.map_db_tab = dag.AgGrid(
@@ -412,7 +416,9 @@ class asm2000_layout():
                     dcc.Input(placeholder='Enter name, seq or ID', id='asm2000-search-field', type="text",
                               size='50', debounce=True),
                     dbc.Button("Search maps", outline=True, color="secondary",
-                               id='asm2000-search-maps-btn')
+                               id='asm2000-search-maps-btn'),
+                    dbc.Button("Map yield analysis", outline=False, color="info",
+                               id='asm2000-yield-analysis-map'),
                 ]),
                 dbc.Col([
                     self.map_db_tab,

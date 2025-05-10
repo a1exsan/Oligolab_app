@@ -19,6 +19,8 @@ class support_base():
         self.support_capasity['bhq2_1000_hg'] = 45.
         self.support_capasity['bhq3_500'] = 50.
         self.support_capasity['bhq1_1000'] = 45.
+        self.support_capasity['bhq1_500'] = 50.
+        self.support_capasity['bhq2_500'] = 50.
         self.support_capasity['bhq2_1000'] = 45.
         self.support_capasity['PO3_500'] = 50.
 
@@ -656,12 +658,59 @@ class orders_db(api_db_interface):
         except:
             return 100
 
-    def get_oligomaps(self):
+    def map_yield_analysis(self, map):
+        if len(map)>0:
+            df = pd.DataFrame(map)
+            if 'Status' not in list(df.keys()):
+                df['Status'] = 'none'
+            df = df[df['Status'] == 'finished']
+            df['amount, oe'] = df['Dens, oe/ml'].astype('float') * df['Vol, ml'].astype('float')
+            df['CPG, mg'] = df['CPG, mg'].str.extract('(\d+)')
+            df['CPG, mg'] = df['CPG, mg'].astype('int')
+            if 'Support type' not in list(df.keys()):
+                df['Support type'] = 'biocomma_1000'
+
+            df_g = df.groupby(['Order id']).agg({'amount, oe': 'sum', 'CPG, mg': 'sum', 'Sequence': 'first',
+                                                  'Support type': 'first'})
+
+            df_g.reset_index(inplace=True)
+
+            nmol_list, capasity_list, lenght_list = [], [], []
+            for seq, oe, support in zip(df_g['Sequence'], df_g['amount, oe'], df_g['Support type']):
+                if support.lower() in list(support_base().support_capasity.keys()):
+                    capasity_list.append(support_base().support_capasity[support.lower()])
+                else:
+                    capasity_list.append(50.)
+                oligo = mmo.oligoNASequence(seq)
+                lenght_list.append(oligo.size())
+                ext = oligo.getExtinction()
+                if ext > 0:
+                    nmol_list.append(oe * 1e6 / oligo.getExtinction())
+                else:
+                    nmol_list.append(0.)
+
+            df_g['amount, nmol'] = nmol_list
+            df_g['capasity'] = capasity_list
+            df_g['lenght'] = lenght_list
+            df_g['amount, max'] = df_g['CPG, mg'] * df_g['capasity']
+            df_g['yield, %'] = df_g['amount, nmol'] * 100 / df_g['amount, max']
+
+            stage_yield = []
+            for y, l in zip(df_g['yield, %'], df_g['lenght']):
+                stage_yield.append((y/100)**(1/l))
+
+            df_g['stage yield, %'] = stage_yield
+            df_g['stage yield, %'] = df_g['stage yield, %'] * 100
+
+            return df_g['yield, %'].mean(), df_g['stage yield, %'].mean()
+        else:
+            return 0, 0
+
+    def get_oligomaps(self, map_yield=False):
         self.all_not_fin_oligos = []
         self.oligo_map_id = -1
         url = f'{self.api_db_url}/get_all_tab_data/{self.maps_db_name}/main_map'
         ret = requests.get(url, headers=self.headers())
-
         if ret.status_code == 200:
             out = []
             for r in ret.json():
@@ -672,6 +721,12 @@ class orders_db(api_db_interface):
                 d['Date'] = r[1]
                 d['in progress'] = self.map_in_progress(r[4])
                 #d['map data'] = pd.DataFrame(json.loads(r[4]))
+
+                if map_yield:
+                    y, s_y = self.map_yield_analysis(json.loads(r[4]))
+                    d['avg yield, %'] = round(y, 1)
+                    d['avg stage yield, %'] = round(s_y, 1)
+
                 df = pd.DataFrame(json.loads(r[4]))
                 if 'Status' in list(df.keys()):
                     self.all_not_fin_oligos.extend(df[df['Status'] != 'finished'].to_dict('records'))
