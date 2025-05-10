@@ -23,7 +23,7 @@ class asm2000_layout():
                 'Date': [''],
                 'Synt number': [''],
                 'Scale, OE': [''],
-                'CPG, MG': [''],
+                'CPG, mg': [''],
                 'asm Sequence': [''],
                 'Status': ['in queue'],
                 'Dens, oe/ml': [0.],

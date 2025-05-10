@@ -51,6 +51,7 @@ app.layout = frontend_obj.layout
     Input(component_id='show-in-progress-btn', component_property='n_clicks'),
     Input(component_id='show-invoce-content-btn', component_property='n_clicks'),
     Input(component_id='add-sel-order-to-asm2000-btn', component_property='n_clicks'),
+    Input(component_id='add-sel-order-auto-to-asm2000-btn', component_property='n_clicks'),
     Input(component_id='num-orders-copies-input', component_property='value'),
     Input(component_id='show-not-completed', component_property='n_clicks'),
     Input(component_id='update-outdate-btn', component_property='n_clicks'),
@@ -58,14 +59,17 @@ app.layout = frontend_obj.layout
     Input(component_id='send-update-invoce-btn', component_property='n_clicks'),
     Input(component_id='all-status-update-btn', component_property='n_clicks'),
     Input(component_id='show-history-invoce-timing-btn', component_property='n_clicks'),
+    Input(component_id='synt-scale-type-selector', component_property='value'),
+    Input(component_id='init-syn-yield-input', component_property='value'),
     prevent_initial_call=True
 )
 def update_orders_db_tab(pincode, orders_db_data, orders_sel_rowdata, invoces_rowdata, invoces_selRows, asm2000_map_rowdata,
                          pass_tab,
                          status_selector, show_by_status_btn,
-                         show_all_invoces_btn, show_in_progress_btn, shoe_invoce_content_btn, sel_to_asm_2000_btn,
+                         show_all_invoces_btn, show_in_progress_btn, shoe_invoce_content_btn, sel_to_asm_2000_btn, auto_to_asm_btn,
                          numper_of_copies, show_in_queue_btn, update_orders_tab_btn, print_pass_invoce_btn,
-                         send_update_invoce_btn, all_status_update_invoce_btn, show_hist_invoce_timing_btn):
+                         send_update_invoce_btn, all_status_update_invoce_btn, show_hist_invoce_timing_btn,
+                         scale_type, init_syn_yield):
 
     triggered_id = ctx.triggered_id
 
@@ -90,6 +94,12 @@ def update_orders_db_tab(pincode, orders_db_data, orders_sel_rowdata, invoces_ro
     if triggered_id == 'add-sel-order-to-asm2000-btn' and sel_to_asm_2000_btn is not None:
         asm2000_tab = orders_data.add_selected_order_to_asm2000(numper_of_copies, asm2000_map_rowdata,
                                                                 orders_sel_rowdata)
+        return orders_db_data, invoces_rowdata, asm2000_tab, pass_tab
+
+    if triggered_id == 'add-sel-order-auto-to-asm2000-btn':
+        asm2000_tab = orders_data.add_selected_ords_to_asm2000_cpg(asm2000_map_rowdata, orders_sel_rowdata,
+                                                                   scale_type=scale_type,
+                                                                   syn_yield=float(init_syn_yield))
         return orders_db_data, invoces_rowdata, asm2000_tab, pass_tab
 
     if triggered_id == 'show-not-completed' and show_in_queue_btn is not None:

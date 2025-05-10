@@ -161,8 +161,14 @@ class oligo_orders_database_layout():
                     dbc.Col([
                         dbc.Button("add selected to ASM2000", outline=True, color="primary",
                                    id='add-sel-order-to-asm2000-btn'),
+                        dbc.Button("auto selected to ASM2000", outline=False, color="success",
+                                   id='add-sel-order-auto-to-asm2000-btn'),
                         dbc.Input(placeholder='Number of copies', id='num-orders-copies-input', type="text",
-                                  debounce=True)
+                                  debounce=True),
+                        dcc.Dropdown(['1 mg', '3 mg', '5 mg'], '1 mg',
+                                     id='synt-scale-type-selector'),
+                        dbc.Input(placeholder='init yield, %', id='init-syn-yield-input', type="text", value=0.2,
+                                  debounce=True),
                     ])
                     ]),
                 #dbc.Row([

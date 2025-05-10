@@ -9,6 +9,57 @@ import price_data
 from datetime import datetime
 from datetime import timedelta
 
+class support_base():
+    def __init__(self):
+        self.support_capasity = {}
+        self.support_capasity['biocomma_500'] = 85.
+        self.support_capasity['biocomma_1000'] = 42.
+        self.support_capasity['biocomma_2000'] = 39.
+        self.support_capasity['bhq1_1000_hg'] = 45.
+        self.support_capasity['bhq2_1000_hg'] = 45.
+        self.support_capasity['bhq3_500'] = 50.
+        self.support_capasity['bhq1_1000'] = 45.
+        self.support_capasity['bhq2_1000'] = 45.
+        self.support_capasity['PO3_500'] = 50.
+
+        self.scale_intervals = {}
+        self.scale_intervals['1 mg'] = (2, 3)
+        self.scale_intervals['3 mg'] = (3, 5)
+        self.scale_intervals['5 mg'] = (5, 8)
+
+
+class oligo_amount_model():
+    def __init__(self, seq, syn_yield):
+        self.oligo = mmo.oligoNASequence(seq)
+        self.syn_yield = syn_yield
+        self.base_yield = 0.2
+
+    def read_amount(self, amount):
+        if amount.find('-') > -1:
+            self.low_limit = float(amount[:amount.find('-')])
+            self.hi_limit = float(amount[amount.find('-')+1:])
+        else:
+            self.low_limit, self.hi_limit = float(amount)
+
+    def get_cpg_mg(self, amount, capacity):
+        self.read_amount(amount)
+        oe = (self.low_limit + self.hi_limit) / 2
+        ext = self.oligo.getExtinction()
+        if ext > 0:
+            nmol = oe * 1e6 / self.oligo.getExtinction()
+        else:
+            nmol = 10.
+        return nmol / (self.oligo_len_correction() * capacity)
+
+    def oligo_len_correction(self):
+        x = [self.syn_yield, 0.05]
+        y = [20, 100]
+        self.k = (x[1] - x[0]) / (y[1] - y[0])
+        self.b = x[1] - self.k * y[1]
+        return self.oligo.size() * self.k + self.b
+
+
+
 class click_azide():
 
     def __init__(self, oligos_sequence, amount_oe):
@@ -262,8 +313,28 @@ class orders_db(api_db_interface):
             return {'cart': True, 'hplc': False, 'lcms': False, 'click': False}
 
 
-    def add_selected_order_to_asm2000(self, copies_number, rowData, selRowData):
+    def add_selected_ords_to_asm2000_cpg(self, rowData, selRowData, scale_type='1 mg', syn_yield=0.2):
+        out_first = self.add_selected_order_to_asm2000(1, [], selRowData)
+        support = support_base()
+        if len(rowData) > 0:
+            out = rowData.copy()
+        else:
+            out = []
+        for row in out_first:
+            d = row.copy()
+            cpg_model = oligo_amount_model(row['Sequence'], syn_yield)
+            cpg_mg = cpg_model.get_cpg_mg(row['Scale, OE'], support.support_capasity[row['Support type']])
+            c = cpg_mg / support.scale_intervals[scale_type][0]
+            count = 1
+            if c > 1:
+                count = int(round(c, 0))
+            for i in range(count):
+                d['CPG, mg'] = support.scale_intervals[scale_type][1]
+                out.append(d)
+        return out
 
+
+    def add_selected_order_to_asm2000(self, copies_number, rowData, selRowData):
         seq_list, names_list, amount_list, cpg_list, pos_list, order_id_list, purif_type \
             = [], [], [], [], [], [], []
 
@@ -348,11 +419,13 @@ class orders_db(api_db_interface):
 
         df = pd.DataFrame(rowData)
         df_sel = pd.DataFrame(out_tab)
-        if df.shape[0] > 1:
+        if len(rowData) == 1:
+            if rowData[0]['#'] == 0:
+                rowData = []
+        if len(rowData) > 0:
             df = pd.concat([df, df_sel])
         else:
             df = pd.DataFrame(out_tab)
-
         return df.to_dict('records')
 
     def update_orders_out_date(self, rowData):
@@ -1465,7 +1538,11 @@ def extract_history_tab(from_date, to_date):
 def hist_tab_stat():
     pass
 
+def calc_oligo_cpg():
+    model = oligo_amount_model('ACGTAACGTAACGACGTAACGTAACG', 0.10)
+    print(model.get_cpg_mg('30-40', 42))
+
 
 if __name__ == '__main__':
     #extract_history_tab('23.01.2025', '21.04.2025')
-    pass
+    calc_oligo_cpg()
