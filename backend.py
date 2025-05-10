@@ -33,6 +33,7 @@ class oligo_amount_model():
         self.oligo = mmo.oligoNASequence(seq)
         self.syn_yield = syn_yield
         self.base_yield = 0.2
+        self.purif_yield = 0.7
 
     def read_amount(self, amount):
         if amount.find('-') > -1:
@@ -41,7 +42,7 @@ class oligo_amount_model():
         else:
             self.low_limit, self.hi_limit = float(amount)
 
-    def get_cpg_mg(self, amount, capacity):
+    def get_cpg_mg(self, amount, capacity, cart=True, hplc=False):
         self.read_amount(amount)
         oe = (self.low_limit + self.hi_limit) / 2
         ext = self.oligo.getExtinction()
@@ -49,7 +50,10 @@ class oligo_amount_model():
             nmol = oe * 1e6 / self.oligo.getExtinction()
         else:
             nmol = 10.
-        return nmol / (self.oligo_len_correction() * capacity)
+        cpg_mg = nmol / (self.oligo_len_correction() * capacity)
+        if hplc:
+            cpg_mg /= self.purif_yield
+        return cpg_mg
 
     def oligo_len_correction(self):
         x = [self.syn_yield, 0.05]
@@ -316,6 +320,9 @@ class orders_db(api_db_interface):
     def add_selected_ords_to_asm2000_cpg(self, rowData, selRowData, scale_type='1 mg', syn_yield=0.2):
         out_first = self.add_selected_order_to_asm2000(1, [], selRowData)
         support = support_base()
+        if len(rowData) == 1:
+            if rowData[0]['#'] == 0:
+                rowData = []
         if len(rowData) > 0:
             out = rowData.copy()
         else:
@@ -323,7 +330,8 @@ class orders_db(api_db_interface):
         for row in out_first:
             d = row.copy()
             cpg_model = oligo_amount_model(row['Sequence'], syn_yield)
-            cpg_mg = cpg_model.get_cpg_mg(row['Scale, OE'], support.support_capasity[row['Support type']])
+            cpg_mg = cpg_model.get_cpg_mg(row['Scale, OE'], support.support_capasity[row['Support type']],
+                                          hplc=row['Do hplc'] or row['Do paag'])
             c = cpg_mg / support.scale_intervals[scale_type][0]
             count = 1
             if c > 1:
